@@ -4,5 +4,5 @@ body {
 }
 
 #app {
-  border: 1px solid #ccc;
+  background:url(../images/back.jpg);
 }
