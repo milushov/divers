@@ -7,19 +7,10 @@ var App = function(debug) {
     this.canvas = document.getElementById('app');
     this.ctx = this.canvas.getContext('2d');
 
-    this.canvas.addEventListener('selectstart', function(e) {
-      e.preventDefault();
-      return false;
-    }, false);
-
     this.canvas.addEventListener('mousedown', function(event) {
-      console.log(event)
       var x = event.x;
       var y = event.y;
-
-      ctx = app.ctx;
-      
-      var rating = Math.round(Math.random()*10);
+      var rating = Math.round(Math.random()*9+1);
       new_star = new Star(x, y);
       new_star.setImage(rating);
       app.stars.push(new_star);
@@ -27,6 +18,8 @@ var App = function(debug) {
 
     this.divers = new Array();
     this.stars = new Array();
+
+    //TODO make buttons
   }
 
   this.test = function() {
@@ -45,7 +38,7 @@ var Star = function(x, y) {
   this.y = y;
 
   this.setImage = function(rating) {
-    if(!rating) {
+    if(typeof rating == 'undefined') {
       throw { message: 'rating not set', code: 1 }
       this.rating = 1;
     }
@@ -61,7 +54,7 @@ var Star = function(x, y) {
   }
 
   this.fall = function() {
-    console.log('star is falling..')
+    console.log('start falling..')
   }
 }
 
