@@ -25,6 +25,10 @@ var App = function(debug) {
   this.test = function() {
     console.log(this)
   }
+  
+  this.clear = function() {
+    this.canvas.width = this.canvas.width;
+  }
 }
 
 window.onload = function() {
