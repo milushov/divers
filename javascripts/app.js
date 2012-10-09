@@ -6,6 +6,7 @@ var App = function(debug) {
 
     this.canvas = document.getElementById('app');
     this.ctx = this.canvas.getContext('2d');
+    this.bottom = this.canvas.height - 50;
 
     this.canvas.addEventListener('mousedown', function(event) {
       var x = event.x;
@@ -25,15 +26,29 @@ var App = function(debug) {
   this.test = function() {
     console.log(this)
   }
+
+  this.animate = function() {
+    requestAnimFrame(this.animate.bind(this));
+    this.draw();
+  }
+
+  this.draw = function() {
+    this.clear();
+    for (var i = 0; i < this.starts.length; ++i) {
+      this.stars[i].draw();
+    };
+  }
   
   this.clear = function() {
-    this.canvas.width = this.canvas.width;
+    //this.canvas.width = this.canvas.width;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }
 
 window.onload = function() {
   app = new App(true);
   app.init();
+  app.animate();
   gebi('click').addEventListener('click', function(){ app.test.apply(app) } );
 }
 
@@ -59,6 +74,9 @@ var Star = function(x, y) {
 
   this.fall = function() {
     console.log('start falling..')
+    intr = setInterval(function() {
+      console.log(this)
+    }.bind(this), 1000/15);
   }
 }
 
