@@ -1,6 +1,5 @@
 var App = function(debug) {
   this.debug = debug || false;
-
   this.init = function() {
     console.log('app init');
 
@@ -12,7 +11,7 @@ var App = function(debug) {
       var x = event.x;
       var y = event.y;
       var rating = Math.round(Math.random()*9+1);
-      new_star = new Star(x, y);
+      new_star = new Star(x, y, 46, 43);
       new_star.setImage(rating);
       app.stars.push(new_star);
     });
@@ -34,9 +33,9 @@ var App = function(debug) {
 
   this.draw = function() {
     this.clear();
-    for (var i = 0; i < this.starts.length; ++i) {
-      this.stars[i].draw();
-    };
+    //for (var i = 0; i < this.starts.length; ++i) {
+      //this.stars[i].draw();
+    //};
   }
   
   this.clear = function() {
@@ -52,11 +51,33 @@ window.onload = function() {
   gebi('click').addEventListener('click', function(){ app.test.apply(app) } );
 }
 
-var Star = function(x, y) {
+var Thing = function(x, y, width, height) {
   this.x = x;
   this.y = y;
+  this.width = width;
+  this.height = height;
+}
 
-  this.setImage = function(rating) {
+Thing.prototype = {
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
+  draw: function() {
+    app.ctx.drawImage(this.image, this.x, this.y);
+  }
+}
+
+var Star = function() {
+  return Star._super.constructor.apply(this, arguments);
+}
+
+extend(Star, Thing);
+
+Star.prototype = {
+  width: 46,
+  height: 43,
+  setImage: function(rating) {
     if(typeof rating == 'undefined') {
       throw { message: 'rating not set', code: 1 }
       this.rating = 1;
@@ -66,13 +87,13 @@ var Star = function(x, y) {
     this.image.src = 'images/tf-star' + rating + '.png';
     this.image.onload = function() {
       x = this.x - this.width / 2
-      y = this.y - this.height / 2
-      app.ctx.drawImage(this.image, x, y);
+        y = this.y - this.height / 2
+        app.ctx.drawImage(this.image, x, y);
       this.fall();
     }.bind(this) // bind context of star object to onload handler
-  }
+  },
 
-  this.fall = function() {
+  fall: function() {
     console.log('start falling..')
     intr = setInterval(function() {
       console.log(this)
@@ -80,8 +101,3 @@ var Star = function(x, y) {
   }
 }
 
-// prototype of star
-Star.prototype = {
-  width: 46,
-  height: 43
-}
