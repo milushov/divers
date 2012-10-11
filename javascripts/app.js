@@ -33,9 +33,9 @@ var App = function(debug) {
   }
 
   this.draw = function() {
-    //for (var i = 0; i < this.starts.length; ++i) {
-      //this.stars[i].draw();
-    //};
+    for (var i = 0; i < this.stars.length; ++i) {
+      this.stars[i].draw();
+    };
   }
   
   this.clear = function() {
@@ -107,7 +107,7 @@ var Star = (function(_super) {
      fall: function() {
        console.log('start falling..')
          intr = setInterval(function() {
-           //console.log(this)
+           this.y ++;
          }.bind(this), 1000/15);
      }
   });
