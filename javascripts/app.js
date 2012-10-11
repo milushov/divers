@@ -1,6 +1,11 @@
 var App = function(debug) {
   this.debug = debug || false;
 
+  this.config = {
+    star_speed: 80,
+    diver_speed: 20,
+  }
+
   this.init = function() {
     console.log('app init');
 
