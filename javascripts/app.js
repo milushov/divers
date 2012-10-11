@@ -1,5 +1,6 @@
 var App = function(debug) {
   this.debug = debug || false;
+
   this.init = function() {
     console.log('app init');
 
