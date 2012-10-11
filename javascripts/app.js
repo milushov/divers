@@ -28,21 +28,21 @@ var App = function(debug) {
 
   this.animate = function() {
     requestAnimFrame(this.animate.bind(this));
+    this.clear();
     this.draw();
   }
 
   this.draw = function() {
-    this.clear();
     //for (var i = 0; i < this.starts.length; ++i) {
       //this.stars[i].draw();
     //};
   }
   
   this.clear = function() {
-    //this.canvas.width = this.canvas.width;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }
+
 
 window.onload = function() {
   app = new App(true);
