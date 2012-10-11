@@ -51,53 +51,66 @@ window.onload = function() {
   gebi('click').addEventListener('click', function(){ app.test.apply(app) } );
 }
 
-var Thing = function(x, y, width, height) {
-  this.x = x;
-  this.y = y;
-  this.width = width;
-  this.height = height;
-}
 
-Thing.prototype = {
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0,
-  draw: function() {
-    app.ctx.drawImage(this.image, this.x, this.y);
+var Thing = (function() {
+  function Thing(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
   }
-}
 
-var Star = function() {
-  return Star._super.constructor.apply(this, arguments);
-}
-
-extend(Star, Thing);
-
-Star.prototype = {
-  width: 46,
-  height: 43,
-  setImage: function(rating) {
-    if(typeof rating == 'undefined') {
-      throw { message: 'rating not set', code: 1 }
-      this.rating = 1;
+  Object.extend(Thing.prototype, {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    draw: function() {
+      app.ctx.drawImage(this.image, this.x, this.y);
     }
-    this.rating = rating;
-    this.image = new Image();
-    this.image.src = 'images/tf-star' + rating + '.png';
-    this.image.onload = function() {
-      x = this.x - this.width / 2
-        y = this.y - this.height / 2
-        app.ctx.drawImage(this.image, x, y);
-      this.fall();
-    }.bind(this) // bind context of star object to onload handler
-  },
+  });
 
-  fall: function() {
-    console.log('start falling..')
-    intr = setInterval(function() {
-      console.log(this)
-    }.bind(this), 1000/15);
+  return Thing;
+})();
+
+
+var Star = (function(_super) {
+  extend(Star, _super);
+
+  function Star() {
+    return Star.__super__.constructor.apply(this, arguments);
   }
-}
 
+  Star.prototype.test = function(val) {
+    console.log(val);
+  }
+
+  Object.extend(Star.prototype, {
+    width: 46,
+     height: 43,
+     setImage: function(rating) {
+       if(typeof rating == 'undefined') {
+         throw { message: 'rating not set', code: 1 }
+         this.rating = 1;
+       }
+       this.rating = rating;
+       this.image = new Image();
+       this.image.src = 'images/tf-star' + rating + '.png';
+       this.image.onload = function() {
+         x = this.x - this.width / 2
+           y = this.y - this.height / 2
+           app.ctx.drawImage(this.image, x, y);
+         this.fall();
+       }.bind(this) // bind context of star object to onload handler
+     },
+
+     fall: function() {
+       console.log('start falling..')
+         intr = setInterval(function() {
+           //console.log(this)
+         }.bind(this), 1000/15);
+     }
+  });
+
+  return Star;
+})(Thing)
