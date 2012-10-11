@@ -2,8 +2,10 @@ var App = function(debug) {
   this.debug = debug || false;
 
   this.config = {
-    star_speed: 80,
-    diver_speed: 20,
+    speed: {
+      star: 80,
+      diver: 20
+    }
   }
 
   this.init = function() {
@@ -111,9 +113,12 @@ var Star = (function(_super) {
     },
 
     fall: function() {
-      intr = setInterval(function() {
+      var speed = app.config.speed.star;
+      var interval = 1000 / speed;
+      var dy = speed/interval;
+      var intr = setInterval(function() {
         this.y ++;
-      }.bind(this), 1000/15);
+      }.bind(this), interval);
     }
   });
 
