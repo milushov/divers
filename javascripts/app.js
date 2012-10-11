@@ -1,5 +1,13 @@
 var App = function(debug) {
   this.debug = debug || false;
+
+  this.config = {
+    speed: {
+      star: 80,
+      diver: 20
+    }
+  }
+
   this.init = function() {
     console.log('app init');
 
@@ -87,29 +95,31 @@ var Star = (function(_super) {
 
   Object.extend(Star.prototype, {
     width: 46,
-     height: 43,
-     setImage: function(rating) {
-       if(typeof rating == 'undefined') {
-         throw { message: 'rating not set', code: 1 }
-         this.rating = 1;
-       }
-       this.rating = rating;
-       this.image = new Image();
-       this.image.src = 'images/tf-star' + rating + '.png';
-       this.image.onload = function() {
-         x = this.x - this.width / 2
-           y = this.y - this.height / 2
-           app.ctx.drawImage(this.image, x, y);
-         this.fall();
-       }.bind(this) // bind context of star object to onload handler
-     },
+    height: 43,
+    setImage: function(rating) {
+      if(typeof rating == 'undefined') {
+        throw { message: 'rating not set', code: 1 }
+          this.rating = 1;
+        }
+        this.rating = rating;
+        this.image = new Image();
+        this.image.src = 'images/tf-star' + rating + '.png';
+        this.image.onload = function() {
+        this.x = this.x - this.width / 2
+        this.y = this.y - this.height / 2
+        app.ctx.drawImage(this.image, this.x, this.y);
+        this.fall();
+      }.bind(this) // bind context of star object to onload handler
+    },
 
-     fall: function() {
-       console.log('start falling..')
-         intr = setInterval(function() {
-           this.y ++;
-         }.bind(this), 1000/15);
-     }
+    fall: function() {
+      var speed = app.config.speed.star;
+      var interval = 1000 / speed;
+      var dy = speed/interval;
+      var intr = setInterval(function() {
+        this.y ++;
+      }.bind(this), interval);
+    }
   });
 
   return Star;
