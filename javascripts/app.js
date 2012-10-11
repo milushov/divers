@@ -99,7 +99,7 @@ var Star = (function(_super) {
     setImage: function(rating) {
       if(typeof rating == 'undefined') {
         throw { message: 'rating not set', code: 1 }
-        this.rating = 1;
+          this.rating = 1;
         }
         this.rating = rating;
         this.image = new Image();
