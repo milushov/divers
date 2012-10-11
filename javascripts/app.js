@@ -111,8 +111,7 @@ var Star = (function(_super) {
     },
 
     fall: function() {
-      console.log('start falling..')
-        intr = setInterval(function() {
+      intr = setInterval(function() {
         this.y ++;
       }.bind(this), 1000/15);
     }
