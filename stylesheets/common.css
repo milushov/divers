@@ -6,3 +6,37 @@ body {
 #app {
   background:url(../images/back.jpg);
 }
+
+#add-diver {
+  background: transparent url(../images/buttons/add-diver.png) 0 0 no-repeat;
+  background-position: 0 0;
+  display: block;
+  width: 163px;
+  height: 32px;
+  overflow: hidden;
+  cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 220px;
+}
+
+#add-diver:hover {
+  background: transparent url(../images/buttons/add-diver-hover.png) 0 0 no-repeat;
+}
+
+#delete-diver {
+  background: transparent url(../images/buttons/delete-diver.png) 0 0 no-repeat;
+  background-position: 0 0;
+  display: block;
+  width: 163px;
+  height: 32px;
+  overflow: hidden;
+  cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 410px;
+}
+
+#delete-diver:hover {
+  background: transparent url(../images/buttons/delete-diver-hover.png) 0 0 no-repeat;
+}
