@@ -109,11 +109,11 @@ var Star = (function(_super) {
         this.rating = rating;
         this.image = new Image();
         this.image.src = 'images/stars/tf-star' + rating + '.png';
-        this.image.onload = function() {
-        this.x = this.x - this.width / 2
-        this.y = this.y - this.height / 2
-        app.ctx.drawImage(this.image, this.x, this.y);
-        this.fall();
+          this.image.onload = function() {
+          this.x = this.x - this.width / 2
+          this.y = this.y - this.height / 2
+          app.ctx.drawImage(this.image, this.x, this.y);
+          this.fall();
       }.bind(this) // bind context of star object to onload handler
     },
 
