@@ -8,7 +8,8 @@ var App = function(debug) {
     },
 
     borders: {
-      bottom: 0
+      bottom: 0,
+      rope: 0
     }
   }
 
@@ -18,6 +19,12 @@ var App = function(debug) {
     this.canvas = document.getElementById('app');
     this.ctx = this.canvas.getContext('2d');
     this.config.borders.bottom = this.canvas.height - 50;
+    this.config.borders.rope = this.canvas.width - 100;
+
+    this.canvas.addEventListener('selectstart', function(e) {
+      e.preventDefault();
+      return false;
+    }, false);
 
     this.canvas.addEventListener('mousedown', function(event) {
       var x = event.x;
