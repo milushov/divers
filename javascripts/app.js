@@ -1,4 +1,14 @@
-var App = function(debug) {
+window.onload = function() {
+  app = new App(true); // parametr true enables debug mode
+  app.init();
+  app.animate();
+  /* this is NOT jQuery :-) */
+  $('#add-diver').addEventListener('click', function(){ app.addDiver.apply(app) } );
+  $('#delete-diver').addEventListener('click', function(){ app.deleteDiver.apply(app) } );
+};
+
+
+function App(debug) {
   this.debug = debug || false;
 
   this.config = {
@@ -60,16 +70,6 @@ var App = function(debug) {
   this.clear = function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   };
-};
-
-
-window.onload = function() {
-  app = new App(true);
-  app.init();
-  app.animate();
-  /* this is NOT jQuery :-) */
-  $('#add-diver').addEventListener('click', function(){ app.addDiver.apply(app) } );
-  $('#delete-diver').addEventListener('click', function(){ app.deleteDiver.apply(app) } );
 };
 
 
