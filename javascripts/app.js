@@ -101,7 +101,7 @@ var Star = (function(_super) {
     height: 43,
     setImage: function(rating) {
       if(typeof rating == 'undefined') {
-        throw { message: 'rating not set', code: 1 }
+          throw { message: 'rating not set', code: 1 }
           this.rating = 1;
         }
         this.rating = rating;
