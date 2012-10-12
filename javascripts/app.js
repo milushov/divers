@@ -19,7 +19,8 @@ function App(debug) {
 
     objects: {
       bottom: 0,
-      rope: 0
+      rope: 0,
+      boat: 170
     }
   };
 
@@ -51,8 +52,12 @@ function App(debug) {
     //TODO make buttons
   };
 
-  this.addDiver - function() {
-    var new_diver = new Diver();
+  this.addDiver = function() {
+    var x = app.config.objects.rope;
+    var y = app.config.objects.boat;
+    var new_diver = new Diver(x, y);
+    new_diver.setImage('up');
+    app.divers.push(new_diver);
   };
 
   this.animate = function() {
@@ -64,6 +69,10 @@ function App(debug) {
   this.draw = function() {
     for (var i = 0; i < this.stars.length; ++i) {
       this.stars[i].draw();
+    }
+
+    for (var j = 0; j < this.divers.length; ++j) {
+      this.divers[j].draw();
     }
   };
   
