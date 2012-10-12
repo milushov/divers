@@ -130,4 +130,50 @@ var Star = (function(_super) {
   });
 
   return Star;
+})(Thing);
+
+
+var Diver = (function(_super) {
+  extend(Diver, _super);
+
+  function Diver() {
+    return Diver.__super__.constructor.apply(this, arguments);
+  };
+
+  Object.extend(Diver.prototype, {
+    width: 46,
+    height: 73,
+    dirs: ['up', 'left', 'right'],
+
+    setImage: function(dir) {
+      if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
+          throw { message: 'dir not set', code: 2 }
+          this.dir = 'up';
+        }
+        this.dir = dir;
+        this.image = new Image();
+        this.image.src = 'images/diver/' + this.dir + '.png';
+        this.image.onload = function() {
+          this.x = this.x - this.width / 2
+          this.y = this.y - this.height / 2
+          app.ctx.drawImage(this.image, this.x, this.y);
+          this.ducking();
+      }.bind(this) // bind context of star object to onload handler
+    },
+
+    ducking: function() {
+      var speed = app.config.speed.diver;
+      var interval = 1000 / speed;
+      var dy = speed/interval;
+      var intr = setInterval(function() {
+        if(this.y <= app.config.borders.bottom) {
+          this.y ++;
+        } else {
+          clearInterval(intr);
+        }
+      }.bind(this), interval);
+    }
+  });
+
+  return Diver;
 })(Thing)
