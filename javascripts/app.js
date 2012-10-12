@@ -96,10 +96,6 @@ var Star = (function(_super) {
     return Star.__super__.constructor.apply(this, arguments);
   }
 
-  Star.prototype.test = function(val) {
-    console.log(val);
-  }
-
   Object.extend(Star.prototype, {
     width: 46,
     height: 43,
