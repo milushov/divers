@@ -72,18 +72,14 @@ window.onload = function() {
 
 
 var Thing = (function() {
-  function Thing(x, y, width, height) {
+  function Thing(x, y) {
     this.x = x;
     this.y = y;
-    this.width = width;
-    this.height = height;
   }
 
   Object.extend(Thing.prototype, {
     x: 0,
     y: 0,
-    width: 0,
-    height: 0,
     draw: function() {
       app.ctx.drawImage(this.image, this.x, this.y);
     }
