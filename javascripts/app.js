@@ -11,7 +11,7 @@ var App = function(debug) {
       bottom: 0,
       rope: 0
     }
-  }
+  };
 
   this.init = function() {
     console.log('app init');
@@ -39,28 +39,28 @@ var App = function(debug) {
     this.stars = new Array();
 
     //TODO make buttons
-  }
+  };
 
   this.test = function() {
     console.log(this)
-  }
+  };
 
   this.animate = function() {
     requestAnimFrame(this.animate.bind(this));
     this.clear();
     this.draw();
-  }
+  };
 
   this.draw = function() {
     for (var i = 0; i < this.stars.length; ++i) {
       this.stars[i].draw();
-    };
-  }
+    }
+  };
   
   this.clear = function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  }
-}
+  };
+};
 
 
 window.onload = function() {
@@ -68,14 +68,14 @@ window.onload = function() {
   app.init();
   app.animate();
   gebi('click').addEventListener('click', function(){ app.test.apply(app) } );
-}
+};
 
 
 var Thing = (function() {
   function Thing(x, y) {
     this.x = x;
     this.y = y;
-  }
+  };
 
   Object.extend(Thing.prototype, {
     x: 0,
@@ -94,13 +94,13 @@ var Star = (function(_super) {
 
   function Star() {
     return Star.__super__.constructor.apply(this, arguments);
-  }
+  };
 
   Object.extend(Star.prototype, {
     width: 46,
     height: 43,
     setImage: function(rating) {
-      if(typeof rating == 'undefined') {
+      if(typeof rating === 'undefined') {
           throw { message: 'rating not set', code: 1 }
           this.rating = 1;
         }
