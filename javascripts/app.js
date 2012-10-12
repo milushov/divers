@@ -7,7 +7,7 @@ var App = function(debug) {
       diver: 20
     },
 
-    borders: {
+    objects: {
       bottom: 0,
       rope: 0
     }
@@ -18,8 +18,8 @@ var App = function(debug) {
 
     this.canvas = document.getElementById('app');
     this.ctx = this.canvas.getContext('2d');
-    this.config.borders.bottom = this.canvas.height - 70;
-    this.config.borders.rope = this.canvas.width - 100;
+    this.config.objects.bottom = this.canvas.height - 70;
+    this.config.objects.rope = this.canvas.width - 100;
 
     this.canvas.addEventListener('selectstart', function(e) {
       e.preventDefault();
@@ -30,7 +30,7 @@ var App = function(debug) {
       var x = event.x;
       var y = event.y;
       var rating = Math.round(Math.random()*9+1);
-      new_star = new Star(x, y, 46, 43);
+      var new_star = new Star(x, y, 46, 43);
       new_star.setImage(rating);
       app.stars.push(new_star);
     });
@@ -41,8 +41,8 @@ var App = function(debug) {
     //TODO make buttons
   };
 
-  this.test = function() {
-    console.log(this)
+  this.addDiver - function() {
+    var new_diver = new Diver();
   };
 
   this.animate = function() {
@@ -67,7 +67,9 @@ window.onload = function() {
   app = new App(true);
   app.init();
   app.animate();
-  gebi('click').addEventListener('click', function(){ app.test.apply(app) } );
+  /* this is NOT jQuery :-) */
+  $('#add-diver').addEventListener('click', function(){ app.addDiver.apply(app) } );
+  $('#delete-diver').addEventListener('click', function(){ app.deleteDiver.apply(app) } );
 };
 
 
@@ -120,7 +122,7 @@ var Star = (function(_super) {
       var interval = 1000 / speed;
       var dy = speed/interval;
       var intr = setInterval(function() {
-        if(this.y <= app.config.borders.bottom) {
+        if(this.y <= app.config.objects.bottom) {
           this.y ++;
         } else {
           clearInterval(intr);
@@ -166,7 +168,7 @@ var Diver = (function(_super) {
       var interval = 1000 / speed;
       var dy = speed/interval;
       var intr = setInterval(function() {
-        if(this.y <= app.config.borders.bottom) {
+        if(this.y <= app.config.objects.bottom) {
           this.y ++;
         } else {
           clearInterval(intr);
