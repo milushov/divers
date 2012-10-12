@@ -46,3 +46,5 @@ Object.extend = function(destination, source) {
   }
   return destination;
 };
+
+window.__images = ["images/buttons/delete-diver.png","images/buttons/add-diver.png","images/buttons/add-diver-hover.png","images/buttons/delete-diver-hover.png","images/divers/right.png","images/divers/up.png","images/divers/left.png","images/back.jpg","images/fishes.png","images/stars/tf-star6.png","images/stars/tf-star2.png","images/stars/tf-star9.png","images/stars/tf-star3.png","images/stars/tf-star8.png","images/stars/ship-load.png","images/stars/tf-star7.png","images/stars/tf-star1.png","images/stars/tf-star5.png","images/stars/tf-star4.png","images/stars/tf-star10.png","images/thought.png"]

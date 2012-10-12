@@ -79,6 +79,22 @@ function App(debug) {
   this.clear = function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   };
+
+  this.load = function(act) { /* if set act we skip loading */
+    if(act || __images.length === 0) return false;
+    var images = __images;
+    var counter = 0;
+    for (var i = 0; i < images.length; ++i) {
+      var img = new Image();
+      img.onload = function() {
+        counter ++;
+        if(counter === images.length - 1) {
+          alert('yep!');
+        }
+      }
+      img.src = images[i];
+    }
+  };
 };
 
 
