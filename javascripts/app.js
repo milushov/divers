@@ -5,6 +5,10 @@ var App = function(debug) {
     speed: {
       star: 80,
       diver: 20
+    },
+
+    borders: {
+      bottom: 0
     }
   }
 
@@ -13,7 +17,7 @@ var App = function(debug) {
 
     this.canvas = document.getElementById('app');
     this.ctx = this.canvas.getContext('2d');
-    this.bottom = this.canvas.height - 50;
+    this.config.borders.bottom = this.canvas.height - 50;
 
     this.canvas.addEventListener('mousedown', function(event) {
       var x = event.x;
@@ -117,7 +121,11 @@ var Star = (function(_super) {
       var interval = 1000 / speed;
       var dy = speed/interval;
       var intr = setInterval(function() {
-        this.y ++;
+        if(this.y <= app.config.borders.bottom) {
+          this.y ++;
+        } else {
+          clearInterval(intr);
+        }
       }.bind(this), interval);
     }
   });
