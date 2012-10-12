@@ -106,7 +106,7 @@ var Star = (function(_super) {
         }
         this.rating = rating;
         this.image = new Image();
-        this.image.src = 'images/tf-star' + rating + '.png';
+        this.image.src = 'images/stars/tf-star' + rating + '.png';
         this.image.onload = function() {
         this.x = this.x - this.width / 2
         this.y = this.y - this.height / 2
@@ -152,7 +152,7 @@ var Diver = (function(_super) {
         }
         this.dir = dir;
         this.image = new Image();
-        this.image.src = 'images/diver/' + this.dir + '.png';
+        this.image.src = 'images/divers/' + this.dir + '.png';
         this.image.onload = function() {
           this.x = this.x - this.width / 2
           this.y = this.y - this.height / 2
