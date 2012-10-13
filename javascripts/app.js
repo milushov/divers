@@ -14,7 +14,9 @@ function App(debug) {
   this.config = {
     speed: {
       star: 80,
-      diver: 20
+      diver: 20,
+      air: .05,
+      air_speed_with_star: .001
     },
 
     objects: {
@@ -57,6 +59,7 @@ function App(debug) {
     var y = app.config.objects.boat;
     var new_diver = new Diver(x, y);
     new_diver.setImage('up');
+    new_diver.breathe();
     app.divers.push(new_diver);
   };
 
@@ -155,7 +158,6 @@ var Star = (function(_super) {
     fall: function() {
       var speed = app.config.speed.star;
       var interval = 1000 / speed;
-      var dy = speed/interval;
       var startX = this.x;
       var position = this.x;
       var amplitude = Math.round(Math.random()*10+3);
@@ -186,6 +188,8 @@ var Diver = (function(_super) {
     width: 46,
     height: 73,
     dirs: ['up', 'left', 'right'],
+    air: 20,
+    stars: [],
 
     setImage: function(dir) {
       if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
@@ -206,12 +210,35 @@ var Diver = (function(_super) {
     ducking: function() {
       var speed = app.config.speed.diver;
       var interval = 1000 / speed;
-      var dy = speed/interval;
       var intr = setInterval(function() {
         if(this.y <= app.config.objects.bottom) {
           this.y ++;
         } else {
           clearInterval(intr);
+        }
+      }.bind(this), interval);
+    },
+
+    breathe: function() {
+      var speed = app.config.speed.air,
+        interval = 1000,
+        asws = app.config.speed.air_speed_with_star;
+      var intr = setInterval( function() {
+        if(this.air >= 0) {
+          if(this.stars.length === 2) {
+            this.air -= speed +
+              this.stars[0].rating * asws +
+              this.stars[1].rating * asws;
+          } else if(this.stars.length === 1) {
+            this.air -= speed +
+              this.stars[0].rating * asws;
+          } else if(this.stars.length === 0) {
+            this.air -= speed;
+          } else {
+            throw { message: 'diver have too much stars on hands', code: 3 }
+          }
+        } else {
+          console.log('diver died..');
         }
       }.bind(this), interval);
     }
