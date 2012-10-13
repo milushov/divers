@@ -13,8 +13,8 @@ function App(debug) {
 
   this.config = {
     speed: {
-      star: 80,
-      diver: 20,
+      star: debug ? 350 : 80,
+      diver: debug ? 200 : 20,
       air: .05,
       air_speed_with_star: .001
     },
@@ -22,7 +22,8 @@ function App(debug) {
     objects: {
       bottom: 0,
       rope: 0,
-      boat: 170
+      boat: 170,
+      emersion_parts: null
     }
   };
 
@@ -31,8 +32,15 @@ function App(debug) {
 
     this.canvas = document.getElementById('app');
     this.ctx = this.canvas.getContext('2d');
-    this.config.objects.bottom = this.canvas.height - 70;
-    this.config.objects.rope = this.canvas.width - 100;
+    var objs = this.config.objects;
+    objs.bottom = this.canvas.height - 70;
+    objs.rope = this.canvas.width - 100;
+    var emersion_height = objs.bottom - objs.boat;
+    objs.emersion_parts = {
+      1: { y: objs.bottom - emersion_height * 1/3, time: 5000 },
+      2: { y: objs.bottom - emersion_height * 2/3, time: 10000 },
+      3: { y: objs.bottom - emersion_height * 4/5, time: 15000 }
+    }
 
     this.canvas.addEventListener('selectstart', function(e) {
       e.preventDefault();
@@ -95,7 +103,6 @@ function App(debug) {
     cover.style.width = wwh[0]+'px';
     cover.style.height = wwh[1]+'px';
     $('body').appendChild(cover);
-    console.log(cover);
 
     for (var i = 0; i < images.length; ++i) {
       var img = new Image();
@@ -190,6 +197,7 @@ var Diver = (function(_super) {
     dirs: ['up', 'left', 'right'],
     air: 20,
     stars: [],
+    checklist: { 1: false, 2: false, 3:false },
 
     setImage: function(dir) {
       if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
@@ -213,6 +221,40 @@ var Diver = (function(_super) {
       var intr = setInterval(function() {
         if(this.y <= app.config.objects.bottom) {
           this.y ++;
+        } else {
+          clearInterval(intr);
+        }
+      }.bind(this), interval);
+    },
+
+    emersion: function() {
+      var speed = app.config.speed.diver,
+        interval = 1000 / speed,
+        parts = app.config.objects.emersion_parts;
+      console.log(parts);
+      var intr = setInterval(function() {
+        if(this.y >= app.config.objects.boat) {
+          if( eql(this.y, parts[1].y) && !this.checklist[1]) {
+            clearInterval(intr);
+            this.checklist[1] = true;
+            intr = setInterval(function(){
+              this.emersion();
+            }.bind(this), parts[1].time);
+          } else if( eql(this.y, parts[2].y) && !this.checklist[2]) {
+            clearInterval(intr);
+            this.checklist[2] = true;
+            intr = setInterval(function(){
+              this.emersion();
+            }.bind(this), parts[2].time);
+          } else if( eql(this.y, parts[3].y) && !this.checklist[3]) {
+            clearInterval(intr);
+            this.checklist[3] = true;
+            intr = setInterval(function(){
+              this.emersion();
+            }.bind(this), parts[3].time);
+          } else {
+            this.y --;
+          }
         } else {
           clearInterval(intr);
         }

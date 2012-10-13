@@ -63,3 +63,8 @@ function wwh() {
     Math.max(parseInt(w.innerHeight), parseInt(de.clientHeight))
   ]
 }
+
+
+function eql(a, b) {
+  return parseInt(a) == parseInt(b);
+}
