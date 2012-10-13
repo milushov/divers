@@ -1,12 +1,12 @@
 window.onload = function() {
   app = new App(true); // parametr true enables debug mode
   app.init();
+  app.load();
   app.animate();
   /* this is NOT jQuery :-) */
   $('#add-diver').addEventListener('click', function(){ app.addDiver.apply(app) } );
   $('#delete-diver').addEventListener('click', function(){ app.deleteDiver.apply(app) } );
 };
-
 
 function App(debug) {
   this.debug = debug || false;
@@ -82,14 +82,24 @@ function App(debug) {
 
   this.load = function(act) { /* if set act we skip loading */
     if(act || __images.length === 0) return false;
-    var images = __images;
-    var counter = 0;
+
+    var cover = document.createElement('div'),
+      wwh = window.wwh(),
+      images = __images,
+      counter = 0;
+
+    cover.id = 'cover';
+    cover.style.width = wwh[0]+'px';
+    cover.style.height = wwh[1]+'px';
+    $('body').appendChild(cover);
+    console.log(cover);
+
     for (var i = 0; i < images.length; ++i) {
       var img = new Image();
       img.onload = function() {
         counter ++;
         if(counter === images.length - 1) {
-          alert('yep!');
+          $('body').removeChild($('#cover'));
         }
       }
       img.src = images[i];
@@ -146,8 +156,13 @@ var Star = (function(_super) {
       var speed = app.config.speed.star;
       var interval = 1000 / speed;
       var dy = speed/interval;
+      var startX = this.x;
+      var position = this.x;
+      var amplitude = Math.round(Math.random()*10+3);
       var intr = setInterval(function() {
         if(this.y <= app.config.objects.bottom) {
+          startX += .1;
+          this.x = position + Math.sin(startX) * amplitude;
           this.y ++;
         } else {
           clearInterval(intr);
