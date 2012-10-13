@@ -1,17 +1,47 @@
-var App = function(debug) {
+window.onload = function() {
+  app = new App(true); // parametr true enables debug mode
+  app.init();
+  app.load();
+  app.animate();
+  /* this is NOT jQuery :-) */
+  $('#add-diver').addEventListener('click', function(){ app.addDiver.apply(app) } );
+  $('#delete-diver').addEventListener('click', function(){ app.deleteDiver.apply(app) } );
+};
+
+function App(debug) {
   this.debug = debug || false;
+
+  this.config = {
+    speed: {
+      star: 80,
+      diver: 20
+    },
+
+    objects: {
+      bottom: 0,
+      rope: 0,
+      boat: 170
+    }
+  };
+
   this.init = function() {
     console.log('app init');
 
     this.canvas = document.getElementById('app');
     this.ctx = this.canvas.getContext('2d');
-    this.bottom = this.canvas.height - 50;
+    this.config.objects.bottom = this.canvas.height - 70;
+    this.config.objects.rope = this.canvas.width - 100;
+
+    this.canvas.addEventListener('selectstart', function(e) {
+      e.preventDefault();
+      return false;
+    }, false);
 
     this.canvas.addEventListener('mousedown', function(event) {
       var x = event.x;
       var y = event.y;
       var rating = Math.round(Math.random()*9+1);
-      new_star = new Star(x, y, 46, 43);
+      var new_star = new Star(x, y, 46, 43);
       new_star.setImage(rating);
       app.stars.push(new_star);
     });
@@ -20,51 +50,73 @@ var App = function(debug) {
     this.stars = new Array();
 
     //TODO make buttons
-  }
+  };
 
-  this.test = function() {
-    console.log(this)
-  }
+  this.addDiver = function() {
+    var x = app.config.objects.rope;
+    var y = app.config.objects.boat;
+    var new_diver = new Diver(x, y);
+    new_diver.setImage('up');
+    app.divers.push(new_diver);
+  };
 
   this.animate = function() {
     requestAnimFrame(this.animate.bind(this));
     this.clear();
     this.draw();
-  }
+  };
 
   this.draw = function() {
     for (var i = 0; i < this.stars.length; ++i) {
       this.stars[i].draw();
-    };
-  }
+    }
+
+    for (var j = 0; j < this.divers.length; ++j) {
+      this.divers[j].draw();
+    }
+  };
   
   this.clear = function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  }
-}
+  };
 
+  this.load = function(act) { /* if set act we skip loading */
+    if(act || __images.length === 0) return false;
 
-window.onload = function() {
-  app = new App(true);
-  app.init();
-  app.animate();
-  gebi('click').addEventListener('click', function(){ app.test.apply(app) } );
-}
+    var cover = document.createElement('div'),
+      wwh = window.wwh(),
+      images = __images,
+      counter = 0;
+
+    cover.id = 'cover';
+    cover.style.width = wwh[0]+'px';
+    cover.style.height = wwh[1]+'px';
+    $('body').appendChild(cover);
+    console.log(cover);
+
+    for (var i = 0; i < images.length; ++i) {
+      var img = new Image();
+      img.onload = function() {
+        counter ++;
+        if(counter === images.length - 1) {
+          $('body').removeChild($('#cover'));
+        }
+      }
+      img.src = images[i];
+    }
+  };
+};
 
 
 var Thing = (function() {
-  function Thing(x, y, width, height) {
+  function Thing(x, y) {
     this.x = x;
     this.y = y;
-    this.width = width;
-    this.height = height;
-  }
+  };
 
   Object.extend(Thing.prototype, {
     x: 0,
     y: 0,
-    width: 0,
-    height: 0,
     draw: function() {
       app.ctx.drawImage(this.image, this.x, this.y);
     }
@@ -79,38 +131,91 @@ var Star = (function(_super) {
 
   function Star() {
     return Star.__super__.constructor.apply(this, arguments);
-  }
-
-  Star.prototype.test = function(val) {
-    console.log(val);
-  }
+  };
 
   Object.extend(Star.prototype, {
     width: 46,
-     height: 43,
-     setImage: function(rating) {
-       if(typeof rating == 'undefined') {
-         throw { message: 'rating not set', code: 1 }
-         this.rating = 1;
-       }
-       this.rating = rating;
-       this.image = new Image();
-       this.image.src = 'images/tf-star' + rating + '.png';
-       this.image.onload = function() {
-         x = this.x - this.width / 2
-           y = this.y - this.height / 2
-           app.ctx.drawImage(this.image, x, y);
-         this.fall();
-       }.bind(this) // bind context of star object to onload handler
-     },
+    height: 43,
+    setImage: function(rating) {
+      if(typeof rating === 'undefined') {
+          throw { message: 'rating not set', code: 1 }
+          this.rating = 1;
+        }
+        this.rating = rating;
+        this.image = new Image();
+        this.image.src = 'images/stars/tf-star' + rating + '.png';
+          this.image.onload = function() {
+          this.x = this.x - this.width / 2
+          this.y = this.y - this.height / 2
+          app.ctx.drawImage(this.image, this.x, this.y);
+          this.fall();
+      }.bind(this) // bind context of star object to onload handler
+    },
 
-     fall: function() {
-       console.log('start falling..')
-         intr = setInterval(function() {
-           this.y ++;
-         }.bind(this), 1000/15);
-     }
+    fall: function() {
+      var speed = app.config.speed.star;
+      var interval = 1000 / speed;
+      var dy = speed/interval;
+      var startX = this.x;
+      var position = this.x;
+      var amplitude = Math.round(Math.random()*10+3);
+      var intr = setInterval(function() {
+        if(this.y <= app.config.objects.bottom) {
+          startX += .1;
+          this.x = position + Math.sin(startX) * amplitude;
+          this.y ++;
+        } else {
+          clearInterval(intr);
+        }
+      }.bind(this), interval);
+    }
   });
 
   return Star;
+})(Thing);
+
+
+var Diver = (function(_super) {
+  extend(Diver, _super);
+
+  function Diver() {
+    return Diver.__super__.constructor.apply(this, arguments);
+  };
+
+  Object.extend(Diver.prototype, {
+    width: 46,
+    height: 73,
+    dirs: ['up', 'left', 'right'],
+
+    setImage: function(dir) {
+      if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
+          throw { message: 'dir not set', code: 2 }
+          this.dir = 'up';
+        }
+        this.dir = dir;
+        this.image = new Image();
+        this.image.src = 'images/divers/' + this.dir + '.png';
+        this.image.onload = function() {
+          this.x = this.x - this.width / 2
+          this.y = this.y - this.height / 2
+          app.ctx.drawImage(this.image, this.x, this.y);
+          this.ducking();
+      }.bind(this) // bind context of star object to onload handler
+    },
+
+    ducking: function() {
+      var speed = app.config.speed.diver;
+      var interval = 1000 / speed;
+      var dy = speed/interval;
+      var intr = setInterval(function() {
+        if(this.y <= app.config.objects.bottom) {
+          this.y ++;
+        } else {
+          clearInterval(intr);
+        }
+      }.bind(this), interval);
+    }
+  });
+
+  return Diver;
 })(Thing)
