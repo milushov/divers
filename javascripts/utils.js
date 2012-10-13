@@ -2,9 +2,11 @@ function $(selector) {
   return document.querySelector(selector);
 }
 
+
 function gebi(id) {
   return document.getElementById(id);
 }
+
 
 window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       || 
@@ -16,6 +18,7 @@ window.requestAnimFrame = (function(){
             window.setTimeout(callback, 1000 / 60);
           };
 })();
+
 
 var extend = function(child, parent) {
   for (var key in parent) {
@@ -34,6 +37,7 @@ var extend = function(child, parent) {
   return child;
 };
 
+
 Object.extend = function(destination, source) {
   for (var property in source) {
     if (source[property] && source[property].constructor &&
@@ -46,3 +50,16 @@ Object.extend = function(destination, source) {
   }
   return destination;
 };
+
+
+window.__images = ["images/buttons/delete-diver.png","images/buttons/add-diver.png","images/buttons/add-diver-hover.png","images/buttons/delete-diver-hover.png","images/divers/right.png","images/divers/up.png","images/divers/left.png","images/back.jpg","images/fishes.png","images/stars/tf-star6.png","images/stars/tf-star2.png","images/stars/tf-star9.png","images/stars/tf-star3.png","images/stars/tf-star8.png","images/stars/ship-load.png","images/stars/tf-star7.png","images/stars/tf-star1.png","images/stars/tf-star5.png","images/stars/tf-star4.png","images/stars/tf-star10.png","images/thought.png"]
+
+
+function wwh() {
+  var w = window, de = document.documentElement;
+
+  return [
+    Math.max(parseInt(w.innerWidth), parseInt(de.clientWidth)),
+    Math.max(parseInt(w.innerHeight), parseInt(de.clientHeight))
+  ]
+}

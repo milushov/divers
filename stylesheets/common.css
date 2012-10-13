@@ -40,3 +40,12 @@ body {
 #delete-diver:hover {
   background: transparent url(../images/buttons/delete-diver-hover.png) 0 0 no-repeat;
 }
+
+#cover {
+  position: fixed;
+  z-index: 100;
+  top: 0; left: 0;
+  background: black;
+  opacity: .8;
+  overflow: hidden;
+}
