@@ -3,9 +3,6 @@ window.onload = function() {
   app.init();
   app.load();
   app.animate();
-  /* this is NOT jQuery :-) */
-  $('#add-diver').addEventListener('click', function(){ app.addDiver.apply(app) } );
-  $('#delete-diver').addEventListener('click', function(){ app.deleteDiver.apply(app) } );
 };
 
 function App(debug) {
@@ -24,6 +21,11 @@ function App(debug) {
       rope: 0,
       boat: 170,
       emersion_parts: null
+    },
+
+    options: {
+      for_star: .05,
+      for_ballast: .05
     }
   };
 
@@ -42,14 +44,22 @@ function App(debug) {
       3: { y: objs.bottom - emersion_height * 4/5, time: 15000 }
     }
 
+    /* this is NOT jQuery :-) */
+    $('#add-diver').addEventListener('click',
+      function(){ app.addDiver.apply(this) }
+    );
+    $('#delete-diver').addEventListener('click',
+      function(){ app.deleteDiver.apply(this) }
+    );
+
     this.canvas.addEventListener('selectstart', function(e) {
       e.preventDefault();
       return false;
     }, false);
 
     this.canvas.addEventListener('mousedown', function(event) {
-      var x = event.x;
-      var y = event.y;
+      var x = event.layerX;
+      var y = event.layerY;
       var rating = Math.round(Math.random()*9+1);
       var new_star = new Star(x, y, 46, 43);
       new_star.setImage(rating);
@@ -83,8 +93,13 @@ function App(debug) {
       this.stars[i].draw();
     }
 
-    for (var j = 0; j < this.divers.length; ++j) {
-      this.divers[j].draw();
+    for (var i = 0; i < this.divers.length; ++i) {
+      this.divers[i].draw();
+      if(this.divers[i].stars.length !== 0) {
+        for (var j = 0; j < this.divers[i].stars.length; j++) {
+          this.divers[i].stars[j].draw();
+        }
+      }
     }
   };
   
@@ -202,6 +217,7 @@ var Diver = (function(_super) {
     stars: [],
     checklist: { 1: false, 2: false, 3:false },
     intr_id: null,
+    start_emersion: false,
 
     setImage: function(dir) {
       if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
@@ -235,7 +251,21 @@ var Diver = (function(_super) {
       this.stop();
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
-        parts = app.config.objects.emersion_parts;
+        parts = app.config.objects.emersion_parts,
+        fb = app.config.options.for_ballast,
+        fs = app.config.options.for_star;
+
+      if(!this.start_emersion) {
+        if(this.stars.length === 2) {
+          this.air -= this.stars[0].rating * fs + this.stars[1].rating * fs + fb;
+        } else if(this.stars.length === 1) {
+          this.air -= this.stars[0].rating * fs + fb;
+        } else {
+          this.air -= fb;
+        }
+        this.start_emersion = true;
+      }
+
       this.intr_id = setInterval(function() {
         if(this.y >= app.config.objects.boat) {
           if( eql(this.y, parts[1].y) && !this.checklist[1]) {
@@ -258,6 +288,7 @@ var Diver = (function(_super) {
             }.bind(this), parts[3].time);
           } else {
             this.y --;
+            this.withStar();
           }
         } else {
           this.stop();
@@ -300,6 +331,7 @@ var Diver = (function(_super) {
         this.intr_id = setInterval(function() {
           if(this.x >= star.x) {
             this.x --;
+            this.withStar();
           } else {
             this.stop();
             this.pickUp(star);
@@ -310,6 +342,7 @@ var Diver = (function(_super) {
         this.intr_id = setInterval(function() {
           if(this.x <= star.x) {
             this.x ++;
+            this.withStar();
           } else {
             this.stop();
             this.pickUp(star);
@@ -329,6 +362,7 @@ var Diver = (function(_super) {
         this.intr_id = setInterval(function() {
           if(this.x <= home) {
             this.x ++;
+            this.withStar();
           } else {
             this.stop();
             this.emersion();
@@ -339,6 +373,7 @@ var Diver = (function(_super) {
         this.intr_id = setInterval(function() {
           if(this.x >= home) {
             this.x --;
+            this.withStar();
           } else {
             this.stop();
             this.emersion();
@@ -376,6 +411,25 @@ var Diver = (function(_super) {
       app.stars.splice(star_ind, 1);
       this.stars.push(star);
       this.goHome();
+    },
+
+    drop: function(star) {
+      if(typeof(star) === 'number' && this.stars.find(star)) {
+        star = this.stars.find(star);
+      }
+      star_ind = this.stars.indexOf(star);
+      this.stars.splice(star_ind, 1);
+      app.stars.push(star);
+      star.fall();
+    },
+
+    withStar: function() {
+      if(this.stars.length) {
+        for (var i = 0; i < this.stars.length; ++i) {
+          this.stars[i].x = this.x + i * 10;
+          this.stars[i].y = this.y;
+        };
+      }
     }
   });
 
