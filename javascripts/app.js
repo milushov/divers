@@ -88,8 +88,13 @@ function App(debug) {
       this.stars[i].draw();
     }
 
-    for (var j = 0; j < this.divers.length; ++j) {
-      this.divers[j].draw();
+    for (var i = 0; i < this.divers.length; ++i) {
+      this.divers[i].draw();
+      if(this.divers[i].stars.length !== 0) {
+        for (var j = 0; j < this.divers[i].stars.length; j++) {
+          this.divers[i].stars[j].draw();
+        }
+      }
     }
   };
   
