@@ -18,17 +18,17 @@ function App(debug) {
     },
 
     objects: {
-      bottom: 0,
-      rope: 0,
-      boat: 170,
+      bottom: 0, // y coord of bottom
+      rope: 0, // x coord of rope
+      boat: 170, // y coord of boat 
       emersion_parts: null
     },
 
     options: {
-      for_star: .05,
-      for_ballast: .05,
-      air_diver: 20,
-      air_compressor: 3
+      for_star: .05, // the amount of air, which need for emersing with star
+      for_ballast: .05, // ... which need for compensation balast
+      air_diver: 20, // the amount of air in diver's ballone (in litres)
+      air_compressor: 3 // the amount of air per second (in litres)
     }
   };
 
