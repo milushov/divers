@@ -72,6 +72,12 @@ function App(debug) {
     this.divers = new Array();
     this.stars = new Array();
     this.boat = new Array();
+    this.stars_on_board = 0;
+    this.stars_rating = 0;
+    this.info = {
+      rating: $('#rating'),
+      count: $('#count')
+    };
   };
 
   this.addDiver = function() {
@@ -146,7 +152,12 @@ function App(debug) {
         }
       }
     }.bind(this), 1000); 
-  }
+  };
+
+  this.updateRatin = function() {
+    this.info.rating.innerHTML = this.stars_rating;
+    this.info.count.innerHTML = this.stars_on_board;
+  };
 
   this.load = function(act) { /* if set act we skip loading */
     if(act || __images.length === 0) return false;
@@ -334,6 +345,7 @@ var Diver = (function(_super) {
         } else {
           this.stop();
           app.boat.push(this);
+          this.dump();
         }
       }.bind(this), interval);
     },
@@ -463,6 +475,16 @@ var Diver = (function(_super) {
       this.stars.splice(star_ind, 1);
       app.stars.push(star);
       star.fall();
+    },
+
+    dump: function() {
+      if(this.stars.length) {
+        for(var i = 0; i < this.stars.length; ++i) {
+          app.stars_on_board ++;
+          app.stars_rating += this.stars[i].rating;
+        }
+      }
+      app.updateRatin();
     },
 
     withStar: function() {
