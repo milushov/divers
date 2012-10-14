@@ -483,6 +483,7 @@ var Diver = (function(_super) {
           app.stars_on_board ++;
           app.stars_rating += this.stars[i].rating;
         }
+        this.stars = []; // FIXME
       }
       app.updateRatin();
     },
