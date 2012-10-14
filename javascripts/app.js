@@ -21,6 +21,11 @@ function App(debug) {
       rope: 0,
       boat: 170,
       emersion_parts: null
+    },
+
+    options: {
+      for_star: .05,
+      for_ballast: .05
     }
   };
 
@@ -212,6 +217,7 @@ var Diver = (function(_super) {
     stars: [],
     checklist: { 1: false, 2: false, 3:false },
     intr_id: null,
+    start_emersion: false,
 
     setImage: function(dir) {
       if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
@@ -245,7 +251,21 @@ var Diver = (function(_super) {
       this.stop();
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
-        parts = app.config.objects.emersion_parts;
+        parts = app.config.objects.emersion_parts,
+        fb = app.config.options.for_ballast,
+        fs = app.config.options.for_star;
+
+      if(!this.start_emersion) {
+        if(this.stars.length === 2) {
+          this.air -= this.stars[0].rating * fs + this.stars[1].rating * fs + fb;
+        } else if(this.stars.length === 1) {
+          this.air -= this.stars[0].rating * fs + fb;
+        } else {
+          this.air -= fb;
+        }
+        this.start_emersion = true;
+      }
+
       this.intr_id = setInterval(function() {
         if(this.y >= app.config.objects.boat) {
           if( eql(this.y, parts[1].y) && !this.checklist[1]) {
