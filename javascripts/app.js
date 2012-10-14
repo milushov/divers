@@ -68,8 +68,6 @@ function App(debug) {
 
     this.divers = new Array();
     this.stars = new Array();
-
-    //TODO make buttons
   };
 
   this.addDiver = function() {
