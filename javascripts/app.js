@@ -3,9 +3,6 @@ window.onload = function() {
   app.init();
   app.load();
   app.animate();
-  /* this is NOT jQuery :-) */
-  $('#add-diver').addEventListener('click', function(){ app.addDiver.apply(app) } );
-  $('#delete-diver').addEventListener('click', function(){ app.deleteDiver.apply(app) } );
 };
 
 function App(debug) {
@@ -41,6 +38,14 @@ function App(debug) {
       2: { y: objs.bottom - emersion_height * 2/3, time: 10000 },
       3: { y: objs.bottom - emersion_height * 4/5, time: 15000 }
     }
+
+    /* this is NOT jQuery :-) */
+    $('#add-diver').addEventListener('click',
+      function(){ app.addDiver.apply(this) }
+    );
+    $('#delete-diver').addEventListener('click',
+      function(){ app.deleteDiver.apply(this) }
+    );
 
     this.canvas.addEventListener('selectstart', function(e) {
       e.preventDefault();
