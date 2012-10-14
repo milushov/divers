@@ -242,8 +242,9 @@ var Star = (function(_super) {
       var startX = this.x;
       var position = this.x;
       var amplitude = Math.round(Math.random()*10+3);
+      var rand_botton = app.config.objects.bottom + Math.round(Math.random()*20)-10;
       var intr = setInterval(function() {
-        if(this.y <= app.config.objects.bottom) {
+        if(this.y <= rand_botton) {
           startX += .1;
           this.x = position + Math.sin(startX) * amplitude;
           this.y ++;
