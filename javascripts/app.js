@@ -294,7 +294,7 @@ var Diver = (function(_super) {
       var star = app.stars.find(id);
       var speed = app.config.speed.diver;
       var interval = 1000 / speed;
-      if(this._left(star)) {
+      if(this._star_left(star)) {
         this.setImage('left');
         this.intr_id = setInterval(function() {
           if(this.x >= star.x) {
@@ -342,7 +342,7 @@ var Diver = (function(_super) {
       }
     },
 
-    _left: function(star) {
+    _star_left: function(star) {
       if(this.x > star.x) {
         return true;
       } else {
