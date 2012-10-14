@@ -34,7 +34,7 @@ function App(debug) {
     this.ctx = this.canvas.getContext('2d');
     var objs = this.config.objects;
     objs.bottom = this.canvas.height - 70;
-    objs.rope = this.canvas.width - 100;
+    objs.rope = this.canvas.width - 150;
     var emersion_height = objs.bottom - objs.boat;
     objs.emersion_parts = {
       1: { y: objs.bottom - emersion_height * 1/3, time: 5000 },
@@ -315,8 +315,43 @@ var Diver = (function(_super) {
       }
     },
 
+    goHome: function(id) {
+      this.stop();
+      var star = app.stars.find(id);
+      var speed = app.config.speed.diver;
+      var interval = 1000 / speed;
+      var home = app.config.objects.rope;
+      if(this._home_right()) {
+        this.setImage('right');
+        this.intr_id = setInterval(function() {
+          if(this.x <= home) {
+            this.x ++;
+          } else {
+            clearInterval(this.intr_id);
+          }
+        }.bind(this), interval);
+      } else {
+        this.setImage('left');
+        this.intr_id = setInterval(function() {
+          if(this.x >= home) {
+            this.x --;
+          } else {
+            clearInterval(this.intr_id);
+          }
+        }.bind(this), interval);
+      }
+    },
+
     _left: function(star) {
       if(this.x > star.x) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    _home_right: function() {
+      if(this.x < app.config.objects.rope) {
         return true;
       } else {
         return false;
