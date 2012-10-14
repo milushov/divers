@@ -53,8 +53,8 @@ function App(debug) {
     }, false);
 
     this.canvas.addEventListener('mousedown', function(event) {
-      var x = event.x;
-      var y = event.y;
+      var x = event.layerX;
+      var y = event.layerY;
       var rating = Math.round(Math.random()*9+1);
       var new_star = new Star(x, y, 46, 43);
       new_star.setImage(rating);
