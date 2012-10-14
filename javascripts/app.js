@@ -60,14 +60,9 @@ function App(debug) {
       return false;
     }, false);
 
-    this.canvas.addEventListener('mousedown', function(event) {
-      var x = event.layerX;
-      var y = event.layerY;
-      var rating = Math.round(Math.random()*9+1);
-      var new_star = new Star(x, y, 46, 43);
-      new_star.setImage(rating);
-      app.stars.push(new_star);
-    });
+    this.canvas.addEventListener('mousedown',
+      this.addStar.bind(this)
+    );
 
     this.divers = new Array();
     this.stars = new Array();
@@ -78,6 +73,15 @@ function App(debug) {
       rating: $('#rating'),
       count: $('#count')
     };
+  };
+
+  this.addStar = function(event) {
+    var x = event.layerX;
+    var y = event.layerY;
+    var rating = Math.round(Math.random()*9+1);
+    var new_star = new Star(x, y, 46, 43);
+    new_star.setImage(rating);
+    app.stars.push(new_star);
   };
 
   this.addDiver = function() {
