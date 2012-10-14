@@ -86,3 +86,12 @@ __id = 0;
 function getId() {
   return ++__id;
 }
+
+
+function isDebug() {
+  if(document.location.hostname === 'milushov.ru') {
+    return false;
+  } else {
+    return true;
+  }
+}

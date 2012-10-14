@@ -1,5 +1,5 @@
 window.onload = function() {
-  app = new App(true); // parametr true enables debug mode
+  app = new App(isDebug()); // parametr true enables debug mode
   app.init();
   app.load();
   app.animate();
