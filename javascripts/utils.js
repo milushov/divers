@@ -68,3 +68,21 @@ function wwh() {
 function eql(a, b) {
   return parseInt(a) == parseInt(b);
 }
+
+
+if(!Array.prototype.find) {
+  Array.prototype.find = function(id) {
+    var ret = false;
+    for (var i = 0; i < this.length; ++i) {
+      if(this[i].id === id) {
+        ret = this[i];
+      }
+    }
+    return ret;
+  };
+}
+
+__id = 0;
+function getId() {
+  return ++__id;
+}

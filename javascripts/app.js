@@ -67,6 +67,7 @@ function App(debug) {
     var y = app.config.objects.boat;
     var new_diver = new Diver(x, y);
     new_diver.setImage('up');
+    new_diver.ducking();
     new_diver.breathe();
     app.divers.push(new_diver);
   };
@@ -120,11 +121,13 @@ function App(debug) {
 
 var Thing = (function() {
   function Thing(x, y) {
+    this.id = getId();
     this.x = x;
     this.y = y;
   };
 
   Object.extend(Thing.prototype, {
+    id: null,
     x: 0,
     y: 0,
     draw: function() {
@@ -154,7 +157,7 @@ var Star = (function(_super) {
         this.rating = rating;
         this.image = new Image();
         this.image.src = 'images/stars/tf-star' + rating + '.png';
-          this.image.onload = function() {
+        this.image.onload = function() {
           this.x = this.x - this.width / 2
           this.y = this.y - this.height / 2
           app.ctx.drawImage(this.image, this.x, this.y);
@@ -208,10 +211,9 @@ var Diver = (function(_super) {
         this.image = new Image();
         this.image.src = 'images/divers/' + this.dir + '.png';
         this.image.onload = function() {
-          this.x = this.x - this.width / 2
-          this.y = this.y - this.height / 2
+          //this.x = this.x - this.width / 2
+          //this.y = this.y - this.height / 2
           app.ctx.drawImage(this.image, this.x, this.y);
-          this.ducking();
       }.bind(this) // bind context of star object to onload handler
     },
 
@@ -231,13 +233,12 @@ var Diver = (function(_super) {
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
         parts = app.config.objects.emersion_parts;
-      console.log(parts);
       var intr = setInterval(function() {
         if(this.y >= app.config.objects.boat) {
           if( eql(this.y, parts[1].y) && !this.checklist[1]) {
-            clearInterval(intr);
+            clearinterval(intr);
             this.checklist[1] = true;
-            intr = setInterval(function(){
+            intr = setinterval(function(){
               this.emersion();
             }.bind(this), parts[1].time);
           } else if( eql(this.y, parts[2].y) && !this.checklist[2]) {
@@ -283,6 +284,39 @@ var Diver = (function(_super) {
           console.log('diver died..');
         }
       }.bind(this), interval);
+    },
+
+    goToStar: function(id) {
+      var star = app.stars.find(id);
+      var speed = app.config.speed.diver;
+      var interval = 1000 / speed;
+      if(this._left(star)) {
+        this.setImage('left');
+        var intr = setInterval(function() {
+          if(this.x >= star.x) {
+            this.x --;
+          } else {
+            clearInterval(intr);
+          }
+        }.bind(this), interval);
+      } else {
+        this.setImage('right');
+        var intr = setInterval(function() {
+          if(this.x <= star.x) {
+            this.x ++;
+          } else {
+            clearInterval(intr);
+          }
+        }.bind(this), interval);
+      }
+    },
+
+    _left: function(star) {
+      if(this.x > star.x) {
+        return true;
+      } else {
+        return false;
+      }
     }
   });
 
