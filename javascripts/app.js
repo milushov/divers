@@ -3,6 +3,7 @@ window.onload = function() {
   app.init();
   app.load();
   app.animate();
+  app.compressor();
 };
 
 function App(debug) {
@@ -25,7 +26,9 @@ function App(debug) {
 
     options: {
       for_star: .05,
-      for_ballast: .05
+      for_ballast: .05,
+      air_diver: 20,
+      air_compressor: 3
     }
   };
 
@@ -68,6 +71,7 @@ function App(debug) {
 
     this.divers = new Array();
     this.stars = new Array();
+    this.boat = new Array();
   };
 
   this.addDiver = function() {
@@ -104,6 +108,45 @@ function App(debug) {
   this.clear = function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   };
+
+  this.compressor = function() {
+    var air_diver = app.config.options.air_diver,
+      air_compressor = app.config.options.air_compressor,
+      diver = null,
+      need_air = null,
+      rest_first = null,
+      rest_last = null;
+
+    var intr = setInterval(function() {
+      if(this.boat.length !== 0) {
+        diver = this.boat[0];
+        need_air = air_diver - diver.air;
+
+        if(need_air >= air_compressor) {
+          diver.air += air_compressor;
+        } else {
+          rest_first = air_compressor - need_air;
+          rest_last = air_compressor - rest_first;
+          diver.air += rest_first;
+
+          // throw out diver overboard
+          this.boat.splice(0, 1);
+          diver.setImage('up');
+          diver.ducking();
+          diver.breathe();
+
+          // give the rest part of air to next diver if he is on the board
+          if(this.boat.length !== 0) {
+            diver = this.boat[0];
+            need_air = air_diver - diver.air;
+            if(need_air <= rest_last) {
+              diver.air += rest_last;
+            }
+          }
+        }
+      }
+    }.bind(this), 1000); 
+  }
 
   this.load = function(act) { /* if set act we skip loading */
     if(act || __images.length === 0) return false;
@@ -290,6 +333,7 @@ var Diver = (function(_super) {
           }
         } else {
           this.stop();
+          app.boat.push(this);
         }
       }.bind(this), interval);
     },
