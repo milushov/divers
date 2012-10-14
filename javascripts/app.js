@@ -201,6 +201,7 @@ var Diver = (function(_super) {
     air: 20,
     stars: [],
     checklist: { 1: false, 2: false, 3:false },
+    intr_id: null,
 
     setImage: function(dir) {
       if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
@@ -218,37 +219,39 @@ var Diver = (function(_super) {
     },
 
     ducking: function() {
+      this.stop();
       var speed = app.config.speed.diver;
       var interval = 1000 / speed;
-      var intr = setInterval(function() {
+      this.intr_id = setInterval(function() {
         if(this.y <= app.config.objects.bottom) {
           this.y ++;
         } else {
-          clearInterval(intr);
+          clearInterval(this.intr_id);
         }
       }.bind(this), interval);
     },
 
     emersion: function() {
+      this.stop();
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
         parts = app.config.objects.emersion_parts;
-      var intr = setInterval(function() {
+      this.intr_id = setInterval(function() {
         if(this.y >= app.config.objects.boat) {
           if( eql(this.y, parts[1].y) && !this.checklist[1]) {
-            clearinterval(intr);
+            clearInterval(this.intr_id);
             this.checklist[1] = true;
-            intr = setinterval(function(){
+            intr = setInterval(function(){
               this.emersion();
             }.bind(this), parts[1].time);
           } else if( eql(this.y, parts[2].y) && !this.checklist[2]) {
-            clearInterval(intr);
+            clearInterval(this.intr_id);
             this.checklist[2] = true;
             intr = setInterval(function(){
               this.emersion();
             }.bind(this), parts[2].time);
           } else if( eql(this.y, parts[3].y) && !this.checklist[3]) {
-            clearInterval(intr);
+            clearInterval(this.intr_id);
             this.checklist[3] = true;
             intr = setInterval(function(){
               this.emersion();
@@ -257,7 +260,7 @@ var Diver = (function(_super) {
             this.y --;
           }
         } else {
-          clearInterval(intr);
+          clearInterval(this.intr_id);
         }
       }.bind(this), interval);
     },
@@ -287,25 +290,26 @@ var Diver = (function(_super) {
     },
 
     goToStar: function(id) {
+      this.stop();
       var star = app.stars.find(id);
       var speed = app.config.speed.diver;
       var interval = 1000 / speed;
       if(this._left(star)) {
         this.setImage('left');
-        var intr = setInterval(function() {
+        this.intr_id = setInterval(function() {
           if(this.x >= star.x) {
             this.x --;
           } else {
-            clearInterval(intr);
+            clearInterval(this.intr_id);
           }
         }.bind(this), interval);
       } else {
         this.setImage('right');
-        var intr = setInterval(function() {
+        this.intr_id = setInterval(function() {
           if(this.x <= star.x) {
             this.x ++;
           } else {
-            clearInterval(intr);
+            clearInterval(this.intr_id);
           }
         }.bind(this), interval);
       }
@@ -317,6 +321,11 @@ var Diver = (function(_super) {
       } else {
         return false;
       }
+    },
+
+    stop: function() {
+      clearInterval(this.intr_id);
+      this.intr_id = null;
     }
   });
 
