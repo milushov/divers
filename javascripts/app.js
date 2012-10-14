@@ -237,12 +237,13 @@ var Star = (function(_super) {
     },
 
     fall: function() {
-      var speed = app.config.speed.star;
-      var interval = 1000 / speed;
-      var startX = this.x;
-      var position = this.x;
-      var amplitude = Math.round(Math.random()*10+3);
-      var rand_botton = app.config.objects.bottom + Math.round(Math.random()*20)-10;
+      var speed = app.config.speed.star,
+        interval = 1000 / speed,
+        startX = this.x,
+        position = this.x,
+        amplitude = Math.round(Math.random()*10+3),
+        rand_botton = app.config.objects.bottom +
+        Math.round(Math.random()*20)-10;
       var intr = setInterval(function() {
         if(this.y <= rand_botton) {
           startX += .1;
