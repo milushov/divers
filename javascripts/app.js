@@ -1,5 +1,5 @@
 window.onload = function() {
-  app = new App(true); // parametr true enables debug mode
+  app = new App(isDebug()); // parametr true enables debug mode
   app.init();
   app.load();
   app.animate();
@@ -13,14 +13,17 @@ function App(debug) {
 
   this.config = {
     speed: {
-      star: 80,
-      diver: 20
+      star: debug ? 350 : 80,
+      diver: debug ? 200 : 20,
+      air: .05,
+      air_speed_with_star: .001
     },
 
     objects: {
       bottom: 0,
       rope: 0,
-      boat: 170
+      boat: 170,
+      emersion_parts: null
     }
   };
 
@@ -29,8 +32,15 @@ function App(debug) {
 
     this.canvas = document.getElementById('app');
     this.ctx = this.canvas.getContext('2d');
-    this.config.objects.bottom = this.canvas.height - 70;
-    this.config.objects.rope = this.canvas.width - 100;
+    var objs = this.config.objects;
+    objs.bottom = this.canvas.height - 70;
+    objs.rope = this.canvas.width - 150;
+    var emersion_height = objs.bottom - objs.boat;
+    objs.emersion_parts = {
+      1: { y: objs.bottom - emersion_height * 1/3, time: 5000 },
+      2: { y: objs.bottom - emersion_height * 2/3, time: 10000 },
+      3: { y: objs.bottom - emersion_height * 4/5, time: 15000 }
+    }
 
     this.canvas.addEventListener('selectstart', function(e) {
       e.preventDefault();
@@ -57,6 +67,8 @@ function App(debug) {
     var y = app.config.objects.boat;
     var new_diver = new Diver(x, y);
     new_diver.setImage('up');
+    new_diver.ducking();
+    new_diver.breathe();
     app.divers.push(new_diver);
   };
 
@@ -92,7 +104,6 @@ function App(debug) {
     cover.style.width = wwh[0]+'px';
     cover.style.height = wwh[1]+'px';
     $('body').appendChild(cover);
-    console.log(cover);
 
     for (var i = 0; i < images.length; ++i) {
       var img = new Image();
@@ -110,11 +121,13 @@ function App(debug) {
 
 var Thing = (function() {
   function Thing(x, y) {
+    this.id = getId();
     this.x = x;
     this.y = y;
   };
 
   Object.extend(Thing.prototype, {
+    id: null,
     x: 0,
     y: 0,
     draw: function() {
@@ -144,7 +157,7 @@ var Star = (function(_super) {
         this.rating = rating;
         this.image = new Image();
         this.image.src = 'images/stars/tf-star' + rating + '.png';
-          this.image.onload = function() {
+        this.image.onload = function() {
           this.x = this.x - this.width / 2
           this.y = this.y - this.height / 2
           app.ctx.drawImage(this.image, this.x, this.y);
@@ -155,7 +168,6 @@ var Star = (function(_super) {
     fall: function() {
       var speed = app.config.speed.star;
       var interval = 1000 / speed;
-      var dy = speed/interval;
       var startX = this.x;
       var position = this.x;
       var amplitude = Math.round(Math.random()*10+3);
@@ -186,6 +198,10 @@ var Diver = (function(_super) {
     width: 46,
     height: 73,
     dirs: ['up', 'left', 'right'],
+    air: 20,
+    stars: [],
+    checklist: { 1: false, 2: false, 3:false },
+    intr_id: null,
 
     setImage: function(dir) {
       if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
@@ -196,24 +212,170 @@ var Diver = (function(_super) {
         this.image = new Image();
         this.image.src = 'images/divers/' + this.dir + '.png';
         this.image.onload = function() {
-          this.x = this.x - this.width / 2
-          this.y = this.y - this.height / 2
+          //this.x = this.x - this.width / 2
+          //this.y = this.y - this.height / 2
           app.ctx.drawImage(this.image, this.x, this.y);
-          this.ducking();
       }.bind(this) // bind context of star object to onload handler
     },
 
     ducking: function() {
+      this.stop();
       var speed = app.config.speed.diver;
       var interval = 1000 / speed;
-      var dy = speed/interval;
-      var intr = setInterval(function() {
+      this.intr_id = setInterval(function() {
         if(this.y <= app.config.objects.bottom) {
           this.y ++;
         } else {
-          clearInterval(intr);
+          this.stop();
         }
       }.bind(this), interval);
+    },
+
+    emersion: function() {
+      this.stop();
+      var speed = app.config.speed.diver,
+        interval = 1000 / speed,
+        parts = app.config.objects.emersion_parts;
+      this.intr_id = setInterval(function() {
+        if(this.y >= app.config.objects.boat) {
+          if( eql(this.y, parts[1].y) && !this.checklist[1]) {
+            clearInterval(this.intr_id);
+            this.checklist[1] = true;
+            intr = setInterval(function(){
+              this.emersion();
+            }.bind(this), parts[1].time);
+          } else if( eql(this.y, parts[2].y) && !this.checklist[2]) {
+            clearInterval(this.intr_id);
+            this.checklist[2] = true;
+            intr = setInterval(function(){
+              this.emersion();
+            }.bind(this), parts[2].time);
+          } else if( eql(this.y, parts[3].y) && !this.checklist[3]) {
+            clearInterval(this.intr_id);
+            this.checklist[3] = true;
+            intr = setInterval(function(){
+              this.emersion();
+            }.bind(this), parts[3].time);
+          } else {
+            this.y --;
+          }
+        } else {
+          this.stop();
+        }
+      }.bind(this), interval);
+    },
+
+    breathe: function() {
+      var speed = app.config.speed.air,
+        interval = 1000,
+        asws = app.config.speed.air_speed_with_star;
+      var intr = setInterval( function() {
+        if(this.air >= 0) {
+          if(this.stars.length === 2) {
+            this.air -= speed +
+              this.stars[0].rating * asws +
+              this.stars[1].rating * asws;
+          } else if(this.stars.length === 1) {
+            this.air -= speed +
+              this.stars[0].rating * asws;
+          } else if(this.stars.length === 0) {
+            this.air -= speed;
+          } else {
+            throw { message: 'diver have too much stars on hands', code: 3 }
+          }
+        } else {
+          clearInterval(intr);
+          console.log('diver died..');
+        }
+      }.bind(this), interval);
+    },
+
+    goToStar: function(id) {
+      this.stop();
+      var star = app.stars.find(id);
+      var speed = app.config.speed.diver;
+      var interval = 1000 / speed;
+      if(this._star_left(star)) {
+        this.setImage('left');
+        this.intr_id = setInterval(function() {
+          if(this.x >= star.x) {
+            this.x --;
+          } else {
+            this.stop();
+            this.pickUp(star);
+          }
+        }.bind(this), interval);
+      } else {
+        this.setImage('right');
+        this.intr_id = setInterval(function() {
+          if(this.x <= star.x) {
+            this.x ++;
+          } else {
+            this.stop();
+            this.pickUp(star);
+          }
+        }.bind(this), interval);
+      }
+    },
+
+    goHome: function(id) {
+      this.stop();
+      var star = app.stars.find(id);
+      var speed = app.config.speed.diver;
+      var interval = 1000 / speed;
+      var home = app.config.objects.rope;
+      if(this._home_right()) {
+        this.setImage('right');
+        this.intr_id = setInterval(function() {
+          if(this.x <= home) {
+            this.x ++;
+          } else {
+            this.stop();
+            this.emersion();
+          }
+        }.bind(this), interval);
+      } else {
+        this.setImage('left');
+        this.intr_id = setInterval(function() {
+          if(this.x >= home) {
+            this.x --;
+          } else {
+            this.stop();
+            this.emersion();
+          }
+        }.bind(this), interval);
+      }
+    },
+
+    _star_left: function(star) {
+      if(this.x > star.x) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    _home_right: function() {
+      if(this.x < app.config.objects.rope) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    stop: function() {
+      clearInterval(this.intr_id);
+      this.intr_id = null;
+    },
+
+    pickUp: function(star) {
+      if(typeof(star) === 'number' && app.stars.find(star)) {
+        star = app.stars.find(star);
+      }
+      star_ind = app.stars.indexOf(star);
+      app.stars.splice(star_ind, 1);
+      this.stars.push(star);
+      this.goHome();
     }
   });
 
