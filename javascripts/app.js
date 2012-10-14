@@ -268,6 +268,7 @@ var Diver = (function(_super) {
             }.bind(this), parts[3].time);
           } else {
             this.y --;
+            this.withStar();
           }
         } else {
           this.stop();
@@ -310,6 +311,7 @@ var Diver = (function(_super) {
         this.intr_id = setInterval(function() {
           if(this.x >= star.x) {
             this.x --;
+            this.withStar();
           } else {
             this.stop();
             this.pickUp(star);
@@ -320,6 +322,7 @@ var Diver = (function(_super) {
         this.intr_id = setInterval(function() {
           if(this.x <= star.x) {
             this.x ++;
+            this.withStar();
           } else {
             this.stop();
             this.pickUp(star);
@@ -339,6 +342,7 @@ var Diver = (function(_super) {
         this.intr_id = setInterval(function() {
           if(this.x <= home) {
             this.x ++;
+            this.withStar();
           } else {
             this.stop();
             this.emersion();
@@ -349,6 +353,7 @@ var Diver = (function(_super) {
         this.intr_id = setInterval(function() {
           if(this.x >= home) {
             this.x --;
+            this.withStar();
           } else {
             this.stop();
             this.emersion();
@@ -386,6 +391,15 @@ var Diver = (function(_super) {
       app.stars.splice(star_ind, 1);
       this.stars.push(star);
       this.goHome();
+    },
+
+    withStar: function() {
+      if(this.stars.length) {
+        for (var i = 0; i < this.stars.length; ++i) {
+          this.stars[i].x = this.x + i * 10;
+          this.stars[i].y = this.y;
+        };
+      }
     }
   });
 
