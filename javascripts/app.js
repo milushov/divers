@@ -393,6 +393,16 @@ var Diver = (function(_super) {
       this.goHome();
     },
 
+    drop: function(star) {
+      if(typeof(star) === 'number' && this.stars.find(star)) {
+        star = this.stars.find(star);
+      }
+      star_ind = this.stars.indexOf(star);
+      this.stars.splice(star_ind, 1);
+      app.stars.push(star);
+      star.fall();
+    },
+
     withStar: function() {
       if(this.stars.length) {
         for (var i = 0; i < this.stars.length; ++i) {
