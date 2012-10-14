@@ -226,7 +226,7 @@ var Diver = (function(_super) {
         if(this.y <= app.config.objects.bottom) {
           this.y ++;
         } else {
-          clearInterval(this.intr_id);
+          this.stop();
         }
       }.bind(this), interval);
     },
@@ -260,7 +260,7 @@ var Diver = (function(_super) {
             this.y --;
           }
         } else {
-          clearInterval(this.intr_id);
+          this.stop();
         }
       }.bind(this), interval);
     },
@@ -284,6 +284,7 @@ var Diver = (function(_super) {
             throw { message: 'diver have too much stars on hands', code: 3 }
           }
         } else {
+          clearInterval(intr);
           console.log('diver died..');
         }
       }.bind(this), interval);
@@ -300,7 +301,8 @@ var Diver = (function(_super) {
           if(this.x >= star.x) {
             this.x --;
           } else {
-            clearInterval(this.intr_id);
+            this.stop();
+            this.pickUp(star);
           }
         }.bind(this), interval);
       } else {
@@ -309,7 +311,8 @@ var Diver = (function(_super) {
           if(this.x <= star.x) {
             this.x ++;
           } else {
-            clearInterval(this.intr_id);
+            this.stop();
+            this.pickUp(star);
           }
         }.bind(this), interval);
       }
@@ -327,7 +330,8 @@ var Diver = (function(_super) {
           if(this.x <= home) {
             this.x ++;
           } else {
-            clearInterval(this.intr_id);
+            this.stop();
+            this.emersion();
           }
         }.bind(this), interval);
       } else {
@@ -336,7 +340,8 @@ var Diver = (function(_super) {
           if(this.x >= home) {
             this.x --;
           } else {
-            clearInterval(this.intr_id);
+            this.stop();
+            this.emersion();
           }
         }.bind(this), interval);
       }
@@ -361,6 +366,16 @@ var Diver = (function(_super) {
     stop: function() {
       clearInterval(this.intr_id);
       this.intr_id = null;
+    },
+
+    pickUp: function(star) {
+      if(typeof(star) === 'number' && app.stars.find(star)) {
+        star = app.stars.find(star);
+      }
+      star_ind = app.stars.indexOf(star);
+      app.stars.splice(star_ind, 1);
+      this.stars.push(star);
+      this.goHome();
     }
   });
 
