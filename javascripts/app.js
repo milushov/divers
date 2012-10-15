@@ -264,15 +264,16 @@ var Diver = (function(_super) {
   extend(Diver, _super);
 
   function Diver() {
+    this.stars = [];
     return Diver.__super__.constructor.apply(this, arguments);
   }
+
 
   Object.extend(Diver.prototype, {
     width: 46,
     height: 73,
     dirs: ['up', 'left', 'right'],
     air: 20,
-    stars: [],
     checklist: { 1: false, 2: false, 3:false },
     intr_id: null,
     start_emersion: false,
