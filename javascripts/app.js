@@ -415,12 +415,11 @@ var Diver = (function(_super) {
       }
     },
 
-    goHome: function(id) {
+    goHome: function() {
       this.stop();
-      var star = app.stars.find(id);
-      var speed = app.config.speed.diver;
-      var interval = 1000 / speed;
-      var home = app.config.objects.rope;
+      var speed = app.config.speed.diver,
+        interval = 1000 / speed,
+        home = app.config.objects.rope;
       if(this._home_right()) {
         this.setImage('right');
         this.intr_id = setInterval(function() {
