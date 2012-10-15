@@ -114,7 +114,7 @@ function App(debug) {
       }
     }
   };
-  
+
   this.clear = function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   };
@@ -158,7 +158,7 @@ function App(debug) {
     }.bind(this), 1000); 
   };
 
-  this.updateRatin = function() {
+  this.updateRating = function() {
     this.info.rating.innerHTML = this.stars_rating;
     this.info.count.innerHTML = this.stars_on_board;
   };
@@ -491,7 +491,7 @@ var Diver = (function(_super) {
         }
         this.stars = []; // FIXME
       }
-      app.updateRatin();
+      app.updateRating();
     },
 
     withStar: function() {
