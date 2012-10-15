@@ -313,6 +313,7 @@ var Diver = (function(_super) {
         fb = app.config.options.for_ballast,
         fs = app.config.options.for_star;
 
+      // compensation star rating
       if(!this.start_emersion) {
         if(this.stars.length === 2) {
           this.air -= this.stars[0].rating * fs + this.stars[1].rating * fs + fb;
@@ -327,21 +328,21 @@ var Diver = (function(_super) {
       this.intr_id = setInterval(function() {
         if(this.y >= app.config.objects.boat) {
           if( eql(this.y, parts[1].y) && !this.checklist[1]) {
-            clearInterval(this.intr_id);
+            this.stop();
             this.checklist[1] = true;
-            intr = setInterval(function(){
+            setInterval(function(){
               this.emersion();
             }.bind(this), parts[1].time);
           } else if( eql(this.y, parts[2].y) && !this.checklist[2]) {
-            clearInterval(this.intr_id);
+            this.stop();
             this.checklist[2] = true;
-            intr = setInterval(function(){
+            setInterval(function(){
               this.emersion();
             }.bind(this), parts[2].time);
           } else if( eql(this.y, parts[3].y) && !this.checklist[3]) {
-            clearInterval(this.intr_id);
+            this.stop();
             this.checklist[3] = true;
-            intr = setInterval(function(){
+            setInterval(function(){
               this.emersion();
             }.bind(this), parts[3].time);
           } else {
