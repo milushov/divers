@@ -265,6 +265,9 @@ var Diver = (function(_super) {
 
   function Diver() {
     this.stars = [];
+    this.checklist = { 1: false, 2: false, 3:false };
+    this.intr_id = null;
+    this.start_emersion = false;
     return Diver.__super__.constructor.apply(this, arguments);
   }
 
@@ -274,9 +277,6 @@ var Diver = (function(_super) {
     height: 73,
     dirs: ['up', 'left', 'right'],
     air: 20,
-    checklist: { 1: false, 2: false, 3:false },
-    intr_id: null,
-    start_emersion: false,
 
     setImage: function(dir) {
       if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
