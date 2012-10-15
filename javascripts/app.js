@@ -265,7 +265,7 @@ var Diver = (function(_super) {
 
   function Diver() {
     return Diver.__super__.constructor.apply(this, arguments);
-  };
+  }
 
   Object.extend(Diver.prototype, {
     width: 46,
