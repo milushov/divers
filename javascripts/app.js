@@ -399,7 +399,7 @@ var Diver = (function(_super) {
             this.withStar();
           } else {
             this.stop();
-            this.pickUp(star);
+            this.pickUp(star.id);
           }
         }.bind(this), interval);
       } else {
@@ -410,7 +410,7 @@ var Diver = (function(_super) {
             this.withStar();
           } else {
             this.stop();
-            this.pickUp(star);
+            this.pickUp(star.id);
           }
         }.bind(this), interval);
       }
@@ -468,8 +468,13 @@ var Diver = (function(_super) {
     },
 
     pickUp: function(star) {
-      if(typeof(star) === 'number' && app.stars.find(star)) {
-        star = app.stars.find(star);
+      if(typeof(star) === 'number') {
+        if(app.stars.find(star)) {
+          star = app.stars.find(star);
+        } else {
+          throw new Error('star not found');
+          return false;
+        }
       }
       star_ind = app.stars.indexOf(star);
       app.stars.splice(star_ind, 1);
