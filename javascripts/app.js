@@ -222,7 +222,7 @@ var Star = (function(_super) {
     height: 43,
     setImage: function(rating) {
       if(typeof rating === 'undefined') {
-          throw { message: 'rating not set', code: 1 }
+          throw new Error('rating not set');
           this.rating = 1;
         }
         this.rating = rating;
@@ -279,7 +279,7 @@ var Diver = (function(_super) {
 
     setImage: function(dir) {
       if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
-          throw { message: 'dir not set', code: 2 }
+          throw new Error('dir not set');
           this.dir = 'up';
         }
         this.dir = dir;
@@ -372,7 +372,7 @@ var Diver = (function(_super) {
           } else if(this.stars.length === 0) {
             this.air -= speed;
           } else {
-            throw { message: 'diver have too much stars on hands', code: 3 }
+            throw new Error('diver have too much stars on hands');
           }
         } else {
           clearInterval(intr);
@@ -384,6 +384,10 @@ var Diver = (function(_super) {
     goToStar: function(id) {
       this.stop();
       var star = app.stars.find(id);
+      if(!star) {
+        throw new Error('star not found');
+        return false;
+      }
       var speed = app.config.speed.diver;
       var interval = 1000 / speed;
       if(this._star_left(star)) {
