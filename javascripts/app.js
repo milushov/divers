@@ -42,9 +42,9 @@ function App(debug) {
     objs.rope = this.canvas.width - 150;
     var emersion_height = objs.bottom - objs.boat;
     objs.emersion_parts = {
-      1: { y: objs.bottom - emersion_height * 1/3, time: 5000 },
-      2: { y: objs.bottom - emersion_height * 2/3, time: 10000 },
-      3: { y: objs.bottom - emersion_height * 4/5, time: 15000 }
+      1: { y: objs.bottom - emersion_height * 1/3, time: debug ? 500 : 5000 },
+      2: { y: objs.bottom - emersion_height * 2/3, time: debug ? 1000 : 10000 },
+      3: { y: objs.bottom - emersion_height * 4/5, time: debug ? 1500 : 15000 }
     }
 
     /* this is NOT jQuery :-) */
