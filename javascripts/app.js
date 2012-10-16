@@ -11,10 +11,10 @@ function App(debug) {
 
   this.config = {
     speed: {
-      star: debug ? 350 : 80,
-      diver: debug ? 200 : 20,
-      air: .05,
-      air_speed_with_star: .001
+      star: debug ? 900 : 80,
+      diver: debug ? 800 : 20,
+      air: debug ? .25 : .05,
+      air_speed_with_star: debug ? .01 : .001
     },
 
     objects: {
@@ -277,6 +277,7 @@ var Diver = (function(_super) {
     height: 73,
     dirs: ['up', 'left', 'right'],
     air: 20,
+    cur_part: 1,
 
     setImage: function(dir) {
       if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
@@ -327,25 +328,18 @@ var Diver = (function(_super) {
       }
 
       this.intr_id = setInterval(function() {
+
+        if(this.checklist[this.cur_part]) {
+          if(this.cur_part < this.checklist.size()) this.cur_part ++;
+        }
+
         if(this.y >= app.config.objects.boat) {
-          if( eql(this.y, parts[1].y) && !this.checklist[1]) {
+          if( eql(this.y, parts[this.cur_part].y) && !this.checklist[this.cur_part] ) {
             this.stop();
-            this.checklist[1] = true;
+            this.checklist[this.cur_part] = true;
             setInterval(function(){
               this.emersion();
-            }.bind(this), parts[1].time);
-          } else if( eql(this.y, parts[2].y) && !this.checklist[2]) {
-            this.stop();
-            this.checklist[2] = true;
-            setInterval(function(){
-              this.emersion();
-            }.bind(this), parts[2].time);
-          } else if( eql(this.y, parts[3].y) && !this.checklist[3]) {
-            this.stop();
-            this.checklist[3] = true;
-            setInterval(function(){
-              this.emersion();
-            }.bind(this), parts[3].time);
+            }.bind(this), parts[this.cur_part].time);
           } else {
             this.y --;
             this.withStar();

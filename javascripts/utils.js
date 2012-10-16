@@ -22,7 +22,6 @@ window.requestAnimFrame = (function(){
 
 var extend = function(child, parent) {
   for (var key in parent) {
-    console.log(key);
     if(parent.hasOwnProperty(key)) child[key] = parent[key];
   }
 
@@ -79,6 +78,16 @@ if(!Array.prototype.find) {
       }
     }
     return ret;
+  };
+}
+
+if(!Object.prototype.size) {
+  Object.prototype.size = function() {
+    var size = 0, key;
+    for (key in this) {
+      if (this.hasOwnProperty(key)) size++;
+    }
+    return size;
   };
 }
 
