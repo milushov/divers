@@ -42,9 +42,9 @@ function App(debug) {
     objs.rope = this.canvas.width - 150;
     var emersion_height = objs.bottom - objs.boat;
     objs.emersion_parts = {
-      1: { y: objs.bottom - emersion_height * 1/3, time: 5000 },
-      2: { y: objs.bottom - emersion_height * 2/3, time: 10000 },
-      3: { y: objs.bottom - emersion_height * 4/5, time: 15000 }
+      1: { y: objs.bottom - emersion_height * 1/3, time: debug ? 500 : 5000 },
+      2: { y: objs.bottom - emersion_height * 2/3, time: debug ? 1000 : 10000 },
+      3: { y: objs.bottom - emersion_height * 4/5, time: debug ? 1500 : 15000 }
     }
 
     /* this is NOT jQuery :-) */
@@ -127,30 +127,31 @@ function App(debug) {
       rest_first = null,
       rest_last = null;
 
-    var intr = setInterval(function() {
+    setInterval(function() {
       if(this.boat.length !== 0) {
         diver = this.boat[0];
-        need_air = air_diver - diver.air;
+        diver.stopBreathe();
+        need_air = air_diver - diver.air; // 20 - 7
 
+        // if diver is need air greater than compressor can generate per one minute
         if(need_air >= air_compressor) {
           diver.air += air_compressor;
         } else {
-          rest_first = air_compressor - need_air;
-          rest_last = air_compressor - rest_first;
-          diver.air += rest_first;
+          rest_air = air_compressor - need_air;
+          diver.air += need_air;
 
           // throw out diver overboard
           this.boat.splice(0, 1);
           diver.setImage('up');
-          diver.ducking();
           diver.breathe();
+          diver.ducking();
 
           // give the rest part of air to next diver if he is on the board
           if(this.boat.length !== 0) {
             diver = this.boat[0];
             need_air = air_diver - diver.air;
-            if(need_air <= rest_last) {
-              diver.air += rest_last;
+            if(need_air <= rest_air) {
+              diver.air += rest_air;
             }
           }
         }
@@ -267,6 +268,7 @@ var Diver = (function(_super) {
     this.stars = [];
     this.checklist = { 1: false, 2: false, 3:false };
     this.intr_id = null;
+    this.breathe_intr_id = null;
     this.start_emersion = false;
     return Diver.__super__.constructor.apply(this, arguments);
   }
@@ -356,7 +358,8 @@ var Diver = (function(_super) {
       var speed = app.config.speed.air,
         interval = 1000,
         asws = app.config.speed.air_speed_with_star;
-      var intr = setInterval( function() {
+      this.breathe_intr_id = setInterval( function() {
+        console.log(this.id + '  ' + this.air);
         if(this.air >= 0) {
           if(this.stars.length === 2) {
             this.air -= speed +
@@ -371,10 +374,17 @@ var Diver = (function(_super) {
             throw new Error('diver have too much stars on hands');
           }
         } else {
-          clearInterval(intr);
-          console.log('diver died..');
+          this.stopBreathe();
+          console.log('diver' + this.id + ' died..');
         }
       }.bind(this), interval);
+    },
+
+    stopBreathe: function() {
+      // i mean stopping breath process only from air balloon of course :-)
+      // i don't want to kill diver
+      clearInterval(this.breathe_intr_id);
+      this.breathe_intr_id = null;
     },
 
     goToStar: function(id) {
