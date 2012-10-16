@@ -478,8 +478,20 @@ var Diver = (function(_super) {
     },
 
     drop: function(star) {
-      if(typeof(star) === 'number' && this.stars.find(star)) {
-        star = this.stars.find(star);
+      if(typeof(star) === 'number') {
+        if(this.stars.find(star)) {
+          star = this.stars.find(star);
+        } else {
+          throw new Error('star not found');
+        }
+      } else if(typeof(star) == 'string') {
+        if(star === 'first') {
+          star = this.stars[0];
+        } else if(star === 'second') {
+          star = this.stars[1];
+        } else {
+          throw new Error('wrong argument');
+        }
       }
       star_ind = this.stars.indexOf(star);
       this.stars.splice(star_ind, 1);
