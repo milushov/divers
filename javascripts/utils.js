@@ -91,6 +91,13 @@ if(!Object.prototype.size) {
   };
 }
 
+
+if(!Array.prototype.last) {
+  Array.prototype.last = function() {
+    return this[this.length - 1];
+  }
+}
+
 __id = 0;
 function getId() {
   return ++__id;

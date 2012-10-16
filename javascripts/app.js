@@ -94,6 +94,15 @@ function App(debug) {
     app.divers.push(new_diver);
   };
 
+  this.deleteDiver = function() {
+    if(app.boat.length !== 0) {
+      last_diver = app.boat.pop();
+      last_diver.stopBreathe();
+      ind = app.divers.indexOf(last_diver);
+      app.divers.splice(ind, 1);
+    }
+  };
+
   this.animate = function() {
     requestAnimFrame(this.animate.bind(this));
     this.clear();
