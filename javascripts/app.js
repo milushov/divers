@@ -4,6 +4,7 @@ window.onload = function() {
   app.load();
   app.animate();
   app.compressor();
+  app.addDiver();
 };
 
 function App(debug) {
