@@ -107,10 +107,17 @@ function App(debug) {
 
     for (var i = 0; i < this.divers.length; ++i) {
       this.divers[i].draw();
+
       if(this.divers[i].stars.length !== 0) {
         for (var j = 0; j < this.divers[i].stars.length; j++) {
           this.divers[i].stars[j].draw();
         }
+      }
+
+      if(this.divers[i].wait) {
+        var d = this.divers[i],
+          w = d.wait;
+        app.ctx.drawImage(w, d.x - 100, d.y - 50);
       }
     }
   };
@@ -339,7 +346,9 @@ var Diver = (function(_super) {
           if( eql(this.y, parts[this.cur_part].y) && !this.checklist[this.cur_part] ) {
             this.stop();
             this.checklist[this.cur_part] = true;
+            this.toggleWaitBubble();
             setTimeout(function(){
+              this.toggleWaitBubble();
               this.emersion();
             }.bind(this), parts[this.cur_part].time);
           } else {
@@ -352,6 +361,15 @@ var Diver = (function(_super) {
           this.dump();
         }
       }.bind(this), interval);
+    },
+
+    toggleWaitBubble: function() {
+      if(this.wait) {
+        this.wait = null;
+      } else {
+        this.wait = new Image();
+        this.wait.src = 'images/thought.png';
+      }
     },
 
     breathe: function() {
