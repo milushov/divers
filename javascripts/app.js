@@ -337,7 +337,7 @@ var Diver = (function(_super) {
           if( eql(this.y, parts[this.cur_part].y) && !this.checklist[this.cur_part] ) {
             this.stop();
             this.checklist[this.cur_part] = true;
-            setInterval(function(){
+            setTimeout(function(){
               this.emersion();
             }.bind(this), parts[this.cur_part].time);
           } else {
