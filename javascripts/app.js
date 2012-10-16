@@ -3,6 +3,7 @@ window.onload = function() {
   app.init();
   app.load();
   app.animate();
+  app.compressor();
 };
 
 function App(debug) {
@@ -10,22 +11,24 @@ function App(debug) {
 
   this.config = {
     speed: {
-      star: debug ? 350 : 80,
-      diver: debug ? 200 : 20,
-      air: .05,
-      air_speed_with_star: .001
+      star: debug ? 900 : 80,
+      diver: debug ? 800 : 20,
+      air: debug ? .25 : .05,
+      air_speed_with_star: debug ? .01 : .001
     },
 
     objects: {
-      bottom: 0,
-      rope: 0,
-      boat: 170,
+      bottom: 0, // y coord of bottom
+      rope: 0, // x coord of rope
+      boat: 170, // y coord of boat 
       emersion_parts: null
     },
 
     options: {
-      for_star: .05,
-      for_ballast: .05
+      for_star: .05, // the amount of air, which need for emersing with star
+      for_ballast: .05, // ... which need for compensation balast
+      air_diver: 20, // the amount of air in diver's ballone (in litres)
+      air_compressor: 3 // the amount of air per second (in litres)
     }
   };
 
@@ -57,19 +60,28 @@ function App(debug) {
       return false;
     }, false);
 
-    this.canvas.addEventListener('mousedown', function(event) {
-      var x = event.layerX;
-      var y = event.layerY;
-      var rating = Math.round(Math.random()*9+1);
-      var new_star = new Star(x, y, 46, 43);
-      new_star.setImage(rating);
-      app.stars.push(new_star);
-    });
+    this.canvas.addEventListener('mousedown',
+      this.addStar.bind(this)
+    );
 
     this.divers = new Array();
     this.stars = new Array();
+    this.boat = new Array();
+    this.stars_on_board = 0;
+    this.stars_rating = 0;
+    this.info = {
+      rating: $('#rating'),
+      count: $('#count')
+    };
+  };
 
-    //TODO make buttons
+  this.addStar = function(event) {
+    var x = event.layerX;
+    var y = event.layerY;
+    var rating = Math.round(Math.random()*9+1);
+    var new_star = new Star(x, y, 46, 43);
+    new_star.setImage(rating);
+    app.stars.push(new_star);
   };
 
   this.addDiver = function() {
@@ -102,9 +114,53 @@ function App(debug) {
       }
     }
   };
-  
+
   this.clear = function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  };
+
+  this.compressor = function() {
+    var air_diver = app.config.options.air_diver,
+      air_compressor = app.config.options.air_compressor,
+      diver = null,
+      need_air = null,
+      rest_first = null,
+      rest_last = null;
+
+    var intr = setInterval(function() {
+      if(this.boat.length !== 0) {
+        diver = this.boat[0];
+        need_air = air_diver - diver.air;
+
+        if(need_air >= air_compressor) {
+          diver.air += air_compressor;
+        } else {
+          rest_first = air_compressor - need_air;
+          rest_last = air_compressor - rest_first;
+          diver.air += rest_first;
+
+          // throw out diver overboard
+          this.boat.splice(0, 1);
+          diver.setImage('up');
+          diver.ducking();
+          diver.breathe();
+
+          // give the rest part of air to next diver if he is on the board
+          if(this.boat.length !== 0) {
+            diver = this.boat[0];
+            need_air = air_diver - diver.air;
+            if(need_air <= rest_last) {
+              diver.air += rest_last;
+            }
+          }
+        }
+      }
+    }.bind(this), 1000); 
+  };
+
+  this.updateRating = function() {
+    this.info.rating.innerHTML = this.stars_rating;
+    this.info.count.innerHTML = this.stars_on_board;
   };
 
   this.load = function(act) { /* if set act we skip loading */
@@ -166,7 +222,7 @@ var Star = (function(_super) {
     height: 43,
     setImage: function(rating) {
       if(typeof rating === 'undefined') {
-          throw { message: 'rating not set', code: 1 }
+          throw new Error('rating not set');
           this.rating = 1;
         }
         this.rating = rating;
@@ -181,13 +237,15 @@ var Star = (function(_super) {
     },
 
     fall: function() {
-      var speed = app.config.speed.star;
-      var interval = 1000 / speed;
-      var startX = this.x;
-      var position = this.x;
-      var amplitude = Math.round(Math.random()*10+3);
+      var speed = app.config.speed.star,
+        interval = 1000 / speed,
+        startX = this.x,
+        position = this.x,
+        amplitude = Math.round(Math.random()*10+3),
+        rand_botton = app.config.objects.bottom +
+        Math.round(Math.random()*20)-10;
       var intr = setInterval(function() {
-        if(this.y <= app.config.objects.bottom) {
+        if(this.y <= rand_botton) {
           startX += .1;
           this.x = position + Math.sin(startX) * amplitude;
           this.y ++;
@@ -206,22 +264,24 @@ var Diver = (function(_super) {
   extend(Diver, _super);
 
   function Diver() {
+    this.stars = [];
+    this.checklist = { 1: false, 2: false, 3:false };
+    this.intr_id = null;
+    this.start_emersion = false;
     return Diver.__super__.constructor.apply(this, arguments);
-  };
+  }
+
 
   Object.extend(Diver.prototype, {
     width: 46,
     height: 73,
     dirs: ['up', 'left', 'right'],
     air: 20,
-    stars: [],
-    checklist: { 1: false, 2: false, 3:false },
-    intr_id: null,
-    start_emersion: false,
+    cur_part: 1,
 
     setImage: function(dir) {
       if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
-          throw { message: 'dir not set', code: 2 }
+          throw new Error('dir not set');
           this.dir = 'up';
         }
         this.dir = dir;
@@ -255,6 +315,7 @@ var Diver = (function(_super) {
         fb = app.config.options.for_ballast,
         fs = app.config.options.for_star;
 
+      // compensation star rating
       if(!this.start_emersion) {
         if(this.stars.length === 2) {
           this.air -= this.stars[0].rating * fs + this.stars[1].rating * fs + fb;
@@ -267,31 +328,26 @@ var Diver = (function(_super) {
       }
 
       this.intr_id = setInterval(function() {
+
+        if(this.checklist[this.cur_part]) {
+          if(this.cur_part < this.checklist.size()) this.cur_part ++;
+        }
+
         if(this.y >= app.config.objects.boat) {
-          if( eql(this.y, parts[1].y) && !this.checklist[1]) {
-            clearInterval(this.intr_id);
-            this.checklist[1] = true;
-            intr = setInterval(function(){
+          if( eql(this.y, parts[this.cur_part].y) && !this.checklist[this.cur_part] ) {
+            this.stop();
+            this.checklist[this.cur_part] = true;
+            setTimeout(function(){
               this.emersion();
-            }.bind(this), parts[1].time);
-          } else if( eql(this.y, parts[2].y) && !this.checklist[2]) {
-            clearInterval(this.intr_id);
-            this.checklist[2] = true;
-            intr = setInterval(function(){
-              this.emersion();
-            }.bind(this), parts[2].time);
-          } else if( eql(this.y, parts[3].y) && !this.checklist[3]) {
-            clearInterval(this.intr_id);
-            this.checklist[3] = true;
-            intr = setInterval(function(){
-              this.emersion();
-            }.bind(this), parts[3].time);
+            }.bind(this), parts[this.cur_part].time);
           } else {
             this.y --;
             this.withStar();
           }
         } else {
           this.stop();
+          app.boat.push(this);
+          this.dump();
         }
       }.bind(this), interval);
     },
@@ -312,7 +368,7 @@ var Diver = (function(_super) {
           } else if(this.stars.length === 0) {
             this.air -= speed;
           } else {
-            throw { message: 'diver have too much stars on hands', code: 3 }
+            throw new Error('diver have too much stars on hands');
           }
         } else {
           clearInterval(intr);
@@ -324,6 +380,10 @@ var Diver = (function(_super) {
     goToStar: function(id) {
       this.stop();
       var star = app.stars.find(id);
+      if(!star) {
+        throw new Error('star not found');
+        return false;
+      }
       var speed = app.config.speed.diver;
       var interval = 1000 / speed;
       if(this._star_left(star)) {
@@ -334,7 +394,7 @@ var Diver = (function(_super) {
             this.withStar();
           } else {
             this.stop();
-            this.pickUp(star);
+            this.pickUp(star.id);
           }
         }.bind(this), interval);
       } else {
@@ -345,18 +405,17 @@ var Diver = (function(_super) {
             this.withStar();
           } else {
             this.stop();
-            this.pickUp(star);
+            this.pickUp(star.id);
           }
         }.bind(this), interval);
       }
     },
 
-    goHome: function(id) {
+    goHome: function() {
       this.stop();
-      var star = app.stars.find(id);
-      var speed = app.config.speed.diver;
-      var interval = 1000 / speed;
-      var home = app.config.objects.rope;
+      var speed = app.config.speed.diver,
+        interval = 1000 / speed,
+        home = app.config.objects.rope;
       if(this._home_right()) {
         this.setImage('right');
         this.intr_id = setInterval(function() {
@@ -404,8 +463,13 @@ var Diver = (function(_super) {
     },
 
     pickUp: function(star) {
-      if(typeof(star) === 'number' && app.stars.find(star)) {
-        star = app.stars.find(star);
+      if(typeof(star) === 'number') {
+        if(app.stars.find(star)) {
+          star = app.stars.find(star);
+        } else {
+          throw new Error('star not found');
+          return false;
+        }
       }
       star_ind = app.stars.indexOf(star);
       app.stars.splice(star_ind, 1);
@@ -414,13 +478,36 @@ var Diver = (function(_super) {
     },
 
     drop: function(star) {
-      if(typeof(star) === 'number' && this.stars.find(star)) {
-        star = this.stars.find(star);
+      if(typeof(star) === 'number') {
+        if(this.stars.find(star)) {
+          star = this.stars.find(star);
+        } else {
+          throw new Error('star not found');
+        }
+      } else if(typeof(star) == 'string') {
+        if(star === 'first') {
+          star = this.stars[0];
+        } else if(star === 'second') {
+          star = this.stars[1];
+        } else {
+          throw new Error('wrong argument');
+        }
       }
       star_ind = this.stars.indexOf(star);
       this.stars.splice(star_ind, 1);
       app.stars.push(star);
       star.fall();
+    },
+
+    dump: function() {
+      if(this.stars.length) {
+        for(var i = 0; i < this.stars.length; ++i) {
+          app.stars_on_board ++;
+          app.stars_rating += this.stars[i].rating;
+        }
+        this.stars = []; // FIXME
+      }
+      app.updateRating();
     },
 
     withStar: function() {
