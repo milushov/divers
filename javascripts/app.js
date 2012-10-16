@@ -119,7 +119,20 @@ function App(debug) {
           w = d.wait;
         app.ctx.drawImage(w, d.x - 100, d.y - 50);
       }
+
+      if(app.stars_on_board > 0) {
+        var s = app.stars_on_board_image,
+          x = app.config.objects.rope,
+          y = app.config.objects.boat;
+
+        app.ctx.drawImage(s, x + 27, y - 75);
+      }
     }
+  };
+
+  this.showStarsOnBoardImage = function() {
+    this.stars_on_board_image = new Image()
+    this.stars_on_board_image.src = 'images/stars/ship-load.png';
   };
 
   this.clear = function() {
@@ -359,6 +372,7 @@ var Diver = (function(_super) {
           this.stop();
           app.boat.push(this);
           this.dump();
+          app.showStarsOnBoardImage();
         }
       }.bind(this), interval);
     },
