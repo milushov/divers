@@ -400,9 +400,10 @@ var Diver = (function(_super) {
       var speed = app.config.speed.air,
         interval = 1000,
         asws = app.config.speed.air_speed_with_star;
+
       this.breathe_intr_id = setInterval( function() {
         console.log(this.id + '  ' + this.air);
-        if(this.air >= 0) {
+        if(this.air > 0) {
           if(this.stars.length === 2) {
             this.air -= speed +
               this.stars[0].rating * asws +
@@ -417,7 +418,7 @@ var Diver = (function(_super) {
           }
         } else {
           this.stopBreathe();
-          console.log('diver' + this.id + ' died..');
+          console.log('diver is' + this.id + ' died..');
         }
       }.bind(this), interval);
     },
