@@ -1,3 +1,8 @@
+/*
+ * author Milushov Roman
+ * vk.com/milushov
+ */
+
 window.onload = function() {
   app = new App(isDebug()); // argument true enables debug mode
   app.init();
@@ -9,7 +14,6 @@ window.onload = function() {
   ai = new Ai();
   ai.init();
 };
-
 
 function App(debug) {
   this.debug = debug || false;
@@ -33,7 +37,8 @@ function App(debug) {
       for_star: .05, // the amount of air, which need for emersing with star
       for_ballast: .05, // ... which need for compensation balast
       air_diver: 20, // the amount of air in diver's ballone (in litres)
-      air_compressor: 3 // the amount of air per second (in litres)
+      air_compressor: 3, // the amount of air per second (in litres)
+      width_view: null // will be set on start
     }
   };
 
@@ -51,6 +56,7 @@ function App(debug) {
       2: { y: objs.bottom - emersion_height * 2/3, time: debug ? 1000 : 10000 },
       3: { y: objs.bottom - emersion_height * 4/5, time: debug ? 1500 : 15000 }
     }
+    this.config.options.width_view = this.canvas.width * 1/3;
 
     /* this is NOT jQuery :-) */
     $('#add-diver').addEventListener('click',
@@ -81,8 +87,8 @@ function App(debug) {
   };
 
   this.addStar = function(event) {
-    var x = event.layerX;
-    var y = event.layerY;
+    var x = event.layerX || event.offsetX;
+    var y = event.layerY || event.offsetY;
     var rating = Math.round(Math.random()*9+1);
     var new_star = new Star(x, y, 46, 43);
     new_star.setImage(rating);
@@ -226,44 +232,52 @@ function App(debug) {
 
 
 function Ai() {
-  var interval = 50;
-  this.stars = [];
+  var interval = 350;
 
+  // start loop function
   this.init = function() {
-    setTimeout(function() {
-      this.stars = [];
-
+    setInterval(function() {
       if(app.stars.length) {
         for (var i = 0; i < app.stars.length; ++i) {
           if(app.stars[i].wait) {
-            this.stars.push(app.stars[i]);
+            this.findStar(app.stars[i]);
           }
-        };
+        }
       }
+
 
 
     }.bind(this), interval);
   };
 
+  // defining which diver have best position
+  // for passed star and setting task for him, if he have
   this.findStar = function(star) {
-    var divers = [];
+    var bottom = app.config.objects.bottom,
+      potential_hunters = [];
 
     if(app.divers.length) {
       for (var i = 0; i < app.divers.length; ++i) {
         if(app.divers[i].search) {
-          divers.push(app.divers[i]);
-        }
-      }
+          // if diver at the bottom
+          if( eql(app.divers[i].y, bottom) ) {
+            if( app.divers[i].isSee(star) ) {
+              'diver ' + diver.id + ' sees star ' + star.id;
+              potential_hunters.push(app.divers[i]);
+            }
+          }
 
-      for (var i = 0; i < divers.length; ++i) {
-        // if diver at the bottom
-        if( eql(divers[i].x, star.x) ) {
-          if( diver.isSee(star) ) {
-            'diver ' + diver.id + ' sees star ' + star.id;
+          //TODO check divers on rope
+          
+          //TODO select diver with most vantage position
+          if(potential_hunters.length) {
+            hunter =  potential_hunters[0];
+            hunter.task_star = star.id;
+          } else {
+
           }
         }
       }
-
     } else {
       throw new Error('divers not found');
       return false;
@@ -296,6 +310,7 @@ var Star = (function(_super) {
   extend(Star, _super);
 
   function Star() {
+    this.wait = true;
     return Star.__super__.constructor.apply(this, arguments);
   };
 
@@ -351,6 +366,7 @@ var Diver = (function(_super) {
     this.intr_id = null;
     this.breathe_intr_id = null;
     this.start_emersion = false;
+    this.search = true;
     return Diver.__super__.constructor.apply(this, arguments);
   }
 
@@ -453,7 +469,7 @@ var Diver = (function(_super) {
         asws = app.config.speed.air_speed_with_star;
 
       this.breathe_intr_id = setInterval( function() {
-        console.log(this.id + '  ' + this.air);
+        //console.log(this.id + '  ' + this.air);
         if(this.air > 0) {
           if(this.stars.length === 2) {
             this.air -= speed +
@@ -512,6 +528,20 @@ var Diver = (function(_super) {
             this.pickUp(star.id);
           }
         }.bind(this), interval);
+      }
+    },
+
+    isSee: function(star) {
+      var width_view = app.config.options.width_view,
+        canvas_width = app.canvas.width,
+        from = (from = this.x - width_view / 2) > 0 ? from : 0,
+        to = (width_view - this.x > width_view / 2) ? this.x + width_view : canvas_width,
+        x = star.x;
+
+      if(x >= from && x <= to) {
+        return true;
+      } else {
+        return false;
       }
     },
 
@@ -575,9 +605,17 @@ var Diver = (function(_super) {
           return false;
         }
       }
+
+      star.wait = false;
+
       star_ind = app.stars.indexOf(star);
       app.stars.splice(star_ind, 1);
       this.stars.push(star);
+
+      if(this.stars.length === 2) {
+        this.search = false;
+      }
+
       this.goHome();
     },
 
