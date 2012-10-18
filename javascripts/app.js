@@ -262,7 +262,7 @@ function Ai() {
           // if diver at the bottom
           if( eql(app.divers[i].y, bottom) ) {
             if( app.divers[i].isSee(star) ) {
-              'diver ' + diver.id + ' sees star ' + star.id;
+              'diver ' + app.divers[i].id + ' sees star ' + star.id;
               potential_hunters.push(app.divers[i]);
             }
           }
@@ -398,7 +398,7 @@ var Diver = (function(_super) {
       var speed = app.config.speed.diver;
       var interval = 1000 / speed;
       this.intr_id = setInterval(function() {
-        if(this.y <= app.config.objects.bottom) {
+        if(this.y < app.config.objects.bottom) {
           this.y ++;
         } else {
           this.stop();
