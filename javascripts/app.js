@@ -1,11 +1,15 @@
 window.onload = function() {
-  app = new App(isDebug()); // parametr true enables debug mode
+  app = new App(isDebug()); // argument true enables debug mode
   app.init();
   app.load();
   app.animate();
   app.compressor();
   app.addDiver();
+
+  ai = new Ai();
+  ai.init();
 };
+
 
 function App(debug) {
   this.debug = debug || false;
@@ -219,6 +223,53 @@ function App(debug) {
     }
   };
 };
+
+
+function Ai() {
+  var interval = 50;
+  this.stars = [];
+
+  this.init = function() {
+    setTimeout(function() {
+      this.stars = [];
+
+      if(app.stars.length) {
+        for (var i = 0; i < app.stars.length; ++i) {
+          if(app.stars[i].wait) {
+            this.stars.push(app.stars[i]);
+          }
+        };
+      }
+
+
+    }.bind(this), interval);
+  };
+
+  this.findStar = function(star) {
+    var divers = [];
+
+    if(app.divers.length) {
+      for (var i = 0; i < app.divers.length; ++i) {
+        if(app.divers[i].search) {
+          divers.push(app.divers[i]);
+        }
+      }
+
+      for (var i = 0; i < divers.length; ++i) {
+        // if diver at the bottom
+        if( eql(divers[i].x, star.x) ) {
+          if( diver.isSee(star) ) {
+            'diver ' + diver.id + ' sees star ' + star.id;
+          }
+        }
+      }
+
+    } else {
+      throw new Error('divers not found');
+      return false;
+    }
+  };
+}
 
 
 var Thing = (function() {
