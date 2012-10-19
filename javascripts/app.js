@@ -504,7 +504,7 @@ var Diver = (function(_super) {
           }
         } else {
           this.stopBreathe();
-          console.log('diver is' + this.id + ' died..');
+          console.log('diver is ' + this.id + ' died..');
         }
       }.bind(this), interval);
     },
