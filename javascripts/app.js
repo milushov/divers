@@ -233,7 +233,7 @@ function App(debug) {
 
 
 function Ai() {
-  var interval = 350;
+  var interval = 50;
 
   // start loop function
   this.init = function() {
@@ -277,7 +277,10 @@ function Ai() {
             if(cur_hunter.tasks.indexOf(star.id) === -1 ) {
               cur_hunter.tasks.push(star.id);
               // TODO think about this aproach (send diver to star from here in code)
-              cur_hunter.goToStar(star.id);
+              // if first star
+              if(cur_hunter.tasks.length === 1) {
+                cur_hunter.goToStar(star.id);
+              }
             }
           } else {
 
