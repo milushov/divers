@@ -254,7 +254,8 @@ function Ai() {
   // for passed star and setting task for him, if he have
   this.findStar = function(star) {
     var bottom = app.config.objects.bottom,
-      potential_hunters = [];
+      potential_hunters = [],
+      cur_hunter = null;
 
     if(app.divers.length) {
       for (var i = 0; i < app.divers.length; ++i) {
@@ -271,8 +272,12 @@ function Ai() {
           
           //TODO select diver with most vantage position
           if(potential_hunters.length) {
-            hunter =  potential_hunters[0];
-            hunter.task_star = star.id;
+            cur_hunter =  potential_hunters[0];
+            if(cur_hunter.tasks.indexOf(star.id) === -1 ) {
+              cur_hunter.tasks.push(star.id);
+              // TODO think about this aproach (send diver to star from here in code)
+              cur_hunter.goToStar(star.id);
+            }
           } else {
 
           }
@@ -513,8 +518,8 @@ var Diver = (function(_super) {
         throw new Error('star not found');
         return false;
       }
-      var speed = app.config.speed.diver;
-      var interval = 1000 / speed;
+      var speed = app.config.speed.diver,
+        interval = 1000 / speed;
       if(this._star_left(star)) {
         this.setImage('left');
         this.intr_id = setInterval(function() {
@@ -524,19 +529,31 @@ var Diver = (function(_super) {
           } else {
             this.stop();
             this.pickUp(star.id);
+            this.defineWhatToDo();
           }
         }.bind(this), interval);
       } else {
         this.setImage('right');
         this.intr_id = setInterval(function() {
-          if(this.x <= star.x) {
+          if(this.x < star.x) {
             this.x ++;
             this.withStar();
           } else {
             this.stop();
             this.pickUp(star.id);
+            this.defineWhatToDo();
           }
         }.bind(this), interval);
+      }
+    },
+
+    defineWhatToDo: function() {
+      if(this.tasks.length && this.search) {
+        this.goToStar(this.tasks[0]);
+      } else if(this.tasks.length === 0 && this.search) {
+        this.patrol();
+      } else if(!this.search) {
+        this.goHome();
       }
     },
 
@@ -544,7 +561,7 @@ var Diver = (function(_super) {
       var width_view = app.config.options.width_view,
         canvas_width = app.canvas.width,
         from = (from = this.x - width_view / 2) > 0 ? from : 0,
-        to = (width_view - this.x > width_view / 2) ? this.x + width_view : canvas_width,
+        to = (canvas_width - this.x > width_view / 2) ? this.x + width_view / 2 : canvas_width,
         x = star.x;
 
       if(x >= from && x <= to) {
@@ -555,10 +572,11 @@ var Diver = (function(_super) {
     },
 
     patrol: function() {
+      this.stop();
       var canvas_width = app.canvas.width,
         speed = app.config.speed.diver,
         a = getDest('a'),
-        b = this.x,
+        b = getDest('b'),
         dir = 'left',
         interval = 1000 / speed;
 
@@ -568,6 +586,7 @@ var Diver = (function(_super) {
         if(dir === 'left') {
           if(a < this.x) {
             this.x --;
+            this.withStar();
           } else {
             dir = 'right';
             a = getDest('a');
@@ -576,6 +595,7 @@ var Diver = (function(_super) {
         } else if(dir === 'right') {
           if(this.x < b) {
             this.x ++;
+            this.withStar();
           } else {
             dir = 'left';
             b = getDest('b');
@@ -645,7 +665,7 @@ var Diver = (function(_super) {
     },
 
     pickUp: function(star) {
-      if(typeof(star) === 'number') {
+      if(typeof star === 'number') {
         if(app.stars.find(star)) {
           star = app.stars.find(star);
         } else {
@@ -664,7 +684,7 @@ var Diver = (function(_super) {
         this.search = false;
       }
 
-      this.goHome();
+      this.tasks.splice(0, 1);
     },
 
     drop: function(star) {
