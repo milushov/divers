@@ -367,6 +367,7 @@ var Diver = (function(_super) {
     this.breathe_intr_id = null;
     this.start_emersion = false;
     this.search = true;
+    this.tasks = [];
     return Diver.__super__.constructor.apply(this, arguments);
   }
 
@@ -395,13 +396,21 @@ var Diver = (function(_super) {
 
     ducking: function() {
       this.stop();
-      var speed = app.config.speed.diver;
-      var interval = 1000 / speed;
+      var speed = app.config.speed.diver,
+        interval = 1000 / speed;
+
       this.intr_id = setInterval(function() {
         if(this.y < app.config.objects.bottom) {
           this.y ++;
         } else {
           this.stop();
+          if(this.tasks.length) {
+            if(typeof this.tasks[0] === 'number') {
+              this.goToStar(this.tasks[0]);
+            }
+          } else {
+            this.patrol();
+          }
         }
       }.bind(this), interval);
     },
