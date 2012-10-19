@@ -183,6 +183,7 @@ function App(debug) {
           // throw out diver overboard
           this.boat.splice(0, 1);
           diver.setImage('up');
+          diver.search = true;
           diver.breathe();
           diver.ducking();
 
