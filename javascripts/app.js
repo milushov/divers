@@ -184,6 +184,7 @@ function App(debug) {
           this.boat.splice(0, 1);
           diver.setImage('up');
           diver.search = true;
+          diver.checklist = { 1: false, 2: false, 3: false };
           diver.breathe();
           diver.ducking();
 
