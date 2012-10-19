@@ -545,6 +545,45 @@ var Diver = (function(_super) {
       }
     },
 
+    patrol: function() {
+      var canvas_width = app.canvas.width,
+        speed = app.config.speed.diver,
+        a = getDest('a'),
+        b = this.x,
+        dir = 'left',
+        interval = 1000 / speed;
+
+      this.setImage('left');
+
+      this.intr_id = setInterval(function() {
+        if(dir === 'left') {
+          if(a < this.x) {
+            this.x --;
+          } else {
+            dir = 'right';
+            a = getDest('a');
+            this.setImage('right');
+          }
+        } else if(dir === 'right') {
+          if(this.x < b) {
+            this.x ++;
+          } else {
+            dir = 'left';
+            b = getDest('b');
+            this.setImage('left');
+          }
+        }
+      }.bind(this), interval);
+
+      function getDest(dot) {
+        if(dot === 'a') {
+          return Math.round(Math.random()*100);
+        } else {
+          return canvas_width - 150 + Math.round(Math.random()*100);
+        }
+      }
+    },
+
     goHome: function() {
       this.stop();
       var speed = app.config.speed.diver,
@@ -553,7 +592,7 @@ var Diver = (function(_super) {
       if(this._home_right()) {
         this.setImage('right');
         this.intr_id = setInterval(function() {
-          if(this.x <= home) {
+          if(this.x <= home) { // FIXME must be <
             this.x ++;
             this.withStar();
           } else {
