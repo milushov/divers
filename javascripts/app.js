@@ -185,6 +185,8 @@ function App(debug) {
           diver.setImage('up');
           diver.search = true;
           diver.checklist = { 1: false, 2: false, 3: false };
+          diver.cur_part = 1;
+          diver.start_emersion = false;
           diver.breathe();
           diver.ducking();
 
@@ -504,7 +506,9 @@ var Diver = (function(_super) {
           }
         } else {
           this.stopBreathe();
-          console.log('diver is ' + this.id + ' died..');
+          console.log('diver ' + this.id + ' is died..');
+          var ind = app.divers.indexOf(this);
+          app.divers.splice(ind, 1);
         }
       }.bind(this), interval);
     },
