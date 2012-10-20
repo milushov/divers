@@ -182,11 +182,6 @@ function App(debug) {
 
           // throw out diver overboard
           this.boat.splice(0, 1);
-          diver.setImage('up');
-          diver.search = true;
-          diver.checklist = { 1: false, 2: false, 3: false };
-          diver.cur_part = 1;
-          diver.start_emersion = false;
           diver.breathe();
           diver.ducking();
 
@@ -408,6 +403,13 @@ var Diver = (function(_super) {
 
     ducking: function() {
       this.stop();
+
+      this.setImage('up');
+      this.search = true;
+      this.checklist = { 1: false, 2: false, 3: false };
+      this.cur_part = 1;
+      this.start_emersion = false;
+
       var speed = app.config.speed.diver,
         interval = 1000 / speed;
 
