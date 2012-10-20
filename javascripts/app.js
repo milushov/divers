@@ -511,10 +511,10 @@ var Diver = (function(_super) {
             throw new Error('diver have too much stars on hands');
           }
         } else {
+          this.stop();
           this.stopBreathe();
+          app.divers.splice(app.divers.indexOf(this), 1);
           console.log('diver ' + this.id + ' is died..');
-          var ind = app.divers.indexOf(this);
-          app.divers.splice(ind, 1);
         }
       }.bind(this), interval);
     },
