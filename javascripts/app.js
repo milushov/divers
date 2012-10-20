@@ -50,11 +50,11 @@ function App(debug) {
     var objs = this.config.objects;
     objs.bottom = this.canvas.height - 70;
     objs.rope = this.canvas.width - 150;
-    var emersion_height = objs.bottom - objs.boat;
+    var em = objs.bottom - objs.boat; // emersion height
     objs.emersion_parts = {
-      1: { y: objs.bottom - emersion_height * 1/3, time: debug ? 500 : 5000 },
-      2: { y: objs.bottom - emersion_height * 2/3, time: debug ? 1000 : 10000 },
-      3: { y: objs.bottom - emersion_height * 4/5, time: debug ? 1500 : 15000 }
+      1: { y: objs.bottom - em * 1/3, time: debug ? 500 : 5000 },
+      2: { y: objs.bottom - em * 2/3, time: debug ? 1000 : 10000 },
+      3: { y: objs.bottom - em * 4/5, time: debug ? 1500 : 15000 }
     }
     this.config.options.width_view = this.canvas.width * 1/3;
 
@@ -173,7 +173,8 @@ function App(debug) {
         diver.stopBreathe();
         need_air = air_diver - diver.air; // 20 - 7
 
-        // if diver is need air greater than compressor can generate per one minute
+        // if diver is need air greater than
+        // compressor can generate per one minute
         if(need_air >= air_compressor) {
           diver.air += air_compressor;
         } else {
@@ -203,7 +204,7 @@ function App(debug) {
     this.info.count.innerHTML = this.stars_on_board;
   };
 
-  this.load = function(act) { /* if set act we skip loading */
+  this.load = function(act) { /* if set act, we skip loading */
     if(act || __images.length === 0) return false;
 
     var cover = document.createElement('div'),
@@ -274,7 +275,8 @@ function Ai() {
             cur_hunter =  potential_hunters[0];
             if(cur_hunter.tasks.indexOf(star.id) === -1 ) {
               cur_hunter.tasks.push(star.id);
-              // TODO think about this aproach (send diver to star from here in code)
+              // TODO think about this aproach
+              // (send diver to star from here in code)
               // if first star
               if(cur_hunter.tasks.length === 1) {
                 cur_hunter.goToStar(star.id);
@@ -440,7 +442,9 @@ var Diver = (function(_super) {
       // compensation star rating
       if(!this.start_emersion) {
         if(this.stars.length === 2) {
-          this.air -= this.stars[0].rating * fs + this.stars[1].rating * fs + fb;
+          this.air -=
+            this.stars[0].rating * fs +
+            this.stars[1].rating * fs + fb;
         } else if(this.stars.length === 1) {
           this.air -= this.stars[0].rating * fs + fb;
         } else {
