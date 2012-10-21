@@ -34,18 +34,19 @@ window.onload = function() {
     };
 
     app = new App(config, debug);
-    bg = new Background(config, debug);
-    bg.init();
-    bg.animate();
+    app.load(function() {
+      bg = new Background(config, debug);
+      bg.init();
+      bg.animate();
 
-    app.init();
-    app.load();
-    app.animate();
-    app.compressor();
-    app.addDiver();
+      app.init();
+      app.animate();
+      app.compressor();
+      app.addDiver();
 
-    ai = new Ai();
-    ai.init();
+      ai = new Ai();
+      ai.init();
+    });
   })()
 };
 
@@ -240,7 +241,7 @@ function App(config, debug) {
     }
   };
 
-  this.load = function(act) {
+  this.load = function(callback, act) {
     if(act || __images.length === 0) return false;
 
     var cover = document.createElement('div'),
@@ -261,6 +262,7 @@ function App(config, debug) {
         counter ++;
         if(counter === __images.length - 1) {
           $('body').removeChild(cover);
+          callback.call();
         }
       }
 
