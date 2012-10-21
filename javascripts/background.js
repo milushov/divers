@@ -13,15 +13,6 @@ function Background(config, debug) {
 
     //TODO set canvas width and height
 
-    function wwh() {
-      var de = document.documentElement,
-        w = bg.config.options.min_width,
-        h = bg.config.options.min_height;
-      return [
-        Math.max(w, de.clientWidth),
-        Math.max(h, de.clientHeight)
-      ];
-    }
   };
 
   this.animate = function() {
@@ -61,7 +52,7 @@ function Background(config, debug) {
     var w = this.canvas.width - 40,
       h = this.canvas.height - 80,
       gradient = this.ctx.createLinearGradient(0, 60, 0, h);
-      
+
     gradient.addColorStop(0,'rgb(133, 227, 255)');
     gradient.addColorStop(.5,'rgb(70, 180, 224)');
     gradient.addColorStop(1,'rgb(25, 111, 194)');

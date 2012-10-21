@@ -29,7 +29,7 @@ window.onload = function() {
         air_compressor: 3, // the amount of air per second (in litres)
         width_view: null, // will be set on start
         min_width: 762,
-        min_height: 685
+        min_height: debug ? 650 : 685 // my display small :-(
       }
     };
 
