@@ -4,53 +4,60 @@
  */
 
 window.onload = function() {
-  bg = new Background(isDebug());
-  bg.init();
-  bg.animate();
-  app = new App(isDebug()); // argument true enables debug mode
-  app.init();
-  app.load();
-  app.animate();
-  app.compressor();
-  app.addDiver();
+  (function() {
+    var debug = isDebug();
 
-  ai = new Ai();
-  ai.init();
+    var config = {
+      speed: {
+        star: debug ? 900 : 80,
+        diver: debug ? 800 : 20,
+        air: debug ? .25 : .05,
+        air_speed_with_star: debug ? .01 : .001
+      },
+
+      objects: {
+        bottom: 0, // y coord of bottom
+        rope: 0, // x coord of rope
+        boat: 170, // y coord of boat
+        emersion_parts: null
+      },
+
+      options: {
+        for_star: .05, // the amount of air, which need for emersing with star
+        for_ballast: .05, // ... which need for compensation balast
+        air_diver: 20, // the amount of air in diver's ballone (in litres)
+        air_compressor: 3, // the amount of air per second (in litres)
+        width_view: null, // will be set on start
+        min_width: 762,
+        min_height: 685
+      }
+    };
+
+    bg = new Background(config, debug);
+    bg.init();
+    bg.animate();
+
+    app = new App(config, debug);
+    app.init();
+    app.load();
+    app.animate();
+    app.compressor();
+    app.addDiver();
+
+    ai = new Ai();
+    ai.init();
+  })()
 };
 
-function App(debug) {
-  this.debug = debug || false;
-
-  this.config = {
-    speed: {
-      star: debug ? 900 : 80,
-      diver: debug ? 800 : 20,
-      air: debug ? .25 : .05,
-      air_speed_with_star: debug ? .01 : .001
-    },
-
-    objects: {
-      bottom: 0, // y coord of bottom
-      rope: 0, // x coord of rope
-      boat: 170, // y coord of boat 
-      emersion_parts: null
-    },
-
-    options: {
-      for_star: .05, // the amount of air, which need for emersing with star
-      for_ballast: .05, // ... which need for compensation balast
-      air_diver: 20, // the amount of air in diver's ballone (in litres)
-      air_compressor: 3, // the amount of air per second (in litres)
-      width_view: null // will be set on start
-    }
-  };
+function App(config, debug) {
+  this.config = config;
 
   this.init = function() {
     console.log('app init');
 
     this.canvas = document.getElementById('app');
-    this.canvas.width = document.documentElement.clientWidth;
-    this.canvas.height = document.documentElement.clientHeight;
+    this.canvas.width = wwh()[0];
+    this.canvas.height = wwh()[1];
     this.ctx = this.canvas.getContext('2d');
     var objs = this.config.objects;
     objs.bottom = this.canvas.height - 70;

@@ -1,16 +1,5 @@
-function Background(debug) {
-  this.config = {
-    speed: {
-    },
-
-    objects: {
-    },
-
-    options: {
-      min_width: 762,
-      min_height: 685
-    }
-  };
+function Background(config, debug) {
+  this.config = config;
 
   this.init = function() {
     console.log('bg init');
