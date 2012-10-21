@@ -7,20 +7,32 @@ function Background(debug) {
     },
 
     options: {
+      min_width: 762,
+      min_height: 685
     }
   };
 
   this.init = function() {
     console.log('bg init');
     this.canvas = document.getElementById('background');
-    this.canvas.width = document.documentElement.clientWidth;
-    this.canvas.height = document.documentElement.clientHeight;
+    this.canvas.width = wwh()[0];
+    this.canvas.height = wwh()[1];
     this.ctx = this.canvas.getContext('2d');
 
     this.fishes = new Array();
     this.clouds = new Array();
 
     //TODO set canvas width and height
+
+    function wwh() {
+      var de = document.documentElement,
+        w = bg.config.options.min_width,
+        h = bg.config.options.min_height;
+      return [
+        Math.max(w, de.clientWidth),
+        Math.max(h, de.clientHeight)
+      ];
+    }
   };
 
   this.animate = function() {
