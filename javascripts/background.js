@@ -13,6 +13,8 @@ function Background(debug) {
   this.init = function() {
     console.log('bg init');
     this.canvas = document.getElementById('background');
+    this.canvas.width = document.documentElement.clientWidth;
+    this.canvas.height = document.documentElement.clientHeight;
     this.ctx = this.canvas.getContext('2d');
 
     this.fishes = new Array();

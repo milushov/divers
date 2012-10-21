@@ -49,6 +49,8 @@ function App(debug) {
     console.log('app init');
 
     this.canvas = document.getElementById('app');
+    this.canvas.width = document.documentElement.clientWidth;
+    this.canvas.height = document.documentElement.clientHeight;
     this.ctx = this.canvas.getContext('2d');
     var objs = this.config.objects;
     objs.bottom = this.canvas.height - 70;
