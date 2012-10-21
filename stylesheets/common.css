@@ -6,7 +6,7 @@ body {
 
 #background {
   z-index: 1;
-  background:url(../images/back.jpg);
+  /*background: url(../images/back.jpg);*/
   position: absolute;
   top: 0;
   left: 0;
