@@ -29,15 +29,15 @@ window.onload = function() {
         air_compressor: 3, // the amount of air per second (in litres)
         width_view: null, // will be set on start
         min_width: 762,
-        min_height: debug ? 650 : 685 // my display small :-(
+        min_height: debug ? 650 : 685 // because my display small :-(
       }
     };
 
+    app = new App(config, debug);
     bg = new Background(config, debug);
     bg.init();
     bg.animate();
 
-    app = new App(config, debug);
     app.init();
     app.load();
     app.animate();

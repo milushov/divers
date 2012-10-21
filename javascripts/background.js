@@ -28,6 +28,7 @@ function Background(config, debug) {
   this.draw = function() {
     this.drawBackground();
     this.drawSea();
+    this.bottom();
     for (var i = 0; i < this.fishes.length; ++i) {
       this.fishes[i].draw();
     }
@@ -59,4 +60,21 @@ function Background(config, debug) {
     this.ctx.fillStyle = gradient;
     this.ctx.roundRect(20, 60, w, h, 20, true);
   }
+
+  this.bottom = function() {
+
+    var left = new Image(),
+      center = new Image(),
+      right = new Image();
+
+    left.src = 'images/other/sand_left.png';
+    center.src = 'images/other/sand_center.png';
+    right.src = 'images/other/sand_right.png';
+
+    left.onload = function() {
+      var x = 20,
+        y = this.canvas.height - (71 + 20);
+      this.ctx.drawImage(left, x, y);
+    }.bind(this);
+ }
 }
