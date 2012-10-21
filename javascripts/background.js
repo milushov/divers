@@ -77,8 +77,8 @@ function Background(config, debug) {
 
     this.ctx.drawImage(left.i, left.x, left.y);
 
-    var center_width = left.x + left.w
-    for (var i = 0; i < 25; ++i) {
+    var count = Math.ceil((right.x - (left.x + left.w)) / center.w);
+    for (var i = 0; i < count; ++i) {
       this.ctx.drawImage(center.i, center.x + center.w * i, center.y);
     }
 
