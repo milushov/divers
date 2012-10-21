@@ -6,6 +6,7 @@
 window.onload = function() {
   bg = new Background(isDebug());
   bg.init();
+  bg.animate();
   app = new App(isDebug()); // argument true enables debug mode
   app.init();
   app.load();
