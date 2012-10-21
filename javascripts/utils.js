@@ -149,3 +149,14 @@ if(!CanvasRenderingContext2D.prototype.roundRect) {
     }
   }
 }
+
+
+if(!Array.prototype.last) {
+  Array.prototype.last = function() {
+    if(this.length !== 0) {
+      return this[this.length - 1];
+    } else {
+      return undefined;
+    }
+  };
+}
