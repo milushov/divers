@@ -55,12 +55,17 @@ window.__images = ["images/buttons/delete-diver.png","images/buttons/add-diver.p
 
 
 function wwh() {
-  var w = window, de = document.documentElement;
+  var w = window,
+    de = document.documentElement,
+    mw = app.config.options.min_width || 600,
+    mh = app.config.options.min_height || 500,
+    cw = Math.min(parseInt(w.innerWidth), parseInt(de.clientWidth)),
+    ch = Math.min(parseInt(w.innerHeight), parseInt(de.clientHeight));
 
   return [
-    Math.max(parseInt(w.innerWidth), parseInt(de.clientWidth)),
-    Math.max(parseInt(w.innerHeight), parseInt(de.clientHeight))
-  ]
+    Math.max(mw, cw),
+    Math.max(mh, ch)
+  ];
 }
 
 
