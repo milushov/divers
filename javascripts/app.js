@@ -163,8 +163,7 @@ function App(config, debug) {
   };
 
   this.showStarsOnBoardImage = function() {
-    this.stars_on_board_image = new Image()
-    this.stars_on_board_image.src = 'images/stars/ship-load.png';
+    this.stars_on_board_image = images['ship-load.png'];
   };
 
   this.clear = function() {

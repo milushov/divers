@@ -62,19 +62,12 @@ function Background(config, debug) {
   }
 
   this.bottom = function() {
+    var left = images['sand_left.png'],
+      center = images['sand_center.png'],
+      right = images['sand_right.png'];
 
-    var left = new Image(),
-      center = new Image(),
-      right = new Image();
-
-    left.src = 'images/other/sand_left.png';
-    center.src = 'images/other/sand_center.png';
-    right.src = 'images/other/sand_right.png';
-
-    left.onload = function() {
-      var x = 20,
-        y = this.canvas.height - (71 + 20);
-      this.ctx.drawImage(left, x, y);
-    }.bind(this);
+    var l_x = 20,
+      l_y = this.canvas.height - (71 + 20);
+    this.ctx.drawImage(left, l_x, l_y);
  }
 }
