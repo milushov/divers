@@ -368,18 +368,15 @@ var Star = (function(_super) {
     height: 43,
     setImage: function(rating) {
       if(typeof rating === 'undefined') {
-          throw new Error('rating not set');
-          this.rating = 1;
-        }
-        this.rating = rating;
-        this.image = new Image();
-        this.image.src = 'images/stars/tf-star' + rating + '.png';
-        this.image.onload = function() {
-          this.x = this.x - this.width / 2
-          this.y = this.y - this.height / 2
-          app.ctx.drawImage(this.image, this.x, this.y);
-          this.fall();
-      }.bind(this) // bind context of star object to onload handler
+        throw new Error('rating not set');
+        this.rating = 1;
+      }
+      this.rating = rating;
+      this.image = images['tf-star'+rating+'.png'];
+      this.x = this.x - this.width / 2
+      this.y = this.y - this.height / 2
+      this.fall();
+      app.ctx.drawImage(this.image, this.x, this.y);
     },
 
     fall: function() {
@@ -429,18 +426,13 @@ var Diver = (function(_super) {
     cur_part: 1,
 
     setImage: function(dir) {
-      if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
-          throw new Error('dir not set');
-          this.dir = 'up';
-        }
-        this.dir = dir;
-        this.image = new Image();
-        this.image.src = 'images/divers/' + this.dir + '.png';
-        this.image.onload = function() {
-          //this.x = this.x - this.width / 2
-          //this.y = this.y - this.height / 2
-          app.ctx.drawImage(this.image, this.x, this.y);
-      }.bind(this) // bind context of star object to onload handler
+    if(typeof dir === 'undefined' || this.dirs.indexOf(dir) === -1) {
+        throw new Error('dir not set');
+        this.dir = 'up';
+      }
+      this.dir = dir;
+      this.image = images[this.dir + '.png'];
+      app.ctx.drawImage(this.image, this.x, this.y);
     },
 
     ducking: function() {
