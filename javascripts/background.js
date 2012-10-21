@@ -62,12 +62,27 @@ function Background(config, debug) {
   }
 
   this.bottom = function() {
-    var left = images['sand_left.png'],
-      center = images['sand_center.png'],
-      right = images['sand_right.png'];
+    var left = {i: images['sand_left.png'], w: 358, h: 71},
+      center = {i: images['sand_center.png'], w: 19, h: 71},
+      right = {i: images['sand_right.png'], w: 347, h: 71};
 
-    var l_x = 20,
-      l_y = this.canvas.height - (71 + 20);
-    this.ctx.drawImage(left, l_x, l_y);
+    left.x = 20;
+    left.y = this.canvas.height - (left.h + 20);
+
+    center.x = left.x + left.w;
+    center.y = left.y;
+
+    right.x = this.canvas.width - (right.w + 20);
+    right.y = this.canvas.height - (right.h + 20);
+
+    this.ctx.drawImage(left.i, left.x, left.y);
+
+    var center_width = left.x + left.w
+    for (var i = 0; i < 25; ++i) {
+      this.ctx.drawImage(center.i, center.x + center.w * i, center.y);
+    }
+
+    this.ctx.drawImage(right.i, right.x, right.y);
+
  }
 }
