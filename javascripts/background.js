@@ -46,24 +46,25 @@ function Background(debug) {
   };
 
   this.drawBackground = function() {
-    var w = this.canvas.width, h = this.canvas.height;
-    var gradient = this.ctx.createLinearGradient(100,90,100,200);
+    var w = this.canvas.width,
+      h = this.canvas.height,
+      gradient = this.ctx.createLinearGradient(0, 0, 0, h);
+
     gradient.addColorStop(0,'rgb(49, 104, 224)');
-    gradient.addColorStop(.5,'rgb(49, 72, 224)');
     gradient.addColorStop(1,'rgb(49, 53, 224)');
     this.ctx.fillStyle = gradient;
-
     this.ctx.roundRect(0, 0, w, h, 20, true);
   }
 
   this.drawSea = function() {
-    var w = this.canvas.width - 40 , h = this.canvas.height - 80;
-    var gradient = this.ctx.createLinearGradient(100,90,100,200);
+    var w = this.canvas.width - 40,
+      h = this.canvas.height - 80,
+      gradient = this.ctx.createLinearGradient(0, 60, 0, h);
+      
     gradient.addColorStop(0,'rgb(133, 227, 255)');
     gradient.addColorStop(.5,'rgb(70, 180, 224)');
     gradient.addColorStop(1,'rgb(25, 111, 194)');
     this.ctx.fillStyle = gradient;
-
     this.ctx.roundRect(20, 60, w, h, 20, true);
   }
 }
