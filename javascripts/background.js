@@ -3,6 +3,17 @@ function Background(config, debug) {
 
   this.init = function() {
     console.log('bg init');
+
+    Object.extend(this.config, {
+      objects: {
+        wave1: 200
+      },
+
+      options: {
+        ratio_sky_water: 1/6
+      }
+    });
+
     this.canvas = document.getElementById('background');
     this.canvas.width = wwh()[0];
     this.canvas.height = wwh()[1];
@@ -11,8 +22,12 @@ function Background(config, debug) {
     this.fishes = new Array();
     this.clouds = new Array();
 
-    //TODO set canvas width and height
+    this.config.objects.water = getWaterY.call(this);
 
+    function getWaterY() {
+      var ratio = this.config.options.ratio_sky_water;
+      return Math.round((this.canvas.height - (60 + 20)) * ratio);
+    }
   };
 
   this.animate = function() {
@@ -26,7 +41,6 @@ function Background(config, debug) {
   };
 
   this.draw = function() {
-    this.drawBackground();
     this.drawSea();
     this.bottom();
     for (var i = 0; i < this.fishes.length; ++i) {
@@ -36,29 +50,68 @@ function Background(config, debug) {
     for (var i = 0; i < this.clouds.length; ++i) {
       this.clouds[i].draw();
     }
+    this.drawFrame();
   };
 
-  this.drawBackground = function() {
-    var w = this.canvas.width,
+  this.drawFrame = function() {
+    var w = this.canvas.width/2,
       h = this.canvas.height,
-      gradient = this.ctx.createLinearGradient(0, 0, 0, h);
+      gradient = this.ctx.createLinearGradient(0, 0, 0, h),
+      x = 0, y = 0, r = 20;
 
     gradient.addColorStop(0,'rgb(49, 104, 224)');
     gradient.addColorStop(1,'rgb(49, 53, 224)');
+
     this.ctx.fillStyle = gradient;
-    this.ctx.roundRect(0, 0, w, h, 20, true);
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, y);
+
+    this.ctx.lineTo(w, y);
+    this.ctx.lineTo(w, y + 60);
+    this.ctx.lineTo(x + 20 + r, y + 60);
+    this.ctx.quadraticCurveTo(x + 20, y + 60, x + 20, y + 60 + r);
+    this.ctx.lineTo(x + 20, h - 20 - r);
+    this.ctx.quadraticCurveTo(x + 20, h - 20, x + 20 + r, h - 20);
+    this.ctx.lineTo(w, h - 20);
+    this.ctx.lineTo(w, h);
+    this.ctx.lineTo(x, h);
+    this.ctx.lineTo(x, y);
+
+    this.ctx.closePath();
+    this.ctx.fill();
+
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(w*2, y);
+
+    this.ctx.lineTo(w, y);
+    this.ctx.lineTo(w, y + 60);
+    this.ctx.lineTo(w*2 - 20 - r, y + 60);
+    this.ctx.quadraticCurveTo(w*2 - 20, y + 60, w*2 - 20, y + 60 + r);
+    this.ctx.lineTo(w*2 - 20, h - 20 - r);
+    this.ctx.quadraticCurveTo(w*2 - 20, h - 20, w*2 - 20 - r, h - 20);
+    this.ctx.lineTo(w, h - 20);
+    this.ctx.lineTo(w, h);
+    this.ctx.lineTo(w*2, h);
+    this.ctx.lineTo(w*2, y);
+
+    this.ctx.closePath();
+    this.ctx.fill();
   }
 
   this.drawSea = function() {
     var w = this.canvas.width - 40,
       h = this.canvas.height - 80,
-      gradient = this.ctx.createLinearGradient(0, 60, 0, h);
+      gradient = this.ctx.createLinearGradient(0, 60, 0, h),
+      y = this.config.objects.water;
 
     gradient.addColorStop(0,'rgb(133, 227, 255)');
     gradient.addColorStop(.5,'rgb(70, 180, 224)');
     gradient.addColorStop(1,'rgb(25, 111, 194)');
     this.ctx.fillStyle = gradient;
-    this.ctx.roundRect(20, 60, w, h, 20, true);
+    this.ctx.roundRect(20, 60, w, h, 20, true, false);
+    //this.ctx.globalCompositeOperation = "xor";
   }
 
   this.bottom = function() {
