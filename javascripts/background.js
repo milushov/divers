@@ -83,6 +83,5 @@ function Background(config, debug) {
     }
 
     this.ctx.drawImage(right.i, right.x, right.y);
-
  }
 }
