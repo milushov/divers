@@ -27,12 +27,12 @@ function Background(config, debug) {
 
     // tune
     this.config.objects.water = getWaterY.call(this);
-
-    function getWaterY() {
-      var ratio = this.config.options.ratio_sky_water;
-      return Math.round((this.canvas.height - (60 + 20)) * ratio) + 60;
-    }
   };
+
+  function getWaterY() {
+    var ratio = this.config.options.ratio_sky_water;
+    return Math.round((this.canvas.height - (60 + 20)) * ratio) + 60;
+  }
 
   this.animate = function() {
     requestAnimFrame(this.animate.bind(this));
