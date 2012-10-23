@@ -25,8 +25,8 @@ function Background(config, debug) {
     this.fishes = new Array();
     this.clouds = new Array();
 
+    // tune
     this.config.objects.water = getWaterY.call(this);
-
 
     function getWaterY() {
       var ratio = this.config.options.ratio_sky_water;
@@ -45,6 +45,7 @@ function Background(config, debug) {
   };
 
   this.draw = function() {
+    this.static.drawSky.call(this);
     this.static.drawSea.call(this);
     this.static.bottom.call(this);
     this.static.drawCrabsAndStars.call(this);
@@ -60,10 +61,7 @@ function Background(config, debug) {
     this.static.drawFrame.call(this);
   };
 
-  this._cache = {
-    crabs: [],
-    stars: []
-  };
+  this._cache = { crabs: [], stars: [] };
 
   this.static = new Object();
 
@@ -161,9 +159,25 @@ function Background(config, debug) {
     }
   };
 
+  this.static.drawSky = function() {
+    var ratio = this.config.options.ratio_sky_water,
+      w = this.canvas.width - 40,
+      h = Math.round((this.canvas.height - 80) * ratio),
+      x = 20, y = 60,
+      x1 = this.canvas.width/2, y1 = h/2 + 60, r1 = 70,
+      x2 = this.canvas.width/2, y2 = h/2 + 60, r2 = 120,
+      gradient = this.ctx.createRadialGradient(x1, y1, r1, x2, y2, r2);
+
+    gradient.addColorStop(0, "#DE1D6A");
+    gradient.addColorStop(0.75, "#1DDE23");
+    gradient.addColorStop(1, "#DED71D");
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(x, y, w, h);
+  };
+
   this.static.drawSea = function() {
     var w = this.canvas.width - 40,
-      h = this.canvas.height - 80,
+      h = this.canvas.height - this.config.objects.water - 20,
       gradient = this.ctx.createLinearGradient(0, 0, 0, h),
       y = this.config.objects.water;
 
@@ -171,9 +185,7 @@ function Background(config, debug) {
     gradient.addColorStop(.5,'rgb(70, 180, 224)');
     gradient.addColorStop(1,'rgb(25, 111, 194)');
     this.ctx.fillStyle = gradient;
-    this.ctx.rect(20, y, w, h);
-    this.ctx.fill();
-    //this.ctx.globalCompositeOperation = "xor";
+    this.ctx.fillRect(20, y, w, h);
   };
 
   this.static.bottom = function() {
