@@ -160,3 +160,10 @@ if(!Array.prototype.last) {
     }
   };
 }
+
+function rand(min, max, float_val) {
+  var val = min + (Math.random() * (max - min));
+  return typeof float_val === 'undefined'
+    ? Math.round(val)
+    : val.toFixed(float_val);
+}
