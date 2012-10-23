@@ -30,7 +30,7 @@ function Background(config, debug) {
 
     function getWaterY() {
       var ratio = this.config.options.ratio_sky_water;
-      return Math.round((this.canvas.height - (60 + 20)) * ratio);
+      return Math.round((this.canvas.height - (60 + 20)) * ratio) + 60;
     }
   };
 
@@ -164,14 +164,14 @@ function Background(config, debug) {
   this.static.drawSea = function() {
     var w = this.canvas.width - 40,
       h = this.canvas.height - 80,
-      gradient = this.ctx.createLinearGradient(0, 60, 0, h),
+      gradient = this.ctx.createLinearGradient(0, 0, 0, h),
       y = this.config.objects.water;
 
     gradient.addColorStop(0,'rgb(133, 227, 255)');
     gradient.addColorStop(.5,'rgb(70, 180, 224)');
     gradient.addColorStop(1,'rgb(25, 111, 194)');
     this.ctx.fillStyle = gradient;
-    this.ctx.roundRect(20, 60, w, h, 20, true, false);
+    this.ctx.roundRect(20, y, w, h, 20, true, false);
     //this.ctx.globalCompositeOperation = "xor";
   };
 
