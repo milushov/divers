@@ -164,13 +164,12 @@ function Background(config, debug) {
       w = this.canvas.width - 40,
       h = Math.round((this.canvas.height - 80) * ratio),
       x = 20, y = 60,
-      x1 = this.canvas.width/2, y1 = h/2 + 60, r1 = 70,
-      x2 = this.canvas.width/2, y2 = h/2 + 60, r2 = 120,
+      x1 = this.canvas.width/2, y1 = h/2 + 100 + 60, r1 = 0,
+      x2 = this.canvas.width/2, y2 = h/2 + 100 + 60, r2 = 500,
       gradient = this.ctx.createRadialGradient(x1, y1, r1, x2, y2, r2);
 
-    gradient.addColorStop(0, "#DE1D6A");
-    gradient.addColorStop(0.75, "#1DDE23");
-    gradient.addColorStop(1, "#DED71D");
+    gradient.addColorStop(0, "#ffffff");
+    gradient.addColorStop(0.75, "#87F1FF");
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(x, y, w, h);
   };
