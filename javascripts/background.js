@@ -171,7 +171,8 @@ function Background(config, debug) {
     gradient.addColorStop(.5,'rgb(70, 180, 224)');
     gradient.addColorStop(1,'rgb(25, 111, 194)');
     this.ctx.fillStyle = gradient;
-    this.ctx.roundRect(20, y, w, h, 20, true, false);
+    this.ctx.rect(20, y, w, h);
+    this.ctx.fill();
     //this.ctx.globalCompositeOperation = "xor";
   };
 
