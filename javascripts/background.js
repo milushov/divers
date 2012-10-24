@@ -7,11 +7,13 @@ function Background(config, debug) {
     Object.extend(this.config, {
       speed: {
         clouds: 10,
-        fishes: 30
+        fishes: 30,
+        waves: [2, 4, 6]
       },
 
       objects: {
-        wave1: 200
+        water: null,
+        waves: []
       },
 
       options: {
@@ -29,16 +31,24 @@ function Background(config, debug) {
 
     this.fishes = new Array();
     this.clouds = new Array();
+    this.waves = new Array();
 
     // tune
     this.config.objects.water = getWaterY.call(this);
+    this.config.objects.waves = getWavesY.call(this);
 
     this.startClouds();
+    this.startWaves();
   };
 
   function getWaterY() {
     var ratio = this.config.options.ratio_sky_water;
     return Math.round((this.canvas.height - (60 + 20)) * ratio) + 60;
+  }
+
+  function getWavesY() {
+    var water = this.config.objects.water;
+    return [water - 10, water, water + 10];
   }
 
   this.animate = function() {
@@ -54,6 +64,11 @@ function Background(config, debug) {
   this.draw = function() {
     this.static.drawSky.call(this);
     this.static.drawSea.call(this);
+
+    for (var i = 0; i < this.waves.length; ++i) {
+      this.waves[i].draw();
+    }
+
     this.static.bottom.call(this);
     this.static.drawCrabsAndStars.call(this);
 
@@ -222,6 +237,25 @@ function Background(config, debug) {
     this.ctx.fillRect(x, y, w, h);
   };
 
+  this.startWaves = function() {
+    var w = this.canvas.width,
+      water = this.config.objects.water,
+      positions = this.config.objects.waves,
+      waves = [
+        { i: images['wave1.png'], w: 25, h: 63, x: 0, y: positions[0] },
+        { i: images['wave2.png'], w: 50, h: 48, x: 0, y: positions[1] },
+        { i: images['wave3.png'], w: 24, h: 44, x: 0, y: positions[2] }
+      ], new_wave = {}, w = {};
+
+    for (var i = 0; i < waves.length; i++) {
+      w = waves[i];
+      new_wave = new Wave(w.x, w.y, w.w, w.h);
+      new_wave.setImage(i+1);
+      new_wave.move('left');
+      this.waves.push(new_wave);
+    }
+  };
+
   this.static.drawSea = function() {
     var w = this.canvas.width - 40,
       h = this.canvas.height - this.config.objects.water - 20,
@@ -265,7 +299,6 @@ var Cloud = (function(_super) {
   extend(Cloud, _super);
 
   function Cloud() {
-    this.wait = true;
     return Cloud.__super__.constructor.apply(this, arguments);
   };
 
@@ -282,7 +315,6 @@ var Cloud = (function(_super) {
         interval = 1000 / speed,
         w = bg.canvas.width;
 
-      console.log(speed);
       setInterval(function() {
         if(dir === 'left') {
           if(this.x < -50) {
@@ -302,4 +334,60 @@ var Cloud = (function(_super) {
   });
 
   return Cloud;
+})(Thing);
+
+
+var Wave = (function(_super) {
+  extend(Wave, _super);
+
+  function Wave() {
+    this.start_position = arguments[0];
+    this.width = arguments[2];
+    this.height = arguments[3];
+    return Wave.__super__.constructor.apply(this, arguments);
+  };
+
+  Object.extend(Wave.prototype, {
+    setImage: function(id) {
+      this.type = id || 1;
+      this.image = images['wave'+id+'.png'];
+      bg.ctx.drawImage(this.image, this.x, this.y);
+    },
+
+    move: function(dir) {
+      var speed = app.config.speed.waves[this.type-1] + rand(-2, 4),
+        interval = 1000 / speed,
+        start = this.start_position,
+        offset = this.width;
+
+      setInterval(function() {
+        if(dir === 'left') {
+          if(this.x > start - offset) {
+            this.x --;
+          } else {
+            this.x = start;
+          }
+        } else {
+          if(this.x < start + offset) {
+            this.x ++;
+          } else {
+            this.x = start;
+          }
+        }
+      }.bind(this), interval);
+    },
+
+    // overwrite prototype draw method
+    // for performance reasons should choose image with bigger size
+    draw: function() {
+      var w = bg.canvas.width,
+        count = Math.ceil(w / this.width) + 3;
+
+      for (var i = 0; i < count; ++i) {
+        bg.ctx.drawImage(this.image, this.x + this.width * i, this.y);
+      }
+    }
+  });
+
+  return Wave;
 })(Thing);
