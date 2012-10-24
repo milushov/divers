@@ -144,6 +144,7 @@ function Background(config, debug) {
     this.ctx.beginPath();
     this.ctx.moveTo(w*2, y);
 
+    w --;
     this.ctx.lineTo(w, y);
     this.ctx.lineTo(w, y + 60);
     this.ctx.lineTo(w*2 - 20 - r, y + 60);
