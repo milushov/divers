@@ -33,7 +33,7 @@ function Background(config, debug) {
     // tune
     this.config.objects.water = getWaterY.call(this);
 
-    this.initSkyObjects();
+    this.startClouds();
   };
 
   function getWaterY() {
@@ -82,7 +82,7 @@ function Background(config, debug) {
 
   this.static = new Object();
 
-  this.initSkyObjects = function() {
+  this.startClouds = function() {
     var w = this.canvas.width,
       h = this.config.objects.water - 60,
       x = 0, y = 60,
