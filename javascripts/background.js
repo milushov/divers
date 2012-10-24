@@ -5,6 +5,11 @@ function Background(config, debug) {
     console.log('bg init');
 
     Object.extend(this.config, {
+      speed: {
+        clouds: 10,
+        fishes: 30
+      },
+
       objects: {
         wave1: 200
       },
@@ -27,6 +32,8 @@ function Background(config, debug) {
 
     // tune
     this.config.objects.water = getWaterY.call(this);
+
+    this.initSkyObjects();
   };
 
   function getWaterY() {
@@ -50,12 +57,22 @@ function Background(config, debug) {
     this.static.bottom.call(this);
     this.static.drawCrabsAndStars.call(this);
 
-    for (var i = 0; i < this.fishes.length; ++i) {
-      this.fishes[i].draw();
+    for (var i = 0; i < this.clouds.length; ++i) {
+      if(this.clouds[i].behind_the_sun) {
+        this.clouds[i].draw(this.ctx);
+      }
     }
 
+    //this.drawSun();
+
     for (var i = 0; i < this.clouds.length; ++i) {
-      this.clouds[i].draw();
+      if(!this.clouds[i].behind_the_sun) {
+        this.clouds[i].draw(this.ctx);
+      }
+    }
+
+    for (var i = 0; i < this.fishes.length; ++i) {
+      this.fishes[i].draw(this.ctx);
     }
 
     this.static.drawFrame.call(this);
@@ -64,6 +81,32 @@ function Background(config, debug) {
   this._cache = { crabs: [], stars: [] };
 
   this.static = new Object();
+
+  this.initSkyObjects = function() {
+    var w = this.canvas.width,
+      h = this.config.objects.water - 60,
+      x = 0, y = 60,
+      ccb = rand(2,4), // clouds count behind
+      cc = rand(2,3), // clouds count front of sun
+      cloud = null,
+      dir = Math.round(Math.random()) ? 'left' : 'right';
+
+    for (var i = 0; i < ccb; ++i) {
+      cloud = new Cloud(rand(100, w), rand(70, 100));
+      cloud.behind_the_sun = true;
+      cloud.setImage(rand(1,2));
+      cloud.move(dir);
+      this.clouds.push(cloud);
+    }
+
+    for (var i = 0; i < cc; ++i) {
+      cloud = new Cloud(rand(100, w), rand(90, 110));
+      cloud.behind_the_sun = false;
+      cloud.setImage(rand(1,2));
+      cloud.move(dir);
+      this.clouds.push(cloud);
+    }
+  };
 
   this.static.drawFrame = function() {
     var w = this.canvas.width/2,
@@ -211,3 +254,47 @@ function Background(config, debug) {
     this.ctx.drawImage(right.i, right.x, right.y);
  }
 }
+
+
+var Cloud = (function(_super) {
+  extend(Cloud, _super);
+
+  function Cloud() {
+    this.wait = true;
+    return Cloud.__super__.constructor.apply(this, arguments);
+  };
+
+  Object.extend(Cloud.prototype, {
+    setImage: function(id) {
+      this.image = images['cloud'+id+'.png'];
+      //this.x = this.x - this.width / 2
+      //this.y = this.y - this.height / 2
+      bg.ctx.drawImage(this.image, this.x, this.y);
+    },
+
+    move: function(dir) {
+      var speed = app.config.speed.clouds + rand(-5, 10),
+        interval = 1000 / speed,
+        w = bg.canvas.width;
+
+      console.log(speed);
+      setInterval(function() {
+        if(dir === 'left') {
+          if(this.x < -50) {
+            this.x = w + 50;
+          } else {
+            this.x --;
+          }
+        } else {
+          if(this.x > w + 50) {
+            this.x = -50;
+          } else {
+            this.x ++;
+          }
+        }
+      }.bind(this), interval);
+    }
+  });
+
+  return Cloud;
+})(Thing);

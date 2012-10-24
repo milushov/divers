@@ -336,26 +336,6 @@ function Ai() {
 }
 
 
-var Thing = (function() {
-  function Thing(x, y) {
-    this.id = getId();
-    this.x = x;
-    this.y = y;
-  };
-
-  Object.extend(Thing.prototype, {
-    id: null,
-    x: 0,
-    y: 0,
-    draw: function() {
-      app.ctx.drawImage(this.image, this.x, this.y);
-    }
-  });
-
-  return Thing;
-})();
-
-
 var Star = (function(_super) {
   extend(Star, _super);
 
