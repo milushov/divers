@@ -329,7 +329,7 @@ function Ai() {
         }
       }
     } else {
-      throw new Error('divers not found');
+      throw new Error('all dievers died :-(');
       return false;
     }
   };
