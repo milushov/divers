@@ -63,7 +63,7 @@ function Background(config, debug) {
       }
     }
 
-    //this.drawSun();
+    this.drawSun();
 
     for (var i = 0; i < this.clouds.length; ++i) {
       if(!this.clouds[i].behind_the_sun) {
@@ -106,6 +106,10 @@ function Background(config, debug) {
       cloud.move(dir);
       this.clouds.push(cloud);
     }
+  };
+  
+  this.drawSun = function() {
+    this.ctx.drawImage(images['sun.png'], 100, 80);
   };
 
   this.static.drawFrame = function() {
