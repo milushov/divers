@@ -50,12 +50,12 @@ function Background(config, debug) {
 
   function getWavesY() {
     var water = this.config.objects.water;
-    return [water - 10, water, water + 10];
+    return [water - 15, water, water + 15];
   }
 
   function getIslandCoords() {
     var water = this.config.objects.water;
-    return [200, water - 47];
+    return [200, water - 53];
   }
 
   this.animate = function() {
@@ -255,9 +255,9 @@ function Background(config, debug) {
       water = this.config.objects.water,
       positions = this.config.objects.waves,
       waves = [
-        { i: images['wave1.png'], w: 25, h: 63, x: 0, y: positions[0] },
-        { i: images['wave2.png'], w: 50, h: 48, x: 0, y: positions[1] },
-        { i: images['wave3.png'], w: 24, h: 44, x: 0, y: positions[2] }
+        { i: images['wave1.png'], w: 271, h: 33, x: 0, y: positions[0] },
+        { i: images['wave2.png'], w: 247, h: 25, x: 0, y: positions[1] },
+        { i: images['wave3.png'], w: 295, h: 28, x: 0, y: positions[2] }
       ], new_wave = {}, w = {};
 
     for (var i = 0; i < waves.length; i++) {
@@ -286,13 +286,11 @@ function Background(config, debug) {
   this.static.drawSea = function() {
     var w = this.canvas.width - 40,
       h = this.canvas.height - this.config.objects.water - 20,
-      y = this.config.objects.water,
+      y = this.config.objects.water + 43,
       gradient = this.ctx.createLinearGradient(0, y, 0, h);
 
     gradient.addColorStop(0,'85e2ff');
-    gradient.addColorStop(.1,'85e2ff');
-    gradient.addColorStop(.2,'7cd9f8');
-    gradient.addColorStop(1,'1873c4');
+    gradient.addColorStop(1,'1b6bc1');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(20, y, w, h);
   };
