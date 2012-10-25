@@ -81,6 +81,10 @@ function Background(config, debug) {
 
     for (var i = 0; i < this.waves.length; ++i) {
       this.waves[i].draw();
+      // if wave is penultimate
+      if(i === this.waves.length - 2) {
+        this.static.drawBoat.call(this);
+      }
     }
 
     for (var i = 0; i < this.fishes.length; ++i) {
@@ -252,6 +256,13 @@ function Background(config, debug) {
       new_wave.move('left');
       this.waves.push(new_wave);
     }
+  };
+
+  this.static.drawBoat = function() {
+    var image = images['ship.png'],
+      x = this.config.objects.rope - 100,
+      y = this.config.objects.boat - 95;
+    this.ctx.drawImage(image, x, y);
   };
 
   this.static.drawSea = function() {
