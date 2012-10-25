@@ -8,7 +8,7 @@ function Background(config, debug) {
       speed: {
         clouds: 10,
         fishes: 30,
-        waves: [2, 4, 6]
+        waves: [2, 6, 10]
       },
 
       objects: {
@@ -356,7 +356,7 @@ var Wave = (function(_super) {
     },
 
     move: function(dir) {
-      var speed = app.config.speed.waves[this.type-1] + rand(-2, 4),
+      var speed = app.config.speed.waves[this.type-1] + rand(-1, 2),
         interval = 1000 / speed,
         start = this.start_position,
         offset = this.width;
