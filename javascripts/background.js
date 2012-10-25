@@ -130,7 +130,9 @@ function Background(config, debug) {
   };
   
   this.drawSun = function() {
-    this.ctx.drawImage(images['sun.png'], 100, 65);
+    var x = Math.ceil((this.canvas.width - 40) / 7) + 20,
+      y = Math.ceil((this.config.objects.water - 60)/3) + 60;
+    this.ctx.drawImage(images['sun.png'], x, y);
   };
 
   this.static.drawFrame = function() {
