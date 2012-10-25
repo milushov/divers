@@ -72,18 +72,10 @@ function Background(config, debug) {
     this.static.bottom.call(this);
     this.static.drawCrabsAndStars.call(this);
 
-    for (var i = 0; i < this.clouds.length; ++i) {
-      if(this.clouds[i].behind_the_sun) {
-        this.clouds[i].draw(this.ctx);
-      }
-    }
-
     this.drawSun();
 
     for (var i = 0; i < this.clouds.length; ++i) {
-      if(!this.clouds[i].behind_the_sun) {
-        this.clouds[i].draw(this.ctx);
-      }
+      this.clouds[i].draw(this.ctx);
     }
 
     for (var i = 0; i < this.fishes.length; ++i) {
@@ -99,23 +91,15 @@ function Background(config, debug) {
 
   this.startClouds = function() {
     var w = this.canvas.width,
-      h = this.config.objects.water - 60,
+      h = this.config.objects.water,
       x = 0, y = 60,
-      ccb = rand(2,4), // clouds count behind
-      cc = rand(2,3), // clouds count front of sun
+      // TODO make the count dependent on the width canvas
+      cc = rand(5,7), // clouds count
       cloud = null,
       dir = Math.round(Math.random()) ? 'left' : 'right';
 
-    for (var i = 0; i < ccb; ++i) {
-      cloud = new Cloud(rand(100, w), rand(70, 100));
-      cloud.behind_the_sun = true;
-      cloud.setImage(rand(1,2));
-      cloud.move(dir);
-      this.clouds.push(cloud);
-    }
-
     for (var i = 0; i < cc; ++i) {
-      cloud = new Cloud(rand(100, w), rand(90, 110));
+      cloud = new Cloud(rand(0, w), rand(60, h-50));
       cloud.behind_the_sun = false;
       cloud.setImage(rand(1,2));
       cloud.move(dir);
