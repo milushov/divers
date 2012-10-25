@@ -18,8 +18,7 @@ function Background(config, debug) {
       },
 
       options: {
-        ratio_sky_water: 1/6,
-        sand_height: 90,
+        sand_height: 80,
         crabs_count: 4,
         stars_count: 5
       }
@@ -39,6 +38,7 @@ function Background(config, debug) {
     this.config.objects.waves = getWavesY.call(this);
     this.config.objects.island = getIslandCoords.call(this);
 
+    this.wind = Math.round(Math.random()) ? 'left' : 'right';
     this.startClouds();
     this.startWaves();
   };
@@ -50,12 +50,14 @@ function Background(config, debug) {
 
   function getWavesY() {
     var water = this.config.objects.water;
-    return [water - 10, water, water + 10];
+    return [water - 15, water, water + 15];
   }
 
   function getIslandCoords() {
-    var water = this.config.objects.water;
-    return [200, water - 47];
+    var water = this.config.objects.water,
+      x = Math.ceil((this.canvas.width - 40) / 5) + 20,
+      y = water - 53;
+    return [x, y];
   }
 
   this.animate = function() {
@@ -118,7 +120,7 @@ function Background(config, debug) {
       // TODO make the count dependent on the width canvas
       cc = rand(5,7), // clouds count
       cloud = null,
-      dir = Math.round(Math.random()) ? 'left' : 'right';
+      dir = this.wind;
 
     for (var i = 0; i < cc; ++i) {
       cloud = new Cloud(rand(0, w), rand(60, h-50));
@@ -130,17 +132,19 @@ function Background(config, debug) {
   };
   
   this.drawSun = function() {
-    this.ctx.drawImage(images['sun.png'], 100, 65);
+    var x = Math.ceil((this.canvas.width - 40) / 7) + 20,
+      y = Math.ceil((this.config.objects.water - 60)/3) + 60;
+    this.ctx.drawImage(images['sun.png'], x, y);
   };
 
   this.static.drawFrame = function() {
-    var w = this.canvas.width/2,
+    var w = Math.floor(this.canvas.width/2),
       h = this.canvas.height,
       gradient = this.ctx.createLinearGradient(0, 0, 0, h),
       x = 0, y = 0, r = 20;
 
-    gradient.addColorStop(0,'01afd1');
-    gradient.addColorStop(1,'01519a');
+    gradient.addColorStop(0,'02b0cf');
+    gradient.addColorStop(1,'014f96');
 
     this.ctx.fillStyle = gradient;
 
@@ -165,7 +169,6 @@ function Background(config, debug) {
     this.ctx.beginPath();
     this.ctx.moveTo(w*2, y);
 
-    w --;
     this.ctx.lineTo(w, y);
     this.ctx.lineTo(w, y + 60);
     this.ctx.lineTo(w*2 - 20 - r, y + 60);
@@ -196,8 +199,8 @@ function Background(config, debug) {
       for (var i = 0; i < cc; ++i) {
         image = {};
         image.image = images['crab'+rand(1,2)+'.png'];
-        image.x = rand(left, right);
-        image.y = rand(ch - 20 - sand_height, ch - 20);
+        image.x = rand(left + 30, right - 30);
+        image.y = rand(ch - 20 - sand_height, ch - 40);
         this.ctx.drawImage(image.image, image.x, image.y);
         this._cache.crabs.push(image);
       }
@@ -233,8 +236,8 @@ function Background(config, debug) {
       w = this.canvas.width - 40,
       h = Math.round((this.canvas.height - 80) * ratio),
       x = 20, y = 60,
-      x1 = this.canvas.width/2, y1 = h/2 + 100 + 60, r1 = 0,
-      x2 = this.canvas.width/2, y2 = h/2 + 100 + 60, r2 = 500,
+      x1 = this.canvas.width/2, y1 = h/2 + 120 + 60, r1 = 0,
+      x2 = this.canvas.width/2, y2 = h/2 + 120 + 60, r2 = Math.round(w/2),
       gradient = this.ctx.createRadialGradient(x1, y1, r1, x2, y2, r2);
 
     gradient.addColorStop(0, "#ffffff");
@@ -255,44 +258,43 @@ function Background(config, debug) {
       water = this.config.objects.water,
       positions = this.config.objects.waves,
       waves = [
-        { i: images['wave1.png'], w: 25, h: 63, x: 0, y: positions[0] },
-        { i: images['wave2.png'], w: 50, h: 48, x: 0, y: positions[1] },
-        { i: images['wave3.png'], w: 24, h: 44, x: 0, y: positions[2] }
-      ], new_wave = {}, w = {};
+        { i: images['wave1.png'], w: 271, h: 33, x: -300, y: positions[0] },
+        { i: images['wave2.png'], w: 247, h: 25, x: -300, y: positions[1] },
+        { i: images['wave3.png'], w: 295, h: 28, x: -300, y: positions[2] }
+      ], new_wave = {}, w = {},
+      dir = this.wind;
 
     for (var i = 0; i < waves.length; i++) {
       w = waves[i];
       new_wave = new Wave(w.x, w.y, w.w, w.h);
       new_wave.setImage(i+1);
-      new_wave.move('left');
+      new_wave.move(dir);
       this.waves.push(new_wave);
     }
   };
 
   this.static.drawBoat = function() {
     var image = images['ship.png'],
-      x = this.config.objects.rope - 100,
-      y = this.config.objects.boat - 95;
+      x = this.config.objects.rope - 77,
+      y = this.config.objects.boat - 85;
     this.ctx.drawImage(image, x, y);
   };
 
   this.static.drawRope = function() {
     var image = images['rope.png'],
       x = this.config.objects.rope,
-      y = this.config.objects.water;
+      y = this.config.objects.water - 23;
     this.ctx.drawImage(image, x, y);
   };
 
   this.static.drawSea = function() {
     var w = this.canvas.width - 40,
       h = this.canvas.height - this.config.objects.water - 20,
-      y = this.config.objects.water,
+      y = this.config.objects.water + 43,
       gradient = this.ctx.createLinearGradient(0, y, 0, h);
 
     gradient.addColorStop(0,'85e2ff');
-    gradient.addColorStop(.1,'85e2ff');
-    gradient.addColorStop(.2,'7cd9f8');
-    gradient.addColorStop(1,'1873c4');
+    gradient.addColorStop(1,'1b6bc1');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(20, y, w, h);
   };

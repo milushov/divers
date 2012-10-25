@@ -17,8 +17,8 @@ window.onload = function() {
 
       objects: {
         bottom: 0, // y coord of bottom
-        rope: 0, // x coord of rope
-        boat: 170, // y coord of boat
+        rope: null, // x coord of rope
+        boat: null, // y coord of boat
         emersion_parts: null
       },
 
@@ -29,7 +29,8 @@ window.onload = function() {
         air_compressor: 3, // the amount of air per second (in litres)
         width_view: null, // will be set on start
         min_width: 762,
-        min_height: debug ? 650 : 685 // because my display small :-(
+        min_height: debug ? 650 : 685, // because my display small :-(
+        ratio_sky_water: 1/6
       }
     };
 
@@ -62,7 +63,11 @@ function App(config, debug) {
     this.ctx = this.canvas.getContext('2d');
     var objs = this.config.objects;
     objs.bottom = this.canvas.height - 70;
-    objs.rope = this.canvas.width - 150;
+    objs.rope = this.canvas.width - Math.round((this.canvas.width - 40) / 5) + 20;
+
+    var ratio = this.config.options.ratio_sky_water;
+    objs.boat = Math.round((this.canvas.height - (60 + 20)) * ratio) + 60;
+
     var em = objs.bottom - objs.boat; // emersion height
     objs.emersion_parts = {
       1: { y: objs.bottom - em * 1/3, time: debug ? 500 : 5000 },
