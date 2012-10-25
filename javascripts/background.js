@@ -259,12 +259,13 @@ function Background(config, debug) {
   this.static.drawSea = function() {
     var w = this.canvas.width - 40,
       h = this.canvas.height - this.config.objects.water - 20,
-      gradient = this.ctx.createLinearGradient(0, 0, 0, h),
-      y = this.config.objects.water;
+      y = this.config.objects.water,
+      gradient = this.ctx.createLinearGradient(0, y, 0, h);
 
-    gradient.addColorStop(0,'rgb(133, 227, 255)');
-    gradient.addColorStop(.5,'rgb(70, 180, 224)');
-    gradient.addColorStop(1,'rgb(25, 111, 194)');
+    gradient.addColorStop(0,'85e2ff');
+    gradient.addColorStop(.1,'85e2ff');
+    gradient.addColorStop(.2,'7cd9f8');
+    gradient.addColorStop(1,'1873c4');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(20, y, w, h);
   };
