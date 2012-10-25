@@ -124,7 +124,7 @@ function Background(config, debug) {
   };
   
   this.drawSun = function() {
-    this.ctx.drawImage(images['sun.png'], 100, 80);
+    this.ctx.drawImage(images['sun.png'], 100, 65);
   };
 
   this.static.drawFrame = function() {
