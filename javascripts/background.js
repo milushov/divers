@@ -54,8 +54,10 @@ function Background(config, debug) {
   }
 
   function getIslandCoords() {
-    var water = this.config.objects.water;
-    return [200, water - 53];
+    var water = this.config.objects.water,
+      x = Math.ceil((this.canvas.width - 40) / 5) + 20,
+      y = water - 53;
+    return [x, y];
   }
 
   this.animate = function() {
