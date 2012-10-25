@@ -87,11 +87,22 @@ function Background(config, debug) {
       }
     }
 
+    this.static.bottom.call(this);
+
     for (var i = 0; i < this.fishes.length; ++i) {
-      this.fishes[i].draw(this.ctx);
+      if(this.fishes[i].behind_the_rope) {
+        this.fishes[i].draw(this.ctx);
+      }
     }
 
-    this.static.bottom.call(this);
+    this.static.drawRope.call(this);
+
+    for (var i = 0; i < this.fishes.length; ++i) {
+      if(!this.fishes[i].behind_the_rope) {
+        this.fishes[i].draw(this.ctx);
+      }
+    }
+
     this.static.drawCrabsAndStars.call(this);
     this.static.drawFrame.call(this);
   };
@@ -262,6 +273,13 @@ function Background(config, debug) {
     var image = images['ship.png'],
       x = this.config.objects.rope - 100,
       y = this.config.objects.boat - 95;
+    this.ctx.drawImage(image, x, y);
+  };
+
+  this.static.drawRope = function() {
+    var image = images['rope.png'],
+      x = this.config.objects.rope,
+      y = this.config.objects.water;
     this.ctx.drawImage(image, x, y);
   };
 
