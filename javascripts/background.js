@@ -139,7 +139,7 @@ function Background(config, debug) {
   };
 
   this.static.drawFrame = function() {
-    var w = this.canvas.width/2,
+    var w = Math.floor(this.canvas.width/2),
       h = this.canvas.height,
       gradient = this.ctx.createLinearGradient(0, 0, 0, h),
       x = 0, y = 0, r = 20;
@@ -170,7 +170,6 @@ function Background(config, debug) {
     this.ctx.beginPath();
     this.ctx.moveTo(w*2, y);
 
-    w --;
     this.ctx.lineTo(w, y);
     this.ctx.lineTo(w, y + 60);
     this.ctx.lineTo(w*2 - 20 - r, y + 60);
