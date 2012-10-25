@@ -18,8 +18,7 @@ function Background(config, debug) {
       },
 
       options: {
-        ratio_sky_water: 1/6,
-        sand_height: 90,
+        sand_height: 80,
         crabs_count: 4,
         stars_count: 5
       }
@@ -200,8 +199,8 @@ function Background(config, debug) {
       for (var i = 0; i < cc; ++i) {
         image = {};
         image.image = images['crab'+rand(1,2)+'.png'];
-        image.x = rand(left, right);
-        image.y = rand(ch - 20 - sand_height, ch - 20);
+        image.x = rand(left + 30, right - 30);
+        image.y = rand(ch - 20 - sand_height, ch - 40);
         this.ctx.drawImage(image.image, image.x, image.y);
         this._cache.crabs.push(image);
       }
