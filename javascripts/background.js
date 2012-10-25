@@ -13,7 +13,8 @@ function Background(config, debug) {
 
       objects: {
         water: null,
-        waves: []
+        waves: [],
+        island: null
       },
 
       options: {
@@ -36,6 +37,7 @@ function Background(config, debug) {
     // tune
     this.config.objects.water = getWaterY.call(this);
     this.config.objects.waves = getWavesY.call(this);
+    this.config.objects.island = getIslandCoords.call(this);
 
     this.startClouds();
     this.startWaves();
@@ -51,6 +53,11 @@ function Background(config, debug) {
     return [water - 10, water, water + 10];
   }
 
+  function getIslandCoords() {
+    var water = this.config.objects.water;
+    return [200, water - 47];
+  }
+
   this.animate = function() {
     requestAnimFrame(this.animate.bind(this));
     this.clear();
@@ -64,6 +71,8 @@ function Background(config, debug) {
   this.draw = function() {
     this.static.drawSky.call(this);
     this.static.drawSea.call(this);
+
+    this.static.drawIsland.call(this);
 
     for (var i = 0; i < this.waves.length; ++i) {
       this.waves[i].draw();
@@ -219,6 +228,13 @@ function Background(config, debug) {
     gradient.addColorStop(0.75, "#87F1FF");
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(x, y, w, h);
+  };
+
+  this.static.drawIsland = function() {
+    var image = images['island.png'],
+      x = this.config.objects.island[0],
+      y = this.config.objects.island[1];
+    this.ctx.drawImage(image, x, y);
   };
 
   this.startWaves = function() {
