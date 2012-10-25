@@ -275,7 +275,7 @@ function Background(config, debug) {
 
   this.static.drawBoat = function() {
     var image = images['ship.png'],
-      x = this.config.objects.rope - 100,
+      x = this.config.objects.rope - 77,
       y = this.config.objects.boat - 85;
     this.ctx.drawImage(image, x, y);
   };
@@ -283,7 +283,7 @@ function Background(config, debug) {
   this.static.drawRope = function() {
     var image = images['rope.png'],
       x = this.config.objects.rope,
-      y = this.config.objects.water;
+      y = this.config.objects.water - 23;
     this.ctx.drawImage(image, x, y);
   };
 
