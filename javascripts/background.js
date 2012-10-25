@@ -133,8 +133,8 @@ function Background(config, debug) {
       gradient = this.ctx.createLinearGradient(0, 0, 0, h),
       x = 0, y = 0, r = 20;
 
-    gradient.addColorStop(0,'rgb(49, 104, 224)');
-    gradient.addColorStop(1,'rgb(49, 53, 224)');
+    gradient.addColorStop(0,'01afd1');
+    gradient.addColorStop(1,'01519a');
 
     this.ctx.fillStyle = gradient;
 
