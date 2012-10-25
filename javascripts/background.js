@@ -260,9 +260,9 @@ function Background(config, debug) {
       water = this.config.objects.water,
       positions = this.config.objects.waves,
       waves = [
-        { i: images['wave1.png'], w: 271, h: 33, x: 0, y: positions[0] },
-        { i: images['wave2.png'], w: 247, h: 25, x: 0, y: positions[1] },
-        { i: images['wave3.png'], w: 295, h: 28, x: 0, y: positions[2] }
+        { i: images['wave1.png'], w: 271, h: 33, x: -300, y: positions[0] },
+        { i: images['wave2.png'], w: 247, h: 25, x: -300, y: positions[1] },
+        { i: images['wave3.png'], w: 295, h: 28, x: -300, y: positions[2] }
       ], new_wave = {}, w = {},
       dir = this.wind;
 
