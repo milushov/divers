@@ -71,6 +71,11 @@ function Background(config, debug) {
   this.draw = function() {
     this.static.drawSky.call(this);
     this.static.drawSea.call(this);
+    this.drawSun();
+
+    for (var i = 0; i < this.clouds.length; ++i) {
+      this.clouds[i].draw(this.ctx);
+    }
 
     this.static.drawIsland.call(this);
 
@@ -78,19 +83,12 @@ function Background(config, debug) {
       this.waves[i].draw();
     }
 
-    this.static.bottom.call(this);
-    this.static.drawCrabsAndStars.call(this);
-
-    this.drawSun();
-
-    for (var i = 0; i < this.clouds.length; ++i) {
-      this.clouds[i].draw(this.ctx);
-    }
-
     for (var i = 0; i < this.fishes.length; ++i) {
       this.fishes[i].draw(this.ctx);
     }
 
+    this.static.bottom.call(this);
+    this.static.drawCrabsAndStars.call(this);
     this.static.drawFrame.call(this);
   };
 
