@@ -39,6 +39,7 @@ function Background(config, debug) {
     this.config.objects.waves = getWavesY.call(this);
     this.config.objects.island = getIslandCoords.call(this);
 
+    this.wind = Math.round(Math.random()) ? 'left' : 'right';
     this.startClouds();
     this.startWaves();
   };
@@ -120,7 +121,7 @@ function Background(config, debug) {
       // TODO make the count dependent on the width canvas
       cc = rand(5,7), // clouds count
       cloud = null,
-      dir = Math.round(Math.random()) ? 'left' : 'right';
+      dir = this.wind;
 
     for (var i = 0; i < cc; ++i) {
       cloud = new Cloud(rand(0, w), rand(60, h-50));
@@ -143,8 +144,8 @@ function Background(config, debug) {
       gradient = this.ctx.createLinearGradient(0, 0, 0, h),
       x = 0, y = 0, r = 20;
 
-    gradient.addColorStop(0,'01afd1');
-    gradient.addColorStop(1,'01519a');
+    gradient.addColorStop(0,'02b0cf');
+    gradient.addColorStop(1,'014f96');
 
     this.ctx.fillStyle = gradient;
 
@@ -262,13 +263,14 @@ function Background(config, debug) {
         { i: images['wave1.png'], w: 271, h: 33, x: 0, y: positions[0] },
         { i: images['wave2.png'], w: 247, h: 25, x: 0, y: positions[1] },
         { i: images['wave3.png'], w: 295, h: 28, x: 0, y: positions[2] }
-      ], new_wave = {}, w = {};
+      ], new_wave = {}, w = {},
+      dir = this.wind;
 
     for (var i = 0; i < waves.length; i++) {
       w = waves[i];
       new_wave = new Wave(w.x, w.y, w.w, w.h);
       new_wave.setImage(i+1);
-      new_wave.move('left');
+      new_wave.move(dir);
       this.waves.push(new_wave);
     }
   };
