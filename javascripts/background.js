@@ -237,8 +237,8 @@ function Background(config, debug) {
       w = this.canvas.width - 40,
       h = Math.round((this.canvas.height - 80) * ratio),
       x = 20, y = 60,
-      x1 = this.canvas.width/2, y1 = h/2 + 100 + 60, r1 = 0,
-      x2 = this.canvas.width/2, y2 = h/2 + 100 + 60, r2 = 500,
+      x1 = this.canvas.width/2, y1 = h/2 + 120 + 60, r1 = 0,
+      x2 = this.canvas.width/2, y2 = h/2 + 120 + 60, r2 = Math.round(w/2),
       gradient = this.ctx.createRadialGradient(x1, y1, r1, x2, y2, r2);
 
     gradient.addColorStop(0, "#ffffff");
