@@ -472,6 +472,7 @@ var Fish = (function(_super) {
 
     start: function(dir) {
       var speed = app.config.speed.fish,
+        speed = rand(speed-25, speed+25),
         interval = 1000 / speed,
         steps = 250,
         step = 0;
