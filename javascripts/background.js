@@ -134,14 +134,23 @@ function Background(config, debug) {
 
   this.startFishes = function() {
     var w = this.canvas.width;
-      new_fish = {};
+      new_fish = {},
+      fl = rand(2,4),
+      fr = rand(1,2);
 
-    new_fish = new Fish();
-    new_fish.setImage(rand(1,3));
-    new_fish.start();
-    this.fishes.push(new_fish);
+    for (var i = 0; i < fl; ++i) {
+      new_fish = new Fish();
+      new_fish.start('left');
+      this.fishes.push(new_fish);
+    }
+
+    for (var i = 0; i < fr; ++i) {
+      new_fish = new Fish();
+      new_fish.start('right');
+      this.fishes.push(new_fish);
+    }
   };
-  
+
   this.drawSun = function() {
     var x = Math.ceil((this.canvas.width - 40) / 7) + 20,
       y = Math.ceil((this.config.objects.water - 60)/3) + 60;
@@ -464,18 +473,15 @@ var Fish = (function(_super) {
   };
 
   Object.extend(Fish.prototype, {
-    setImage: function(id) {
-      this.type = id || 1;
-      this.image = images['fish'+id+'.png'];
-      bg.ctx.drawImage(this.image, this.x, this.y);
-    },
-
     start: function(dir) {
       var speed = app.config.speed.fish,
         speed = rand(speed-25, speed+25),
         interval = 1000 / speed,
         steps = 250,
-        step = 0;
+        step = 0,
+        dir = (dir === 'left') ? 'left' : 'right';
+
+      this.image = images['fish_'+dir+'_'+((dir==='left')?rand(1,2):1)+'.png'];
 
       setInterval(function() {
         var epoch = step/steps;
