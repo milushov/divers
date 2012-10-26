@@ -7,7 +7,7 @@ function Background(config, debug) {
     Object.extend(this.config, {
       speed: {
         clouds: 10,
-        fishes: 30,
+        fish: 30,
         waves: [2, 6, 10]
       },
 
@@ -41,6 +41,7 @@ function Background(config, debug) {
     this.wind = Math.round(Math.random()) ? 'left' : 'right';
     this.startClouds();
     this.startWaves();
+    this.startFishes();
   };
 
   function getWaterY() {
@@ -129,6 +130,16 @@ function Background(config, debug) {
       cloud.move(dir);
       this.clouds.push(cloud);
     }
+  };
+
+  this.startFishes = function() {
+    var w = this.canvas.width;
+      new_fish = {};
+
+    new_fish = new Fish();
+    new_fish.setImage(rand(1,3));
+    new_fish.start();
+    this.fishes.push(new_fish);
   };
   
   this.drawSun = function() {
@@ -420,4 +431,86 @@ var Wave = (function(_super) {
   });
 
   return Wave;
+})(Thing);
+
+
+var Fish = (function(_super) {
+  extend(Fish, _super);
+
+  function Fish() {
+    this.points = new Array();
+    dots = 'x14.5y1.94x7.38y1.19x3.16y1.19' +
+      'x7.46y3.84x2.23y2.76x1.13y4.05' +
+      'x1.72y1.51x1.44y1.2x1.27y1.53x1.05y1.64';
+
+    var data = dots.split('x'),
+      point = null,
+      width = bg.canvas.width,
+      height = bg.canvas.height;
+
+    // saving points to this
+    for (var i = 1; i < data.length; ++i){
+      var point = data[i].split('y');
+      this.points.push({
+        x: parseFloat((width/parseFloat(point[0])).toFixed(2)),
+        y: parseFloat((height/parseFloat(point[1])).toFixed(2))
+      });
+    }
+
+    this.x = this.points[0].x;
+    this.y = this.points[0].y;
+
+    return Fish.__super__.constructor.apply(this, [this.x, this.y]);
+  };
+
+  Object.extend(Fish.prototype, {
+    setImage: function(id) {
+      this.type = id || 1;
+      this.image = images['fish'+id+'.png'];
+      bg.ctx.drawImage(this.image, this.x, this.y);
+    },
+
+    start: function(dir) {
+      var speed = app.config.speed.fish,
+        interval = 1000 / speed,
+        steps = 250,
+        step = 0;
+
+      setInterval(function() {
+        var epoch = step/steps;
+        var point = getPointBetween.call(this, epoch, this.points);
+
+        this.x = point.x;
+        this.y = point.y;
+
+        step ++;
+      }.bind(this), interval);
+
+      // recursively determines the epoch point
+      function getPointBetween(epoch, points){
+        var foundPoints = [],
+          point = {x: 0, y: 0}; // tempt point
+
+        if (points.length > 1) {
+          for (var i = 0; i < points.length - 1; ++i) {
+            point = {};
+
+            //B(t) = P0 + t(P1 - P0)
+            point.x = points[i].x + epoch * (points[i + 1].x - points[i].x);
+            point.y = points[i].y + epoch * (points[i + 1].y - points[i].y);
+
+            foundPoints.push(point);
+          }
+
+          //Recurse with new points
+          return getPointBetween.call(this, epoch, foundPoints);
+        } else {
+          return points[0];
+        }
+      }
+
+    }
+  });
+
+  return Fish;
 })(Thing);
