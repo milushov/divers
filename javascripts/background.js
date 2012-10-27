@@ -443,13 +443,14 @@ var Wave = (function(_super) {
 })(Thing);
 
 
-var Fish = (function(_super) {
-  extend(Fish, _super);
+var BezierThing = (function(_super) {
+  extend(BezierThing, _super);
 
-  function Fish(dir) {
-    this.points = new Array();
-    var dir = (dir === 'left') ? 'left' : 'right',
-      dots = this.routes['fish'][dir][rand(0, this.routes['fish'][dir].length-1)];
+  function BezierThing(type, dir) {
+    var type = (type === 'fish') ? 'fish' : 'seagull',
+      dir = (dir === 'left') ? 'left' : 'right',
+      routes = this.routes[type][dir],
+      dots = routes[rand(0, routes.length-1)];
 
     this.image = images['fish_'+dir+'_'+((dir==='left')?rand(1,2):1)+'.png'];
 
@@ -457,6 +458,8 @@ var Fish = (function(_super) {
       point = null,
       width = bg.canvas.width, // FIXME proper width and height
       height = bg.canvas.height;
+
+    this.points = new Array();
 
     // saving points to this
     for (var i = 1; i < data.length; ++i){
@@ -470,10 +473,10 @@ var Fish = (function(_super) {
     this.x = this.points[0].x;
     this.y = this.points[0].y;
 
-    return Fish.__super__.constructor.apply(this, [this.x, this.y]);
+    return BezierThing.__super__.constructor.apply(this, [this.x, this.y]);
   };
 
-  Object.extend(Fish.prototype, {
+  Object.extend(BezierThing.prototype, {
     start: function(dir) {
       var speed = app.config.speed.fish,
         speed = rand(speed-10, speed+10),
@@ -534,7 +537,7 @@ var Fish = (function(_super) {
         ]
       },
 
-      seaguls: {
+      seagull: {
         left: [
           'x1.01y22.62x1.1y12.15x1.12y32.8x1.17y11.71x1.29y8.86x1.35y14.58x1.45y31.24x1.92y10.75x1.74y32.8x2.12y12.86x2.54y12.15x2.06y29.82x2.93y11.71x3.1y29.82x3.3y6.83x6.03y46.86x74.2y10.09',
         'x1.01y9.94x1.1y12.15x1.13y7.13x1.17y11.71x1.29y8.86x1.35y14.58x1.48y8x1.92y10.75x1.74y32.8x2.12y12.86x2.16y9.51x2.49y10.41x2.93y11.71x4.01y8.1x6.24y6.63x10.45y7.9x371y23.43',
@@ -550,5 +553,25 @@ var Fish = (function(_super) {
     }
   });
 
-  return Fish;
+  return BezierThing;
 })(Thing);
+
+var Fish = (function(_super) {
+  extend(Fish, _super);
+
+  function Fish(dir) {
+    return Fish.__super__.constructor.call(this, 'fish', dir);
+  };
+
+  return Fish;
+})(BezierThing);
+
+var Seagull = (function(_super) {
+  extend(Seagull, _super);
+
+  function Seagull(dir) {
+    return Seagull.__super__.constructor.call(this, 'seagull', dir);
+  };
+
+  return Seagull;
+})(BezierThing);
