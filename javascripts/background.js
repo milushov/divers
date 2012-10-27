@@ -82,6 +82,10 @@ function Background(config, debug) {
       this.clouds[i].draw(this.ctx);
     }
 
+    for (var i = 0; i < this.seagulls.length; ++i) {
+      this.seagulls[i].draw(this.ctx);
+    }
+
     this.static.drawIsland.call(this);
 
     for (var i = 0; i < this.waves.length; ++i) {
