@@ -23,7 +23,8 @@ body {
 #menu {
   z-index: 3;
   position: absolute;
-  top: 15px; right: 220px;
+  top: 15px;
+  width: 100%;
 }
 
 #menu #info {
@@ -38,6 +39,7 @@ body {
   overflow: hidden;
   min-width: 300px;
   height: 50px;
+  right: 30px;
 }
 
 #menu #buttons #add-diver {
@@ -76,4 +78,11 @@ body {
   background: black;
   opacity: .8;
   overflow: hidden;
+}
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
 }
