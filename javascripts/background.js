@@ -449,7 +449,7 @@ var Fish = (function(_super) {
   function Fish(dir) {
     this.points = new Array();
     var dir = (dir === 'left') ? 'left' : 'right',
-      dots = this.routes[dir][rand(0, this.routes[dir].length-1)];
+      dots = this.routes['fish'][dir][rand(0, this.routes['fish'][dir].length-1)];
 
     this.image = images['fish_'+dir+'_'+((dir==='left')?rand(1,2):1)+'.png'];
 
