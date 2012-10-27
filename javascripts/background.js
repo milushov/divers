@@ -139,14 +139,14 @@ function Background(config, debug) {
       fr = rand(1,2);
 
     for (var i = 0; i < fl; ++i) {
-      new_fish = new Fish();
-      new_fish.start('left');
+      new_fish = new Fish('left');
+      new_fish.start();
       this.fishes.push(new_fish);
     }
 
     for (var i = 0; i < fr; ++i) {
-      new_fish = new Fish();
-      new_fish.start('right');
+      new_fish = new Fish('right');
+      new_fish.start();
       this.fishes.push(new_fish);
     }
   };
@@ -446,15 +446,16 @@ var Wave = (function(_super) {
 var Fish = (function(_super) {
   extend(Fish, _super);
 
-  function Fish() {
+  function Fish(dir) {
     this.points = new Array();
-    dots = 'x14.5y1.94x7.38y1.19x3.16y1.19' +
-      'x7.46y3.84x2.23y2.76x1.13y4.05' +
-      'x1.72y1.51x1.44y1.2x1.27y1.53x1.05y1.64';
+    var dir = (dir === 'left') ? 'left' : 'right',
+      dots = this.routes[dir][rand(0, this.routes[dir].length-1)];
+
+    this.image = images['fish_'+dir+'_'+((dir==='left')?rand(1,2):1)+'.png'];
 
     var data = dots.split('x'),
       point = null,
-      width = bg.canvas.width,
+      width = bg.canvas.width, // FIXME proper width and height
       height = bg.canvas.height;
 
     // saving points to this
@@ -475,13 +476,10 @@ var Fish = (function(_super) {
   Object.extend(Fish.prototype, {
     start: function(dir) {
       var speed = app.config.speed.fish,
-        speed = rand(speed-25, speed+25),
+        speed = rand(speed-10, speed+10),
         interval = 1000 / speed,
         steps = 250,
-        step = 0,
-        dir = (dir === 'left') ? 'left' : 'right';
-
-      this.image = images['fish_'+dir+'_'+((dir==='left')?rand(1,2):1)+'.png'];
+        step = 0;
 
       setInterval(function() {
         var epoch = step/steps;
@@ -515,7 +513,24 @@ var Fish = (function(_super) {
           return points[0];
         }
       }
+    },
 
+    routes: {
+      left: [
+        'x1.02y12.15x1.2y7.72x1.05y2.28x1.3y2.86x1.83y3.42x1.51y1.94x1.07y1.67x1.08y1.3x1.36y1.13x1.93y1.19x1.43y1.55x2.32y1.6x2.14y1.98x2.11y4.23x3y4.82x3.16y1.91x2.82y1.38x1.69y1.67x2.7y1.15x6.35y1.08x11.43y1.42x38.1y1.34',
+        'x1.07y1.85x1.29y1.1x1.62y1.23x1.4y1.52x1.66y1.81x1.18y2.65x1.75y6.37x1.32y7.54x2.65y9.94x2.6y3.51x1.66y2.79x1.91y1.79x3.15y1.2x1.86y1.15x4.48y1.75x16.93y1.4x24.79y1.96',
+        'x1.01y1.14x1.56y1.11x1.16y1.4x1.34y1.87x1.14y2.52x1y3.26x1.58y3.31x2.42y3.42x1.46y2.32x1.61y1.75x2.39y1.56x3.4y2.25x5.67y3.04x4.61y1.36x8.77y2.1x14.17y1.13x184.25y3',
+        'x1.04y1.33x1.11y1.13x1.66y1.09x1.39y1.36x1.25y1.94x1.71y7.27x2.15y1.89x2.3y1.2x4.59y1.06x76.7y1.25',
+        'x1.05y1.92x1.22y1.77x1.29y5.7x2.05y1.18x3.37y1.61x2.57y3x172.5y4.02'
+      ],
+
+      right: [
+        'x21.2y1.24x8.71y2.6x3.16y1.19x2.8y2.13x2.36y3.17x4.1y2.69x2.01y1.22x1.4y2.34x1.42y4.4x1.09y1.52x1.05y1.95',
+        'x17.89y2.53x6.64y1.09x2.79y1.06x5.92y1.45x3.43y1.73x28.38y4.02x2.88y6.19x2.84y2.24x2.42y1.2x2.04y2.52x2.02y1.09x1.56y1.45x1.22y2.33x1.59y3.25x1.68y1.85x1.3y1.21x1.16y1.6x1.06y1.19x1y1.48',
+        'x84.56y1.11x4.53y1.07x8.01y1.44x2.56y1.17x23.06y3x2.7y1.64x2.05y2.24x1.85y1.26x1.56y1.04x1.18y1.11x1.22y1.43x1.47y1.82x1.19y2.85x1.08y2.38x1.05y1.85x1.05y1.19x1.03y1.08x1y1.15',
+        'x36.06y7.29x7.38y1.19x3.16y1.19x3.19y1.63x2.56y2.54x1.62y4x1.98y1.53x1.44y1.2x1.18y1.2x1.02y1.1',
+        'x144.25y2.08x8.01y5.05x2.79y2.82x6.14y1.74x2.66y1.5x1.58y1.93x1.19y1.99x1.44y1.2x1.18y1.2x1.01y1.78'
+      ]
     }
   });
 
