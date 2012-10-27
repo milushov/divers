@@ -249,6 +249,11 @@ function App(config, debug) {
       images[key].src = __images[i];
     }
   };
+
+  this.showResultsPanel = function() {
+    var panel = $('#info');
+      
+  };
 };
 
 
