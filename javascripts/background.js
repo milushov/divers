@@ -552,3 +552,13 @@ var BezierThing = (function(_super) {
 
   return BezierThing;
 })(Thing);
+
+var Fish = (function(_super) {
+  extend(Fish, _super);
+
+  function Fish() {
+    return Fish.__super__.constructor.apply(this, arguments);
+  };
+
+  return Fish;
+})(BezierThing);
