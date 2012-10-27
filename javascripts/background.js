@@ -30,6 +30,7 @@ function Background(config, debug) {
     this.ctx = this.canvas.getContext('2d');
 
     this.fishes = new Array();
+    this.seagulls = new Array();
     this.clouds = new Array();
     this.waves = new Array();
 
@@ -42,6 +43,7 @@ function Background(config, debug) {
     this.startClouds();
     this.startWaves();
     this.startFishes();
+    this.startSeagulls();
   };
 
   function getWaterY() {
@@ -149,6 +151,14 @@ function Background(config, debug) {
       new_fish.start();
       this.fishes.push(new_fish);
     }
+  };
+
+  this.startSeagulls = function() {
+    var new_gull = {};
+
+    new_gull = new Seagull('left');
+    new_gull.start();
+    this.seagulls.push(new_gull);
   };
 
   this.drawSun = function() {
@@ -452,7 +462,9 @@ var BezierThing = (function(_super) {
       routes = this.routes[type][dir],
       dots = routes[rand(0, routes.length-1)];
 
-    this.image = images['fish_'+dir+'_'+((dir==='left')?rand(1,2):1)+'.png'];
+    this.image = (type === 'fish')
+      ? images['fish_'+dir+'_'+((dir==='left')?rand(1,2):1)+'.png']
+      : images['seaguls.png']
 
     var data = dots.split('x'),
       point = null,
