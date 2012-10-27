@@ -443,10 +443,10 @@ var Wave = (function(_super) {
 })(Thing);
 
 
-var Fish = (function(_super) {
-  extend(Fish, _super);
+var BezierThing = (function(_super) {
+  extend(BezierThing, _super);
 
-  function Fish(dir) {
+  function BezierThing(dir) {
     this.points = new Array();
     var dir = (dir === 'left') ? 'left' : 'right',
       dots = this.routes['fish'][dir][rand(0, this.routes['fish'][dir].length-1)];
@@ -470,10 +470,10 @@ var Fish = (function(_super) {
     this.x = this.points[0].x;
     this.y = this.points[0].y;
 
-    return Fish.__super__.constructor.apply(this, [this.x, this.y]);
+    return BezierThing.__super__.constructor.apply(this, [this.x, this.y]);
   };
 
-  Object.extend(Fish.prototype, {
+  Object.extend(BezierThing.prototype, {
     start: function(dir) {
       var speed = app.config.speed.fish,
         speed = rand(speed-10, speed+10),
@@ -550,5 +550,5 @@ var Fish = (function(_super) {
     }
   });
 
-  return Fish;
+  return BezierThing;
 })(Thing);
