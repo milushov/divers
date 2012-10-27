@@ -221,31 +221,6 @@ function App(config, debug) {
     this.info.count.innerHTML = this.stars_on_board;
   };
 
-  this.load_old = function(act) { /* if set act, we skip loading */
-    if(act || __images.length === 0) return false;
-
-    var cover = document.createElement('div'),
-      wwh = window.wwh(),
-      images = __images,
-      counter = 0;
-
-    cover.id = 'cover';
-    cover.style.width = wwh[0]+'px';
-    cover.style.height = wwh[1]+'px';
-    $('body').appendChild(cover);
-
-    for (var i = 0; i < images.length; ++i) {
-      var img = new Image();
-      img.onload = function() {
-        counter ++;
-        if(counter === images.length - 1) {
-          $('body').removeChild($('#cover'));
-        }
-      }
-      img.src = images[i];
-    }
-  };
-
   this.load = function(callback, act) {
     if(act || __images.length === 0) return false;
 
