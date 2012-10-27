@@ -99,8 +99,8 @@ function App(config, debug) {
     this.stars_on_board = 0;
     this.stars_rating = 0;
     this.info = {
-      rating: $('#rating'),
-      count: $('#count')
+      rating: $('#rating span'),
+      count: $('#count span')
     };
   };
 
@@ -217,8 +217,10 @@ function App(config, debug) {
   };
 
   this.updateRating = function() {
-    this.info.rating.innerHTML = this.stars_rating;
-    this.info.count.innerHTML = this.stars_on_board;
+    // if first update
+    if(!this.stars_on_board.length) this.showResultsPanel();
+    this.info.rating.innerText = this.stars_rating;
+    this.info.count.innerText = this.stars_on_board;
   };
 
   this.load = function(callback, act) {
@@ -251,8 +253,12 @@ function App(config, debug) {
   };
 
   this.showResultsPanel = function() {
-    var panel = $('#info');
-      
+    var info = $('#info');
+    info.children[0].style.display = 'none';
+    info.style.marginTop = '-10px';
+    info.style.minWidth = '175px';
+    info.children[1].style.display = 'block';
+    info.children[2].style.display = 'block';
   };
 };
 

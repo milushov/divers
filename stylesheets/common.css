@@ -32,6 +32,25 @@ body {
   overflow: hidden;
   min-width: 300px;
   height: 50px;
+  text-shadow: 1px 1px 1px #333;
+  margin-left: 30px;
+  color: #ffffe3;
+}
+
+#menu #info #greeting {
+  overflow: hidden;
+  min-width: 300px;
+  height: 50px;
+  font-size: 23px;
+}
+
+#rating, #count {
+  font-size: 20px;
+}
+
+#rating span, #count span {
+  margin-left: 10px;
+  /*font-weight: bold;*/
 }
 
 #menu #buttons {
@@ -40,16 +59,6 @@ body {
   min-width: 300px;
   height: 50px;
   right: 30px;
-}
-
-#menu #greeting {
-  overflow: hidden;
-  min-width: 300px;
-  height: 50px;
-  margin-left: 30px;
-  color: #ffffe3;
-  font-size: 23px;
-  text-shadow: 1px 1px 1px #333;
 }
 
 #menu #buttons #add-diver {
