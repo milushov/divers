@@ -562,3 +562,13 @@ var Fish = (function(_super) {
 
   return Fish;
 })(BezierThing);
+
+var Seagull = (function(_super) {
+  extend(Seagull, _super);
+
+  function Seagull() {
+    return Seagull.__super__.constructor.apply(this, arguments);
+  };
+
+  return Seagull;
+})(BezierThing);
