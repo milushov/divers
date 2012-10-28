@@ -461,8 +461,8 @@ var BezierThing = (function(_super) {
   extend(BezierThing, _super);
 
   function BezierThing(type, dir) {
-    var type = (type === 'fish') ? 'fish' : 'seagull',
-      dir = (dir === 'left') ? 'left' : 'right',
+    this.type = (type === 'fish') ? 'fish' : 'seagull';
+    var dir = (dir === 'left') ? 'left' : 'right',
       routes = this.routes[type][dir],
       dots = routes[rand(0, routes.length-1)];
 
@@ -500,14 +500,23 @@ var BezierThing = (function(_super) {
         steps = 250,
         step = 0;
 
-      setInterval(function() {
+      var intr = setInterval(function() {
         var epoch = step/steps;
-        var point = getPointBetween.call(this, epoch, this.points);
+        if(epoch < 1) {
+          var point = getPointBetween.call(this, epoch, this.points);
 
-        this.x = point.x;
-        this.y = point.y;
+          this.x = point.x;
+          this.y = point.y;
 
-        step ++;
+          step ++;
+        } else {
+          clearInterval(intr);
+          if(this.type === 'fish') {
+            bg.fishes.splice(bg.fishes.indexOf(this), 1);
+          } else if(this.type === 'seagull') {
+            bg.seagulls.splice(bg.seagulls.indexOf(this), 1);
+          }
+        }
       }.bind(this), interval);
 
       // recursively determines the epoch point
