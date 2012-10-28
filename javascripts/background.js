@@ -158,6 +158,14 @@ function Background(config, debug) {
     }
   };
 
+  this.startOneFish = function() {
+    var dir = Math.round(Math.random()) ? 'left' : 'right',
+      new_fish = new Fish(dir);
+
+    new_fish.start();
+    this.fishes.push(new_fish);
+  };
+
   this.startSeagulls = function() {
     var new_gull = {};
 
@@ -514,6 +522,7 @@ var BezierThing = (function(_super) {
           clearInterval(intr);
           if(this.type === 'fish') {
             bg.fishes.splice(bg.fishes.indexOf(this), 1);
+            bg.startOneFish();
           } else if(this.type === 'seagull') {
             bg.seagulls.splice(bg.seagulls.indexOf(this), 1);
             bg.startSeagulls();
