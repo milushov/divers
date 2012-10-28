@@ -107,18 +107,20 @@ function App(config, debug) {
   };
 
   this.addStar = function(event) {
-    var x = event.layerX || event.offsetX;
-    var y = event.layerY || event.offsetY;
-    var rating = Math.round(Math.random()*9+1);
-    var new_star = new Star(x, y, 46, 43);
+    var x = event.layerX || event.offsetX,
+      y = event.layerY || event.offsetY,
+      rating = Math.round(Math.random()*9+1),
+      new_star = new Star(x, y, 46, 43);
+
     new_star.setImage(rating);
     app.stars.push(new_star);
   };
 
   this.addDiver = function() {
-    var x = app.config.objects.rope;
-    var y = app.config.objects.boat;
-    var new_diver = new Diver(x, y);
+    var x = app.config.objects.rope,
+      y = app.config.objects.boat,
+      new_diver = new Diver(x, y);
+
     new_diver.setImage('up');
     new_diver.ducking();
     new_diver.breathe();
@@ -278,8 +280,6 @@ function Ai() {
           }
         }
       }
-
-
 
     }.bind(this), interval);
   };
