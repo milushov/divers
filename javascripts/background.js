@@ -186,8 +186,8 @@ function Background(config, debug) {
       gradient = this.ctx.createLinearGradient(0, 0, 0, h),
       x = 0, y = 0, r = 20;
 
-    gradient.addColorStop(0,'02b0cf');
-    gradient.addColorStop(1,'014f96');
+    gradient.addColorStop(0,'#02b0cf');
+    gradient.addColorStop(1,'#014f96');
 
     this.ctx.fillStyle = gradient;
 
@@ -336,8 +336,8 @@ function Background(config, debug) {
       y = this.config.objects.water + 43,
       gradient = this.ctx.createLinearGradient(0, y, 0, h);
 
-    gradient.addColorStop(0,'85e2ff');
-    gradient.addColorStop(1,'1b6bc1');
+    gradient.addColorStop(0,'#85e2ff');
+    gradient.addColorStop(1,'#1b6bc1');
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(20, y, w, h);
   };
