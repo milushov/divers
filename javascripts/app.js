@@ -241,7 +241,8 @@ function App(config, debug) {
       <span id="load_percent">0%</span>';
     $('body').appendChild(cover);
 
-    var load_percent = $('#load_percent');
+    var load_percent = $('#load_percent'),
+      prct = '';
 
     images = new Object();
 
@@ -252,9 +253,12 @@ function App(config, debug) {
       images[key].onload = function() {
         counter ++;
 
-        load_percent.innerHTML = (parseFloat((counter/__images.length).toFixed(2)) * 100).toFixed() + '%';
+        prct = (parseFloat((counter/__images.length).toFixed(2)) * 100).toFixed() + '%';
+        load_percent.innerHTML =  prct;
+        document.title =  prct;
 
-        if(counter === __images.length - 1) {
+        if(counter === __images.length) {
+          document.title = 'Водолазы';
           $('body').removeChild(cover);
           callback.call();
         }
