@@ -24,7 +24,7 @@ body {
   z-index: 3;
   position: absolute;
   top: 15px;
-  width: 100%;
+  /*width: 100%;*/
 }
 
 #menu #info {

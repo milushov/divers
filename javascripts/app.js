@@ -76,6 +76,8 @@ function App(config, debug) {
     }
     this.config.options.width_view = this.canvas.width * 1/3;
 
+    $('#menu').style.width = this.canvas.width + 'px';// get it!!1
+
     /* this is NOT jQuery :-) */
     $('#add-diver').addEventListener('click',
       function(){ app.addDiver.apply(this) }
