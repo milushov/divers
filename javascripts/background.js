@@ -8,6 +8,7 @@ function Background(config, debug) {
       speed: {
         clouds: 10,
         fish: 30,
+        seagull: 10,
         waves: [2, 6, 10]
       },
 
@@ -494,7 +495,7 @@ var BezierThing = (function(_super) {
 
   Object.extend(BezierThing.prototype, {
     start: function(dir) {
-      var speed = app.config.speed.fish,
+      var speed = app.config.speed[this.type],
         speed = rand(speed-10, speed+10),
         interval = 1000 / speed,
         steps = 250,
@@ -515,6 +516,7 @@ var BezierThing = (function(_super) {
             bg.fishes.splice(bg.fishes.indexOf(this), 1);
           } else if(this.type === 'seagull') {
             bg.seagulls.splice(bg.seagulls.indexOf(this), 1);
+            bg.startSeagulls();
           }
         }
       }.bind(this), interval);
