@@ -23,7 +23,8 @@ body {
 #menu {
   z-index: 3;
   position: absolute;
-  top: 15px; right: 220px;
+  top: 15px;
+  width: 100%;
 }
 
 #menu #info {
@@ -31,6 +32,25 @@ body {
   overflow: hidden;
   min-width: 300px;
   height: 50px;
+  text-shadow: 1px 1px 1px #333;
+  margin-left: 30px;
+  color: #ffffe3;
+}
+
+#menu #info #greeting {
+  overflow: hidden;
+  min-width: 300px;
+  height: 50px;
+  font-size: 23px;
+}
+
+#rating, #count {
+  font-size: 20px;
+}
+
+#rating span, #count span {
+  margin-left: 10px;
+  /*font-weight: bold;*/
 }
 
 #menu #buttons {
@@ -38,6 +58,7 @@ body {
   overflow: hidden;
   min-width: 300px;
   height: 50px;
+  margin-right: 30px;
 }
 
 #menu #buttons #add-diver {
@@ -76,4 +97,11 @@ body {
   background: black;
   opacity: .8;
   overflow: hidden;
+}
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
 }

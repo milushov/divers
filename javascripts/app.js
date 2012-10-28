@@ -17,8 +17,8 @@ window.onload = function() {
 
       objects: {
         bottom: 0, // y coord of bottom
-        rope: 0, // x coord of rope
-        boat: 170, // y coord of boat
+        rope: null, // x coord of rope
+        boat: null, // y coord of boat
         emersion_parts: null
       },
 
@@ -29,7 +29,8 @@ window.onload = function() {
         air_compressor: 3, // the amount of air per second (in litres)
         width_view: null, // will be set on start
         min_width: 762,
-        min_height: debug ? 650 : 685 // because my display small :-(
+        min_height: debug ? 650 : 685, // because my display small :-(
+        ratio_sky_water: 1/6
       }
     };
 
@@ -62,7 +63,11 @@ function App(config, debug) {
     this.ctx = this.canvas.getContext('2d');
     var objs = this.config.objects;
     objs.bottom = this.canvas.height - 70;
-    objs.rope = this.canvas.width - 150;
+    objs.rope = this.canvas.width - Math.round((this.canvas.width - 40) / 5) + 20;
+
+    var ratio = this.config.options.ratio_sky_water;
+    objs.boat = Math.round((this.canvas.height - (60 + 20)) * ratio) + 60;
+
     var em = objs.bottom - objs.boat; // emersion height
     objs.emersion_parts = {
       1: { y: objs.bottom - em * 1/3, time: debug ? 500 : 5000 },
@@ -94,8 +99,8 @@ function App(config, debug) {
     this.stars_on_board = 0;
     this.stars_rating = 0;
     this.info = {
-      rating: $('#rating'),
-      count: $('#count')
+      rating: $('#rating span'),
+      count: $('#count span')
     };
   };
 
@@ -212,33 +217,10 @@ function App(config, debug) {
   };
 
   this.updateRating = function() {
-    this.info.rating.innerHTML = this.stars_rating;
-    this.info.count.innerHTML = this.stars_on_board;
-  };
-
-  this.load_old = function(act) { /* if set act, we skip loading */
-    if(act || __images.length === 0) return false;
-
-    var cover = document.createElement('div'),
-      wwh = window.wwh(),
-      images = __images,
-      counter = 0;
-
-    cover.id = 'cover';
-    cover.style.width = wwh[0]+'px';
-    cover.style.height = wwh[1]+'px';
-    $('body').appendChild(cover);
-
-    for (var i = 0; i < images.length; ++i) {
-      var img = new Image();
-      img.onload = function() {
-        counter ++;
-        if(counter === images.length - 1) {
-          $('body').removeChild($('#cover'));
-        }
-      }
-      img.src = images[i];
-    }
+    // if first update
+    if(!this.stars_on_board.length) this.showResultsPanel();
+    this.info.rating.innerText = this.stars_rating;
+    this.info.count.innerText = this.stars_on_board;
   };
 
   this.load = function(callback, act) {
@@ -268,6 +250,15 @@ function App(config, debug) {
 
       images[key].src = __images[i];
     }
+  };
+
+  this.showResultsPanel = function() {
+    var info = $('#info');
+    info.children[0].style.display = 'none';
+    info.style.marginTop = '-10px';
+    info.style.minWidth = '175px';
+    info.children[1].style.display = 'block';
+    info.children[2].style.display = 'block';
   };
 };
 
@@ -329,31 +320,11 @@ function Ai() {
         }
       }
     } else {
-      throw new Error('divers not found');
+      throw new Error('all dievers died :-(');
       return false;
     }
   };
 }
-
-
-var Thing = (function() {
-  function Thing(x, y) {
-    this.id = getId();
-    this.x = x;
-    this.y = y;
-  };
-
-  Object.extend(Thing.prototype, {
-    id: null,
-    x: 0,
-    y: 0,
-    draw: function() {
-      app.ctx.drawImage(this.image, this.x, this.y);
-    }
-  });
-
-  return Thing;
-})();
 
 
 var Star = (function(_super) {
