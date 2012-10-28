@@ -480,19 +480,35 @@ var BezierThing = (function(_super) {
       : images['seaguls.png']
 
     var data = dots.split('x'),
-      point = null,
-      width = bg.canvas.width, // FIXME proper width and height
-      height = bg.canvas.height;
+      point = null, width = null, height = null,
+      frame = 60 + 20,
+      sky = Math.round((bg.canvas.height - frame) / 6),
+      sand = bg.config.options.sand_height;
+
+    if(this.type === 'fish') {
+      width = bg.canvas.width;
+      height = bg.canvas.height - frame - sky - sand;
+    } else if(this.type === 'seagull') {
+      width = bg.canvas.width;
+      height = sky;
+    }
 
     this.points = new Array();
 
     // saving points to this
     for (var i = 1; i < data.length; ++i){
       var point = data[i].split('y');
-      this.points.push({
-        x: parseFloat((width/parseFloat(point[0])).toFixed(2)),
-        y: parseFloat((height/parseFloat(point[1])).toFixed(2))
-      });
+      if(this.type === 'fish') {
+        this.points.push({
+          x: parseFloat((width/parseFloat(point[0])).toFixed(2)),
+          y: parseFloat((height/parseFloat(point[1])).toFixed(2)) + 60 + sky
+        });
+      } else if(this.type === 'seagull') {
+        this.points.push({
+          x: parseFloat((width/parseFloat(point[0])).toFixed(2)),
+          y: parseFloat((height/parseFloat(point[1])).toFixed(2)) + 60
+        });
+      }
     }
 
     this.x = this.points[0].x;
