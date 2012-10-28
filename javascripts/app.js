@@ -236,7 +236,12 @@ function App(config, debug) {
     cover.id = 'cover';
     cover.style.width = wwh()[0]+'px';
     cover.style.height = wwh()[1]+'px';
+    cover.innerHTML = ' \
+      <span>Загружено изображений:</span> \
+      <span id="load_percent">0%</span> \
+    ';
     $('body').appendChild(cover);
+    var load_percent = $('#load_percent');
 
     images = new Object();
 
@@ -246,8 +251,9 @@ function App(config, debug) {
 
       images[key].onload = function() {
         counter ++;
+        load_percent.innerText = (parseFloat((counter/__images.length).toFixed(2)) * 100).toFixed() + '%';
         if(counter === __images.length - 1) {
-          $('body').removeChild(cover);
+          //$('body').removeChild(cover);
           callback.call();
         }
       }

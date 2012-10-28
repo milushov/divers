@@ -99,6 +99,19 @@ body {
   overflow: hidden;
 }
 
+#cover span{
+  position: relative;
+  color: white;
+  width: 300px;
+  font-size: 40px;
+  top: 40%;
+  left: 40%;
+}
+
+#cover #load_percent {
+  margin-left: 10px;
+}
+
 .clearfix:after {
   content: ".";
   display: block;
