@@ -373,15 +373,20 @@ var Star = (function(_super) {
         amplitude = Math.round(Math.random()*10+3),
         rand_botton = app.config.objects.bottom +
         Math.round(Math.random()*20)-10;
-      var intr = setInterval(function() {
+      this.intr_id = setInterval(function() {
         if(this.y <= rand_botton) {
           startX += .1;
           this.x = position + Math.sin(startX) * amplitude;
           this.y ++;
         } else {
-          clearInterval(intr);
+          this.stop();
         }
       }.bind(this), interval);
+    },
+
+    stop: function() {
+      clearInterval(this.intr_id);
+      this.intr_id = null;
     }
   });
 
@@ -708,6 +713,7 @@ var Diver = (function(_super) {
       }
 
       star.wait = false;
+      star.stop();
 
       star_ind = app.stars.indexOf(star);
       app.stars.splice(star_ind, 1);
