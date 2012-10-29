@@ -286,7 +286,7 @@ function Ai() {
   this.init = function() {
     setInterval(function() {
       if(app.stars.length) {
-        for (var i = 0; i < app.stars.length; ++i) {
+        for (var i = app.stars.length - 1; i >= 0 ; --i) {
           if(app.stars[i].wait) {
             this.findStar(app.stars[i]);
           }
