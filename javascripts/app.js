@@ -29,7 +29,7 @@ window.onload = function() {
         air_compressor: 3, // the amount of air per second (in litres)
         width_view: null, // will be set on start
         min_width: 762,
-        min_height: debug ? 650 : 685, // because my display small :-(
+        min_height: debug ? 350 : 685, // because my display small :-(
         ratio_sky_water: 1/6
       }
     };
@@ -319,6 +319,8 @@ function Ai() {
           //TODO select diver with most vantage position
           if(potential_hunters.length) {
             cur_hunter =  potential_hunters[0];
+            // if that diver doesn't have
+            // passed star in task list
             if(cur_hunter.tasks.indexOf(star.id) === -1 ) {
               cur_hunter.tasks.push(star.id);
               // TODO think about this aproach
@@ -334,6 +336,9 @@ function Ai() {
         }
       }
     } else {
+      // TODO
+      // we must not see this error, because 
+      // all divers think about his air amount
       throw new Error('all dievers died :-(');
       return false;
     }
@@ -353,16 +358,12 @@ var Star = (function(_super) {
     width: 46,
     height: 43,
     setImage: function(rating) {
-      if(typeof rating === 'undefined') {
-        throw new Error('rating not set');
-        this.rating = 1;
-      }
       this.rating = rating;
       this.image = images['tf-star'+rating+'.png'];
       this.x = this.x - this.width / 2
       this.y = this.y - this.height / 2
-      this.fall();
       app.ctx.drawImage(this.image, this.x, this.y);
+      this.fall();
     },
 
     fall: function() {
