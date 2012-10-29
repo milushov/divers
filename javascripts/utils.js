@@ -86,6 +86,7 @@ if(!Array.prototype.find) {
   };
 }
 
+
 if(!Object.prototype.size) {
   Object.prototype.size = function() {
     var size = 0, key;
@@ -102,6 +103,14 @@ if(!Array.prototype.last) {
     return this[this.length - 1];
   }
 }
+
+
+if(!Array.prototype.fist) {
+  Array.prototype.fist = function() {
+    return this[0];
+  }
+}
+
 
 __id = 0;
 function getId() {

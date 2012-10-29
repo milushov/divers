@@ -389,6 +389,10 @@ var Star = (function(_super) {
     stop: function() {
       clearInterval(this.intr_id);
       this.intr_id = null;
+    },
+
+    isOnTheBottom: function() {
+      return (this.intr_id === null) ? true : false;
     }
   });
 
@@ -651,6 +655,27 @@ var Diver = (function(_super) {
           return canvas_width - 150 + Math.round(Math.random()*100);
         }
       }
+    },
+
+    // swimming in one place for the expected star
+    expect: function(star_id) {
+      this.stop();
+      var speed = 35 + rand(-10, 10),
+        interval = 1000 / speed,
+        startY = this.y,
+        position = this.y,
+        amplitude = Math.round(Math.random()*10+3),
+        star = app.stars.find(star_id);
+
+      this.intr_id = setInterval(function() {
+        if(star.isOnTheBottom()) {
+          this.stop();
+          this.pickUp(star);
+        } else {
+          startY += .1;
+          this.y = position + Math.sin(startY) * amplitude;
+        }
+      }.bind(this), interval);
     },
 
     goHome: function() {
