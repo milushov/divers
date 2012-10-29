@@ -571,9 +571,7 @@ var Diver = (function(_super) {
             this.x --;
             this.withStar();
           } else {
-            this.stop();
-            this.pickUp(star.id);
-            this.defineWhatToDo();
+            act.call(this);
           }
         }.bind(this), interval);
       } else {
@@ -583,11 +581,19 @@ var Diver = (function(_super) {
             this.x ++;
             this.withStar();
           } else {
-            this.stop();
-            this.pickUp(star.id);
-            this.defineWhatToDo();
+            act.call(this);
           }
         }.bind(this), interval);
+      }
+
+      function act() {
+        this.stop();
+        if(star.isOnTheBottom()) {
+          this.pickUp(star.id);
+          this.defineWhatToDo();
+        } else {
+          this.expect(star.id);
+        }
       }
     },
 
@@ -671,6 +677,7 @@ var Diver = (function(_super) {
         if(star.isOnTheBottom()) {
           this.stop();
           this.pickUp(star);
+          this.defineWhatToDo();
         } else {
           startY += .1;
           this.y = position + Math.sin(startY) * amplitude;
