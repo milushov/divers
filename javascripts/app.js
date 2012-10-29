@@ -307,7 +307,7 @@ function Ai() {
       for (var i = 0; i < app.divers.length; ++i) {
         if(app.divers[i].search) {
           // if diver at the bottom
-          if( eql(app.divers[i].y, bottom) ) {
+          if(app.divers[i].isOnTheBottom()) {
             if( app.divers[i].isSee(star) ) {
               'diver ' + app.divers[i].id + ' sees star ' + star.id;
               potential_hunters.push(app.divers[i]);
@@ -411,6 +411,7 @@ var Diver = (function(_super) {
     this.start_emersion = false;
     this.search = true;
     this.tasks = [];
+    this.on_the_bottom = false;
     return Diver.__super__.constructor.apply(this, arguments);
   }
 
@@ -440,6 +441,7 @@ var Diver = (function(_super) {
       this.checklist = { 1: false, 2: false, 3: false };
       this.cur_part = 1;
       this.start_emersion = false;
+      this.on_the_bottom = false;
 
       var speed = app.config.speed.diver,
         interval = 1000 / speed;
@@ -454,6 +456,7 @@ var Diver = (function(_super) {
               this.goToStar(this.tasks[0]);
             }
           } else {
+            this.on_the_bottom = true;
             this.patrol();
           }
         }
@@ -508,6 +511,10 @@ var Diver = (function(_super) {
           app.showStarsOnBoardImage();
         }
       }.bind(this), interval);
+    },
+
+    isOnTheBottom: function() {
+      return this.on_the_bottom;
     },
 
     toggleWaitBubble: function() {
@@ -681,6 +688,7 @@ var Diver = (function(_super) {
         } else {
           startY += .1;
           this.y = position + Math.sin(startY) * amplitude;
+          this.withStar();
         }
       }.bind(this), interval);
     },
