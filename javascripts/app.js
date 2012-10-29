@@ -374,6 +374,7 @@ var Star = (function(_super) {
         amplitude = Math.round(Math.random()*10+3),
         rand_botton = app.config.objects.bottom +
         Math.round(Math.random()*20)-10;
+
       this.intr_id = setInterval(function() {
         if(this.y <= rand_botton) {
           startX += .1;
