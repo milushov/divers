@@ -29,16 +29,16 @@ window.onload = function() {
         air_compressor: 3, // the amount of air per second (in litres)
         width_view: null, // will be set on start
         min_width: 762,
-        min_height: debug ? 650 : 685, // because my display small :-(
+        min_height: debug ? 350 : 685, // because my display small :-(
         ratio_sky_water: 1/6
       }
     };
 
     app = new App(config, debug);
     app.load(function() {
-      bg = new Background(config, debug);
-      bg.init();
-      bg.animate();
+      //bg = new Background(config, debug);
+      //bg.init();
+      //bg.animate();
 
       app.init();
       app.animate();
@@ -286,7 +286,7 @@ function Ai() {
   this.init = function() {
     setInterval(function() {
       if(app.stars.length) {
-        for (var i = 0; i < app.stars.length; ++i) {
+        for (var i = app.stars.length - 1; i >= 0 ; --i) {
           if(app.stars[i].wait) {
             this.findStar(app.stars[i]);
           }
@@ -307,7 +307,7 @@ function Ai() {
       for (var i = 0; i < app.divers.length; ++i) {
         if(app.divers[i].search) {
           // if diver at the bottom
-          if( eql(app.divers[i].y, bottom) ) {
+          if(app.divers[i].isOnTheBottom()) {
             if( app.divers[i].isSee(star) ) {
               'diver ' + app.divers[i].id + ' sees star ' + star.id;
               potential_hunters.push(app.divers[i]);
@@ -319,6 +319,8 @@ function Ai() {
           //TODO select diver with most vantage position
           if(potential_hunters.length) {
             cur_hunter =  potential_hunters[0];
+            // if that diver doesn't have
+            // passed star in task list
             if(cur_hunter.tasks.indexOf(star.id) === -1 ) {
               cur_hunter.tasks.push(star.id);
               // TODO think about this aproach
@@ -334,6 +336,9 @@ function Ai() {
         }
       }
     } else {
+      // TODO
+      // we must not see this error, because 
+      // all divers think about his air amount
       throw new Error('all dievers died :-(');
       return false;
     }
@@ -353,16 +358,12 @@ var Star = (function(_super) {
     width: 46,
     height: 43,
     setImage: function(rating) {
-      if(typeof rating === 'undefined') {
-        throw new Error('rating not set');
-        this.rating = 1;
-      }
       this.rating = rating;
       this.image = images['tf-star'+rating+'.png'];
       this.x = this.x - this.width / 2
       this.y = this.y - this.height / 2
-      this.fall();
       app.ctx.drawImage(this.image, this.x, this.y);
+      this.fall();
     },
 
     fall: function() {
@@ -373,15 +374,25 @@ var Star = (function(_super) {
         amplitude = Math.round(Math.random()*10+3),
         rand_botton = app.config.objects.bottom +
         Math.round(Math.random()*20)-10;
-      var intr = setInterval(function() {
+
+      this.intr_id = setInterval(function() {
         if(this.y <= rand_botton) {
           startX += .1;
           this.x = position + Math.sin(startX) * amplitude;
           this.y ++;
         } else {
-          clearInterval(intr);
+          this.stop();
         }
       }.bind(this), interval);
+    },
+
+    stop: function() {
+      clearInterval(this.intr_id);
+      this.intr_id = null;
+    },
+
+    isOnTheBottom: function() {
+      return (this.intr_id === null) ? true : false;
     }
   });
 
@@ -400,6 +411,7 @@ var Diver = (function(_super) {
     this.start_emersion = false;
     this.search = true;
     this.tasks = [];
+    this.on_the_bottom = false;
     return Diver.__super__.constructor.apply(this, arguments);
   }
 
@@ -429,6 +441,7 @@ var Diver = (function(_super) {
       this.checklist = { 1: false, 2: false, 3: false };
       this.cur_part = 1;
       this.start_emersion = false;
+      this.on_the_bottom = false;
 
       var speed = app.config.speed.diver,
         interval = 1000 / speed;
@@ -443,6 +456,7 @@ var Diver = (function(_super) {
               this.goToStar(this.tasks[0]);
             }
           } else {
+            this.on_the_bottom = true;
             this.patrol();
           }
         }
@@ -499,6 +513,10 @@ var Diver = (function(_super) {
       }.bind(this), interval);
     },
 
+    isOnTheBottom: function() {
+      return this.on_the_bottom;
+    },
+
     toggleWaitBubble: function() {
       if(this.wait) {
         this.wait = null;
@@ -516,6 +534,7 @@ var Diver = (function(_super) {
       this.breathe_intr_id = setInterval( function() {
         //console.log(this.id + '  ' + this.air);
         if(this.air > 0) {
+          if(!this.isEnoughAir()) this.goHome();
           if(this.stars.length === 2) {
             this.air -= speed +
               this.stars[0].rating * asws +
@@ -529,12 +548,54 @@ var Diver = (function(_super) {
             throw new Error('diver have too much stars on hands');
           }
         } else {
+          // we never must not be here
           this.stop();
           this.stopBreathe();
           app.divers.splice(app.divers.indexOf(this), 1);
           console.log('diver ' + this.id + ' is died..');
         }
       }.bind(this), interval);
+    },
+
+    isEnoughAir: function() {
+      var rope = app.config.objects.rope,
+        ds = app.config.speed.diver,
+        as = app.config.speed.air,
+        asws = app.config.speed.air_speed_with_star,
+        p = Math.abs(rope - this.x) - 20, // for path
+        max_rating = 10,
+        fb = app.config.options.for_ballast,
+        fs = app.config.options.for_star,
+        ep = app.config.objects.emersion_parts,
+        epath = app.config.objects.bottom -
+          app.config.objects.boat;
+
+        star1 = (this.stars[0] === 'object')
+          ? this.stars[0].rating
+          : max_rating;
+
+        star2 = (this.stars[1] === 'object')
+          ? this.stars[1].rating
+          : max_rating;
+
+        var path = Math.ceil(p/ds) * as +
+          star1 * asws +
+          star2 * asws;
+
+        var start_emersion = star1 * fs +
+          star2 * fs + fb;
+
+        var emersion = Math.ceil(epath / ds) * as +
+          star1 * asws +
+          star2 * asws;
+
+        var waiting = 0;
+        for(var p in ep) { if(p != 'size') waiting += ep[p].time; }
+        waiting = (waiting / 1000) * as;
+
+        var return_trip = path + start_emersion + emersion + waiting;
+
+      return (this.air > return_trip) ? true : false;
     },
 
     stopBreathe: function() {
@@ -560,9 +621,7 @@ var Diver = (function(_super) {
             this.x --;
             this.withStar();
           } else {
-            this.stop();
-            this.pickUp(star.id);
-            this.defineWhatToDo();
+            act.call(this);
           }
         }.bind(this), interval);
       } else {
@@ -572,11 +631,19 @@ var Diver = (function(_super) {
             this.x ++;
             this.withStar();
           } else {
-            this.stop();
-            this.pickUp(star.id);
-            this.defineWhatToDo();
+            act.call(this);
           }
         }.bind(this), interval);
+      }
+
+      function act() {
+        this.stop();
+        if(star.isOnTheBottom()) {
+          this.pickUp(star.id);
+          this.defineWhatToDo();
+        } else {
+          this.expect(star.id);
+        }
       }
     },
 
@@ -646,6 +713,30 @@ var Diver = (function(_super) {
       }
     },
 
+    // swimming in one place for the expected star
+    expect: function(star_id) {
+      this.stop();
+      var speed = 35 + rand(-10, 10),
+        interval = 1000 / speed,
+        startY = this.y,
+        position = this.y,
+        amplitude = Math.round(Math.random()*10+3),
+        star = app.stars.find(star_id);
+
+      this.intr_id = setInterval(function() {
+        if(star.isOnTheBottom()) {
+          this.stop();
+          this.y = position;
+          this.pickUp(star);
+          this.defineWhatToDo();
+        } else {
+          startY += .1;
+          this.y = position + Math.sin(startY) * amplitude;
+          this.withStar();
+        }
+      }.bind(this), interval);
+    },
+
     goHome: function() {
       this.stop();
       var speed = app.config.speed.diver,
@@ -708,6 +799,7 @@ var Diver = (function(_super) {
       }
 
       star.wait = false;
+      star.stop();
 
       star_ind = app.stars.indexOf(star);
       app.stars.splice(star_ind, 1);
