@@ -883,6 +883,7 @@ var AngryCrab = (function(_super) {
       images['angry_crab_right_2.png']
     ];
     this.cur_frame = 1;
+    this.image = this.frames[1];
     return AngryCrab.__super__.constructor.apply(this, arguments);
   };
 
@@ -899,7 +900,9 @@ var AngryCrab = (function(_super) {
           startY += .2;
           this.y = position + Math.sin(startY) * amplitude;
           this.x ++;
-          this.image = this.nextFrame();
+          if(this.x % 15 === 0) {
+            this.image = this.nextFrame();
+          }
         } else {
           this.stop();
           delete app.angry_crab;
@@ -917,7 +920,7 @@ var AngryCrab = (function(_super) {
         cur = this.cur_frame,
         fs = this.frames;
 
-      this.cur_frame = (cur === last) ? 0 : cur++;
+      this.cur_frame = (cur === last) ? 0 : cur+1;
       return fs[this.cur_frame];
     }
   });
