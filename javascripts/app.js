@@ -571,8 +571,13 @@ var Diver = (function(_super) {
         epath = app.config.objects.bottom -
           app.config.objects.boat;
 
-        star1 = this.stars[0] || max_rating;
-        star2 = this.stars[1] || max_rating;
+        star1 = (this.stars[0] === 'object')
+          ? this.stars[0].rating
+          : max_rating;
+
+        star2 = (this.stars[1] === 'object')
+          ? this.stars[1].rating
+          : max_rating;
 
         var path = Math.ceil(p/ds) * as +
           star1 * asws +
