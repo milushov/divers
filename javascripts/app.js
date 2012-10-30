@@ -30,7 +30,8 @@ window.onload = function() {
         width_view: null, // will be set on start
         min_width: 762,
         min_height: debug ? 350 : 685, // because my display small :-(
-        ratio_sky_water: 1/6
+        ratio_sky_water: 1/6,
+        angry_crab: true
       }
     };
 
@@ -104,6 +105,14 @@ function App(config, debug) {
       rating: $('#rating span'),
       count: $('#count span')
     };
+
+    if(this.config.options.angry_crab) {
+      var show_time = rand(30, 45) * 1000;
+      setTimeout(function() {
+        this.angry_crab = new AngryCrab();
+        this.start();
+      }, show_time);
+    }
   };
 
   this.addStar = function(event) {
@@ -169,6 +178,10 @@ function App(config, debug) {
 
         app.ctx.drawImage(s, x + 27, y - 75);
       }
+    }
+
+    if(this.angry_crab) {
+      this.angry_crab.draw();
     }
   };
 
