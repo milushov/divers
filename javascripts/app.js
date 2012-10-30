@@ -721,6 +721,7 @@ var Diver = (function(_super) {
       this.intr_id = setInterval(function() {
         if(star.isOnTheBottom()) {
           this.stop();
+          this.y = position;
           this.pickUp(star);
           this.defineWhatToDo();
         } else {
