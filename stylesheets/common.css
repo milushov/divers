@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Lobster';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lobster'), url(lobster.woff) format('woff');
+}
+
 body {
   margin: 0px;
   padding: 0px;
@@ -24,7 +31,7 @@ body {
   z-index: 3;
   position: absolute;
   top: 15px;
-  width: 100%;
+  /*width: 100%;*/
 }
 
 #menu #info {
@@ -97,6 +104,19 @@ body {
   background: black;
   opacity: .8;
   overflow: hidden;
+}
+
+#cover span{
+  position: relative;
+  color: white;
+  width: 300px;
+  font-size: 40px;
+  top: 40%;
+  left: 40%;
+}
+
+#cover #load_percent {
+  margin-left: 10px;
 }
 
 .clearfix:after {

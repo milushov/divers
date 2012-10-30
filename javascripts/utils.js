@@ -51,7 +51,7 @@ Object.extend = function(destination, source) {
 };
 
 
-window.__images = ["images/fish/fish_left_2.png","images/fish/fish_right_1.png","images/fish/fish_left_1.png","images/buttons/delete-diver.png","images/buttons/add-diver.png","images/buttons/add-diver-hover.png","images/buttons/delete-diver-hover.png","images/other/cloud1.png","images/other/sun.png","images/other/island.png","images/other/crab2.png","images/other/sand_left.png","images/other/star1.png","images/other/ship.png","images/other/star4.png","images/other/sand_center.png","images/other/star2.png","images/other/cloud2.png","images/other/star3.png","images/other/seaguls.png","images/other/wave2.png","images/other/rope.png","images/other/wave1.png","images/other/crab1.png","images/other/wave3.png","images/other/sand_right.png","images/divers/right.png","images/divers/up.png","images/divers/left.png","images/back.jpg","images/stars/tf-star6.png","images/stars/tf-star2.png","images/stars/tf-star9.png","images/stars/tf-star3.png","images/stars/tf-star8.png","images/stars/ship-load.png","images/stars/tf-star7.png","images/stars/tf-star1.png","images/stars/tf-star5.png","images/stars/tf-star4.png","images/stars/tf-star10.png","images/thought.png"];
+window.__images = ["images/fish/fish_left_2.png","images/fish/fish_right_1.png","images/fish/fish_left_1.png","images/buttons/delete-diver.png","images/buttons/add-diver.png","images/buttons/add-diver-hover.png","images/buttons/delete-diver-hover.png","images/other/cloud1.png","images/other/sun.png","images/other/island.png","images/other/crab2.png","images/other/sand_left.png","images/other/star1.png","images/other/ship.png","images/other/star4.png","images/other/sand_center.png","images/other/star2.png","images/other/cloud2.png","images/other/star3.png","images/other/seaguls.png","images/other/wave2.png","images/other/rope.png","images/other/wave1.png","images/other/crab1.png","images/other/wave3.png","images/other/sand_right.png","images/divers/right.png","images/divers/up.png","images/divers/left.png","images/angry_crab/angry_crab_right_1.png","images/angry_crab/angry_crab_right_2.png","images/angry_crab/angry_crab_default.png","images/back.jpg","images/stars/tf-star6.png","images/stars/tf-star2.png","images/stars/tf-star9.png","images/stars/tf-star3.png","images/stars/tf-star8.png","images/stars/ship-load.png","images/stars/tf-star7.png","images/stars/tf-star1.png","images/stars/tf-star5.png","images/stars/tf-star4.png","images/stars/tf-star10.png","images/thought.png"];
 
 
 function wwh() {
@@ -86,6 +86,7 @@ if(!Array.prototype.find) {
   };
 }
 
+
 if(!Object.prototype.size) {
   Object.prototype.size = function() {
     var size = 0, key;
@@ -102,6 +103,14 @@ if(!Array.prototype.last) {
     return this[this.length - 1];
   }
 }
+
+
+if(!Array.prototype.fist) {
+  Array.prototype.fist = function() {
+    return this[0];
+  }
+}
+
 
 __id = 0;
 function getId() {
