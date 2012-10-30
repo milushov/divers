@@ -259,8 +259,23 @@ function App(config, debug) {
 
         if(counter === __images.length) {
           document.title = 'Водолазы';
-          $('body').removeChild(cover);
-          callback.call();
+
+          cover = $('#cover');
+          var opacity = parseFloat(getComputedStyle(cover).getPropertyValue('opacity'));
+          opacity = parseFloat(opacity.toFixed(2));
+
+          var intr_id = setInterval(function() {
+            opacity -= 0.05;
+            opacity = 1 * opacity.toFixed(2);
+            cover.style.opacity = opacity;
+
+            if(opacity <= 0) {
+              clearInterval(intr_id);
+              $('body').removeChild(cover);
+            }
+
+            if(opacity == .4) callback.call();
+          }.bind(this), 25);
         }
       }
 
