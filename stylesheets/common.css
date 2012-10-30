@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Lobster';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lobster'), url(lobster.woff) format('woff');
+}
+
 body {
   margin: 0px;
   padding: 0px;
