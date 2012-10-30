@@ -108,11 +108,17 @@ function App(config, debug) {
   this.addStar = function(event) {
     var x = event.layerX || event.offsetX,
       y = event.layerY || event.offsetY,
-      rating = Math.round(Math.random()*9+1),
+      ratio = this.config.options.ratio_sky_water,
+      start_water = Math.round((this.canvas.height - 80) * ratio) + 60;
+
+    if(x >= 20 && x <= this.canvas.width - 20 &&
+       y >= start_water && y <= this.config.objects.bottom) {
+      var rating = rand(1,10),
       new_star = new Star(x, y, 46, 43);
 
-    new_star.setImage(rating);
-    app.stars.push(new_star);
+      new_star.setImage(rating);
+      app.stars.push(new_star);
+    }
   };
 
   this.addDiver = function() {
@@ -399,7 +405,7 @@ var Star = (function(_super) {
       this.image = images['tf-star'+rating+'.png'];
       this.x = this.x - this.width / 2
       this.y = this.y - this.height / 2
-      app.ctx.drawImage(this.image, this.x, this.y);
+      //app.ctx.drawImage(this.image, this.x, this.y);
       this.fall();
     },
 
