@@ -266,6 +266,15 @@ function App(config, debug) {
           images[key].onload = function() {
             counter ++;
 
+            if(counter === to ) {
+              prct = (parseFloat((counter/__images.length)
+                .toFixed(2)) * 100)
+                .toFixed() + '%';
+              load_percent.innerHTML =  prct;
+              document.title =  prct;
+              loadNextPart();
+            }
+
             if(counter === __images.length) {
               document.title = 'Водолазы';
 
@@ -285,16 +294,6 @@ function App(config, debug) {
 
                 if(opacity == .4) callback.call();
               }.bind(this), 25);
-            }
-
-            if(counter === to) {
-              prct = (parseFloat((counter/__images.length)
-                .toFixed(2)) * 100)
-                .toFixed() + '%';
-              load_percent.innerHTML =  prct;
-              document.title =  prct;
-
-              loadNextPart();
             }
           }
 
