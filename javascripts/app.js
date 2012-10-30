@@ -56,13 +56,14 @@ function App(config, debug) {
   this.init = function() {
     console.log('app init');
 
-    this.canvas = document.getElementById('app');
+    this.canvas = $('#app'); // this is NOT jQuery :-)
     this.canvas.width = wwh()[0];
     this.canvas.height = wwh()[1];
     this.ctx = this.canvas.getContext('2d');
     var objs = this.config.objects;
     objs.bottom = this.canvas.height - 100;
-    objs.rope = this.canvas.width - Math.round((this.canvas.width - 40) / 5) + 20;
+    objs.rope = this.canvas.width -
+      Math.round((this.canvas.width - 40) / 5) + 20;
 
     var ratio = this.config.options.ratio_sky_water;
     objs.boat = Math.round((this.canvas.height - (60 + 20)) * ratio) + 60;
@@ -77,7 +78,6 @@ function App(config, debug) {
 
     $('#menu').style.width = this.canvas.width + 'px';// get it!!1
 
-    /* this is NOT jQuery :-) */
     $('#add-diver').addEventListener('click',
       function(){ app.addDiver.apply(this) }
     );
