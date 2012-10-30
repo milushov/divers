@@ -107,11 +107,11 @@ function App(config, debug) {
     };
 
     if(this.config.options.angry_crab) {
-      var show_time = rand(30, 45) * 1000;
+      var show_time = debug ? 3000 : rand(30, 45) * 1000;
       setTimeout(function() {
-        this.angry_crab = new AngryCrab();
-        this.start();
-      }, show_time);
+        this.angry_crab = new AngryCrab(-400, objs.bottom - 140);
+        this.angry_crab.start();
+      }.bind(this), show_time);
     }
   };
 
@@ -462,7 +462,7 @@ var Diver = (function(_super) {
       this.intr_id = setInterval(function() {
         if(this.y < app.config.objects.bottom) {
           this.y ++;
-          console.log(new Date().getMilliseconds());
+          //console.log(new Date().getMilliseconds());
         } else {
           this.stop();
           if(this.tasks.length) {
@@ -871,3 +871,48 @@ var Diver = (function(_super) {
 
   return Diver;
 })(Thing)
+
+
+var AngryCrab = (function(_super) {
+  extend(AngryCrab, _super);
+
+  function AngryCrab() {
+    this.frames = [
+      images['angry_crab_right_1.png'],
+      images['angry_crab_default.png'],
+      images['angry_crab_right_2.png']
+    ];
+    return AngryCrab.__super__.constructor.apply(this, arguments);
+  };
+
+  Object.extend(AngryCrab.prototype, {
+    start: function() {
+      var speed = 500,
+        interval = 1000 / speed,
+        startY = this.y,
+        position = this.y,
+        amplitude = Math.round(Math.random()*10+3),
+        rand_botton = app.config.objects.bottom +
+        Math.round(Math.random()*20)-10;
+
+      this.intr_id = setInterval(function() {
+        if(this.x < app.canvas.width + 500) {
+          startY += .2;
+          this.y = position + Math.sin(startY) * amplitude;
+          this.x ++;
+          this.image = this.frames[1];
+        } else {
+          this.stop();
+          delete app.angry_crab;
+        }
+      }.bind(this), interval);
+    },
+
+    stop: function() {
+      clearInterval(this.intr_id);
+      this.intr_id = null;
+    }
+  });
+
+  return AngryCrab;
+})(Thing);
