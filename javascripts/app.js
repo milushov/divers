@@ -90,7 +90,7 @@ function App(config, debug) {
       return false;
     }, false);
 
-    this.canvas.addEventListener('mousedown',
+    this.canvas.addEventListener('click',
       this.addStar.bind(this)
     );
 
