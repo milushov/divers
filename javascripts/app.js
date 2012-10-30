@@ -36,9 +36,9 @@ window.onload = function() {
 
     app = new App(config, debug);
     app.load(function() {
-      //bg = new Background(config, debug);
-      //bg.init();
-      //bg.animate();
+      bg = new Background(config, debug);
+      bg.init();
+      bg.animate();
 
       app.init();
       app.animate();
