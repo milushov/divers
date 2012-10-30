@@ -107,9 +107,12 @@ function App(config, debug) {
 
   this.addStar = function(event) {
     var x = event.layerX || event.offsetX,
-      y = event.layerY || event.offsetY;
+      y = event.layerY || event.offsetY,
+      ratio = this.config.options.ratio_sky_water,
+      start_water = Math.round((this.canvas.height - 80) * ratio) + 60;
 
-    if(x >= 20 && x <= this.canvas.width - 20) {
+    if(x >= 20 && x <= this.canvas.width - 20 &&
+       y >= start_water && y <= this.config.objects.bottom) {
       var rating = rand(1,10),
       new_star = new Star(x, y, 46, 43);
 
