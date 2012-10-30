@@ -527,6 +527,8 @@ var Diver = (function(_super) {
     },
 
     breathe: function() {
+      if(!this.isEnoughAir) this.goHome();
+
       var speed = app.config.speed.air,
         interval = 1000,
         asws = app.config.speed.air_speed_with_star;
@@ -588,7 +590,6 @@ var Diver = (function(_super) {
         waiting = (waiting / 1000) * as;
 
         var return_trip = path + start_emersion + emersion + waiting;
-        console.log(return_trip);
 
       return (this.air > return_trip) ? true : false;
     },
