@@ -227,6 +227,7 @@ function App(config, debug) {
     this.info.count.innerText = this.stars_on_board;
   };
 
+  // it's fuckin trash, i know it
   this.load = function(callback, act) {
     if(act || __images.length === 0) callback.call();
 
@@ -246,40 +247,61 @@ function App(config, debug) {
 
     images = new Object();
 
-    for (var i = 0; i < __images.length; i++) {
-      var key = __images[i].split('/').last();
-      images[key] = new Image();
+    var count = 5; // amount images in one part
+    var cur_part = 0;
+    var count_parts = Math.ceil(__images.length/count);
 
-      images[key].onload = function() {
-        counter ++;
+    loadNextPart();
 
-        prct = (parseFloat((counter/__images.length).toFixed(2)) * 100).toFixed() + '%';
-        load_percent.innerHTML =  prct;
-        document.title =  prct;
+    function loadNextPart() {
+      var from = cur_part * count,
+        to = cur_part * count + count;
 
-        if(counter === __images.length) {
-          document.title = 'Водолазы';
+      for (var i = from; i < to; ++i) {
+        if(typeof __images[i] === 'string') {
+          var key = __images[i].split('/').last();
+          images[key] = new Image();
 
-          cover = $('#cover');
-          var opacity = parseFloat(getComputedStyle(cover).getPropertyValue('opacity'));
-          opacity = parseFloat(opacity.toFixed(2));
+          images[key].onload = function() {
+            counter ++;
 
-          var intr_id = setInterval(function() {
-            opacity -= 0.05;
-            opacity = 1 * opacity.toFixed(2);
-            cover.style.opacity = opacity;
+            if(counter === __images.length) {
+              document.title = 'Водолазы';
 
-            if(opacity <= 0) {
-              clearInterval(intr_id);
-              $('body').removeChild(cover);
+              cover = $('#cover');
+              var opacity = parseFloat(getComputedStyle(cover).getPropertyValue('opacity'));
+              opacity = parseFloat(opacity.toFixed(2));
+
+              var intr_id = setInterval(function() {
+                opacity -= 0.05;
+                opacity = 1 * opacity.toFixed(2);
+                cover.style.opacity = opacity;
+
+                if(opacity <= 0) {
+                  clearInterval(intr_id);
+                  $('body').removeChild(cover);
+                }
+
+                if(opacity == .4) callback.call();
+              }.bind(this), 25);
             }
 
-            if(opacity == .4) callback.call();
-          }.bind(this), 25);
+            if(counter === to) {
+              prct = (parseFloat((counter/__images.length)
+                .toFixed(2)) * 100)
+                .toFixed() + '%';
+              load_percent.innerHTML =  prct;
+              document.title =  prct;
+
+              loadNextPart();
+            }
+          }
+
+          images[key].src = __images[i];
         }
       }
 
-      images[key].src = __images[i];
+      cur_part ++;
     }
   };
 
