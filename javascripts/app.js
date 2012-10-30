@@ -61,7 +61,7 @@ function App(config, debug) {
     this.canvas.height = wwh()[1];
     this.ctx = this.canvas.getContext('2d');
     var objs = this.config.objects;
-    objs.bottom = this.canvas.height - 70;
+    objs.bottom = this.canvas.height - 100;
     objs.rope = this.canvas.width - Math.round((this.canvas.width - 40) / 5) + 20;
 
     var ratio = this.config.options.ratio_sky_water;
