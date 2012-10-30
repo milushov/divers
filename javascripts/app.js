@@ -449,6 +449,7 @@ var Diver = (function(_super) {
       this.intr_id = setInterval(function() {
         if(this.y < app.config.objects.bottom) {
           this.y ++;
+          console.log(new Date().getMilliseconds());
         } else {
           this.stop();
           if(this.tasks.length) {
