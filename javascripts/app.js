@@ -527,8 +527,6 @@ var Diver = (function(_super) {
     },
 
     breathe: function() {
-      if(!this.isEnoughAir) this.goHome();
-
       var speed = app.config.speed.air,
         interval = 1000,
         asws = app.config.speed.air_speed_with_star;
@@ -536,6 +534,7 @@ var Diver = (function(_super) {
       this.breathe_intr_id = setInterval( function() {
         //console.log(this.id + '  ' + this.air);
         if(this.air > 0) {
+          if(!this.isEnoughAir()) this.goHome();
           if(this.stars.length === 2) {
             this.air -= speed +
               this.stars[0].rating * asws +
