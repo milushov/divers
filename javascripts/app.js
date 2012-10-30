@@ -109,7 +109,7 @@ function App(config, debug) {
     if(this.config.options.angry_crab) {
       var show_time = debug ? 3000 : rand(30, 45) * 1000;
       setTimeout(function() {
-        this.angry_crab = new AngryCrab(-400, objs.bottom - 140);
+        this.angry_crab = new AngryCrab(-400, objs.bottom - 200);
         this.angry_crab.start();
       }.bind(this), show_time);
     }
