@@ -107,12 +107,15 @@ function App(config, debug) {
 
   this.addStar = function(event) {
     var x = event.layerX || event.offsetX,
-      y = event.layerY || event.offsetY,
-      rating = rand(1,10),
+      y = event.layerY || event.offsetY;
+
+    if(x >= 20 && x <= this.canvas.width - 20) {
+      var rating = rand(1,10),
       new_star = new Star(x, y, 46, 43);
 
-    new_star.setImage(rating);
-    app.stars.push(new_star);
+      new_star.setImage(rating);
+      app.stars.push(new_star);
+    }
   };
 
   this.addDiver = function() {
