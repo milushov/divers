@@ -30,8 +30,7 @@ window.onload = function() {
         width_view: null, // will be set on start
         min_width: 762,
         min_height: debug ? 350 : 685, // because my display small :-(
-        ratio_sky_water: 1/6,
-        angry_crab: true
+        ratio_sky_water: 1/6
       }
     };
 
@@ -105,14 +104,6 @@ function App(config, debug) {
       rating: $('#rating span'),
       count: $('#count span')
     };
-
-    if(this.config.options.angry_crab) {
-      var show_time = debug ? 3000 : rand(30, 45) * 1000;
-      setTimeout(function() {
-        this.angry_crab = new AngryCrab(-400, objs.bottom - 200);
-        this.angry_crab.start();
-      }.bind(this), show_time);
-    }
   };
 
   this.addStar = function(event) {
@@ -178,10 +169,6 @@ function App(config, debug) {
 
         app.ctx.drawImage(s, x + 27, y - 75);
       }
-    }
-
-    if(this.angry_crab) {
-      this.angry_crab.draw();
     }
   };
 
@@ -871,59 +858,3 @@ var Diver = (function(_super) {
 
   return Diver;
 })(Thing)
-
-
-var AngryCrab = (function(_super) {
-  extend(AngryCrab, _super);
-
-  function AngryCrab() {
-    this.frames = [
-      images['angry_crab_right_1.png'],
-      images['angry_crab_default.png'],
-      images['angry_crab_right_2.png']
-    ];
-    this.cur_frame = 1;
-    this.image = this.frames[1];
-    return AngryCrab.__super__.constructor.apply(this, arguments);
-  };
-
-  Object.extend(AngryCrab.prototype, {
-    start: function() {
-      var speed = 500,
-        interval = 1000 / speed,
-        startY = this.y,
-        position = this.y,
-        amplitude = Math.round(Math.random()*10+3);
-
-      this.intr_id = setInterval(function() {
-        if(this.x < app.canvas.width + 500) {
-          startY += .2;
-          this.y = position + Math.sin(startY) * amplitude;
-          this.x ++;
-          if(this.x % 15 === 0) {
-            this.image = this.nextFrame();
-          }
-        } else {
-          this.stop();
-          delete app.angry_crab;
-        }
-      }.bind(this), interval);
-    },
-
-    stop: function() {
-      clearInterval(this.intr_id);
-      this.intr_id = null;
-    },
-
-    nextFrame: function() {
-      var last = this.frames.length - 1,
-        cur = this.cur_frame,
-        fs = this.frames;
-
-      this.cur_frame = (cur === last) ? 0 : cur+1;
-      return fs[this.cur_frame];
-    }
-  });
-
-  return AngryCrab;
-})(Thing);
