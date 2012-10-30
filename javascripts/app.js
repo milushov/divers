@@ -547,12 +547,50 @@ var Diver = (function(_super) {
             throw new Error('diver have too much stars on hands');
           }
         } else {
+          // we never must not be here
           this.stop();
           this.stopBreathe();
           app.divers.splice(app.divers.indexOf(this), 1);
           console.log('diver ' + this.id + ' is died..');
         }
       }.bind(this), interval);
+    },
+
+    isEnoughAir: function() {
+      var rope = app.config.objects.rope,
+        ds = app.config.speed.diver,
+        as = app.config.speed.air,
+        asws = app.config.speed.air_speed_with_star,
+        p = Math.abs(rope - this.x) - 20, // for path
+        max_rating = 10,
+        fb = app.config.options.for_ballast,
+        fs = app.config.options.for_star,
+        ep = app.config.objects.emersion_parts,
+        epath = app.config.objects.bottom -
+          app.config.objects.boat;
+
+        star1 = this.stars[0] || max_rating;
+        star2 = this.stars[1] || max_rating;
+
+        var path = Math.ceil(p/ds) * as +
+          star1 * asws +
+          star2 * asws;
+
+        var start_emersion = star1 * fs +
+          star2 * fs + fb;
+
+        var emersion = Math.ceil(epath / ds) * as +
+          star1 * asws +
+          star2 * asws;
+
+        var waiting = 0;
+        for(var p in ep) { if(p != 'size') waiting += ep[p].time; }
+        waiting = (waiting / 1000) * as;
+
+        var return_trip = path + start_emersion + emersion + waiting;
+        console.log(return_trip);
+
+      return (this.air > return_trip) ? true : false;
     },
 
     stopBreathe: function() {
