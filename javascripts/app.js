@@ -169,6 +169,8 @@ function App(config, debug) {
         app.ctx.drawImage(s, x + 27, y - 75);
       }
     }
+
+    bg.static.drawFrame.call(this);
   };
 
   this.showStarsOnBoardImage = function() {

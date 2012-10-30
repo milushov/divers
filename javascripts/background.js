@@ -125,7 +125,6 @@ function Background(config, debug) {
 
     this.static.drawCrabsAndStars.call(this);
     if(this.angry_crab) this.angry_crab.draw(this.ctx);
-    this.static.drawFrame.call(this);
   };
 
   this._cache = { crabs: [], stars: [] };
