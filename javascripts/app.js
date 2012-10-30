@@ -1,6 +1,5 @@
 /*
- * author Milushov Roman
- * vk.com/milushov
+ * author: Milushov Roman (vk.com/milushov)
  */
 
 window.onload = function() {
