@@ -108,7 +108,7 @@ function App(config, debug) {
   this.addStar = function(event) {
     var x = event.layerX || event.offsetX,
       y = event.layerY || event.offsetY,
-      rating = Math.round(Math.random()*9+1),
+      rating = rand(1,10),
       new_star = new Star(x, y, 46, 43);
 
     new_star.setImage(rating);
