@@ -455,6 +455,7 @@ var Diver = (function(_super) {
     this.search = true;
     this.tasks = [];
     this.on_the_bottom = false;
+    this.lm = 0;
     return Diver.__super__.constructor.apply(this, arguments);
   }
 
@@ -488,12 +489,12 @@ var Diver = (function(_super) {
 
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
-        offset = 0,
-        ms = +new Date();
+        diff = 0,
+        offset = 0;
 
       this.intr_id = setInterval(function() {
         if(this.y < app.config.objects.bottom) {
-          diff = +new Date() - ms;
+          diff = +new Date() - (this.lm || +new Date());
           offset = diff / interval;
           this.y += offset;
         } else {
@@ -508,7 +509,7 @@ var Diver = (function(_super) {
           }
         }
 
-        ms = +new Date();
+        this.lm = +new Date();
       }.bind(this), interval);
     },
 
@@ -835,6 +836,7 @@ var Diver = (function(_super) {
     stop: function() {
       clearInterval(this.intr_id);
       this.intr_id = null;
+      this.lm = 0;
     },
 
     pickUp: function(star) {
