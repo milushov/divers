@@ -634,7 +634,7 @@ var AngryCrab = (function(_super) {
 
       var i = 0;
       this.intr_id = setInterval(function() {
-        if(this.x < bg.canvas.width - 200) {
+        if(this.x < bg.canvas.width) {
           startY += .2;
           this.y = position + Math.sin(startY) * amplitude;
           this.x += this.getOffset(interval);

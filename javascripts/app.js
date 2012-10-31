@@ -96,6 +96,8 @@ function App(config, debug) {
       this.addStar.bind(this)
     );
 
+    detectInactiveTab();
+
     this.divers = new Array();
     this.stars = new Array();
     this.boat = new Array();
@@ -124,7 +126,9 @@ function App(config, debug) {
   };
 
   this.addDiver = function() {
-    if(bg.angry_crab) return false;
+    if(bg.angry_crab) {
+      return console.warn('divers are afraid to go down :-)');
+    }
     var x = app.config.objects.rope,
       y = app.config.objects.boat,
       new_diver = new Diver(x, y);
