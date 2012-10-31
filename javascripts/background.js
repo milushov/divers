@@ -140,8 +140,8 @@ function Background(config, debug) {
     var w = this.canvas.width,
       h = this.config.objects.water,
       x = 0, y = 60,
-      // TODO make the count dependent on the width canvas
-      cc = rand(5,7), // clouds count
+      b = Math.round(bg.canvas.width/150),
+      cc = rand(b-3, b+3),
       cloud = null,
       dir = this.wind;
 
