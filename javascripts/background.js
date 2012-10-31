@@ -50,8 +50,8 @@ function Background(config, debug) {
     if(this.config.options.angry_crab) {
       var show_time = debug ? 1000 : rand(15, 20) * 1000;
       setTimeout(function() {
-        var y = this.config.objects.bottom - 200;
-        this.angry_crab = new AngryCrab(-400, y);
+        var y = this.config.objects.bottom - 185;
+        this.angry_crab = new AngryCrab(-200, y);
         this.angry_crab.start();
       }.bind(this), show_time);
     }
@@ -660,11 +660,11 @@ var AngryCrab = (function(_super) {
 
   Object.extend(AngryCrab.prototype, {
     start: function() {
-      var speed = 50,
+      var speed = Math.ceil(bg.canvas.width / 10),
         interval = 1000 / speed,
         startY = this.y,
         position = this.y,
-        amplitude = Math.round(Math.random()*10+3);
+        amplitude = 5;
 
       var i = 0;
       this.intr_id = setInterval(function() {
@@ -672,7 +672,7 @@ var AngryCrab = (function(_super) {
           startY += .2;
           this.y = position + Math.sin(startY) * amplitude;
           this.x += this.getOffset(interval);
-          if(i == 10) {
+          if(i == 5) {
             this.image = this.nextFrame();
             i = 0;
           }
