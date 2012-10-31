@@ -665,6 +665,9 @@ var AngryCrab = (function(_super) {
         } else {
           this.stop();
           delete bg.angry_crab;
+          for (var i = 0; i < app.stars.length; ++i) {
+            app.stars[i].in_tasks = false;
+          }
         }
       }.bind(this), interval);
     },
