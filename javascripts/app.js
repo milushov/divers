@@ -240,19 +240,8 @@ function App(config, debug) {
   this.load = function(callback, act) {
     if(act || __images.length === 0) callback.call();
 
-    var cover = document.createElement('div'),
-      counter = 0;
+    var counter = 0;
 
-    cover.id = 'cover';
-    cover.style.width = wwh()[0]+'px';
-    cover.style.height = wwh()[1]+'px';
-    cover.innerHTML = ' \
-      <div> \
-        <span>Загружено изображений:</span> \
-        <span id="load_percent">0%</span> \
-      </div>';
-    $('body').appendChild(cover);
-    $('#cover div').style.left = wwh()[0]/2 - 540/2 + 'px';
 
     var load_percent = $('#load_percent'),
       prct = '';

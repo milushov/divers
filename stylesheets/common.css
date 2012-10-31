@@ -111,6 +111,8 @@ body {
   background: black;
   opacity: .8;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 #cover div {
@@ -119,6 +121,7 @@ body {
   width: 540px;
   font-size: 40px;
   top: 45%;
+  margin: 0 auto;
 }
 
 #cover #load_percent {
