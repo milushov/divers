@@ -70,7 +70,9 @@ function wwh() {
 
 
 function eql(a, b) {
-  return (Math.abs(a - b) <= 5) ? true : false;
+  if(Math.abs(a - b) <= 1)
+    console.log(a,b);
+  return (Math.abs(a - b) <= 1) ? true : false;
 }
 
 
@@ -105,8 +107,8 @@ if(!Array.prototype.last) {
 }
 
 
-if(!Array.prototype.fist) {
-  Array.prototype.fist = function() {
+if(!Array.prototype.first) {
+  Array.prototype.first = function() {
     return this[0];
   }
 }

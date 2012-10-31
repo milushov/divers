@@ -197,7 +197,7 @@ function App(config, debug) {
 
     setInterval(function() {
       if(this.boat.length !== 0) {
-        diver = this.boat[0];
+        diver = this.boat.first();
         diver.stopBreathe();
         need_air = air_diver - diver.air; // 20 - 7
 
