@@ -4,7 +4,7 @@
 
 window.onload = function() {
   (function() {
-    var debug = isDebug();
+    var debug = !isDebug();
 
     var config = {
       speed: {
@@ -394,6 +394,7 @@ var Star = (function(_super) {
 
   function Star() {
     this.wait = true;
+    this.lm = 0;
     return Star.__super__.constructor.apply(this, arguments);
   };
 
@@ -422,7 +423,7 @@ var Star = (function(_super) {
         if(this.y <= rand_botton) {
           startX += .1;
           this.x = position + Math.sin(startX) * amplitude;
-          this.y ++;
+          this.y += this.getOffset(interval);
         } else {
           this.stop();
         }
@@ -432,6 +433,7 @@ var Star = (function(_super) {
     stop: function() {
       clearInterval(this.intr_id);
       this.intr_id = null;
+      this.lm = 0;
     },
 
     isOnTheBottom: function() {
@@ -455,6 +457,7 @@ var Diver = (function(_super) {
     this.search = true;
     this.tasks = [];
     this.on_the_bottom = false;
+    this.lm = 0;
     return Diver.__super__.constructor.apply(this, arguments);
   }
 
@@ -487,12 +490,13 @@ var Diver = (function(_super) {
       this.on_the_bottom = false;
 
       var speed = app.config.speed.diver,
-        interval = 1000 / speed;
+        interval = 1000 / speed,
+        diff = 0,
+        offset = 0;
 
       this.intr_id = setInterval(function() {
         if(this.y < app.config.objects.bottom) {
-          this.y ++;
-          //console.log(new Date().getMilliseconds());
+          this.y += this.getOffset(interval);
         } else {
           this.stop();
           if(this.tasks.length) {
@@ -545,7 +549,7 @@ var Diver = (function(_super) {
               this.emersion();
             }.bind(this), parts[this.cur_part].time);
           } else {
-            this.y --;
+            this.y -= this.getOffset(interval);
             this.withStar();
           }
         } else {
@@ -662,7 +666,7 @@ var Diver = (function(_super) {
         this.setImage('left');
         this.intr_id = setInterval(function() {
           if(this.x >= star.x) {
-            this.x --;
+            this.x -= this.getOffset(interval);
             this.withStar();
           } else {
             act.call(this);
@@ -672,7 +676,7 @@ var Diver = (function(_super) {
         this.setImage('right');
         this.intr_id = setInterval(function() {
           if(this.x < star.x) {
-            this.x ++;
+            this.x += this.getOffset(interval);
             this.withStar();
           } else {
             act.call(this);
@@ -729,7 +733,7 @@ var Diver = (function(_super) {
       this.intr_id = setInterval(function() {
         if(dir === 'left') {
           if(a < this.x) {
-            this.x --;
+            this.x -= this.getOffset(interval);
             this.withStar();
           } else {
             dir = 'right';
@@ -738,7 +742,7 @@ var Diver = (function(_super) {
           }
         } else if(dir === 'right') {
           if(this.x < b) {
-            this.x ++;
+            this.x += this.getOffset(interval);
             this.withStar();
           } else {
             dir = 'left';
@@ -790,7 +794,7 @@ var Diver = (function(_super) {
         this.setImage('right');
         this.intr_id = setInterval(function() {
           if(this.x <= home) { // FIXME must be <
-            this.x ++;
+            this.x += this.getOffset(interval);
             this.withStar();
           } else {
             this.stop();
@@ -801,7 +805,7 @@ var Diver = (function(_super) {
         this.setImage('left');
         this.intr_id = setInterval(function() {
           if(this.x >= home) {
-            this.x --;
+            this.x -= this.getOffset(interval);
             this.withStar();
           } else {
             this.stop();
@@ -830,6 +834,7 @@ var Diver = (function(_super) {
     stop: function() {
       clearInterval(this.intr_id);
       this.intr_id = null;
+      this.lm = 0;
     },
 
     pickUp: function(star) {
