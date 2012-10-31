@@ -8,9 +8,9 @@ window.onload = function() {
 
     var config = {
       speed: {
-        star: debug ? 900 : 80,
-        diver: debug ? 800 : 20,
-        air: debug ? .25 : .05,
+        star: debug ? 200 : 80,
+        diver: debug ? 100 : 20,
+        air: debug ? 1 : .05,
         air_speed_with_star: debug ? .01 : .001
       },
 
@@ -56,13 +56,14 @@ function App(config, debug) {
   this.init = function() {
     console.log('app init');
 
-    this.canvas = document.getElementById('app');
+    this.canvas = $('#app'); // this is NOT jQuery :-)
     this.canvas.width = wwh()[0];
     this.canvas.height = wwh()[1];
     this.ctx = this.canvas.getContext('2d');
     var objs = this.config.objects;
     objs.bottom = this.canvas.height - 100;
-    objs.rope = this.canvas.width - Math.round((this.canvas.width - 40) / 5) + 20;
+    objs.rope = this.canvas.width -
+      Math.round((this.canvas.width - 40) / 5) + 20;
 
     var ratio = this.config.options.ratio_sky_water;
     objs.boat = Math.round((this.canvas.height - (60 + 20)) * ratio) + 60;
@@ -77,7 +78,6 @@ function App(config, debug) {
 
     $('#menu').style.width = this.canvas.width + 'px';// get it!!1
 
-    /* this is NOT jQuery :-) */
     $('#add-diver').addEventListener('click',
       function(){ app.addDiver.apply(this) }
     );
@@ -172,7 +172,7 @@ function App(config, debug) {
           x = app.config.objects.rope,
           y = app.config.objects.boat;
 
-        app.ctx.drawImage(s, x + 27, y - 75);
+        app.ctx.drawImage(s, x + 20, y - 60);
       }
     }
 
@@ -197,7 +197,7 @@ function App(config, debug) {
 
     setInterval(function() {
       if(this.boat.length !== 0) {
-        diver = this.boat[0];
+        diver = this.boat.first();
         diver.stopBreathe();
         need_air = air_diver - diver.air; // 20 - 7
 
@@ -394,6 +394,7 @@ var Star = (function(_super) {
 
   function Star() {
     this.wait = true;
+    this.lm = 0;
     return Star.__super__.constructor.apply(this, arguments);
   };
 
@@ -422,7 +423,7 @@ var Star = (function(_super) {
         if(this.y <= rand_botton) {
           startX += .1;
           this.x = position + Math.sin(startX) * amplitude;
-          this.y ++;
+          this.y += this.getOffset(interval);
         } else {
           this.stop();
         }
@@ -432,6 +433,7 @@ var Star = (function(_super) {
     stop: function() {
       clearInterval(this.intr_id);
       this.intr_id = null;
+      this.lm = 0;
     },
 
     isOnTheBottom: function() {
@@ -455,6 +457,8 @@ var Diver = (function(_super) {
     this.search = true;
     this.tasks = [];
     this.on_the_bottom = false;
+    this.lm = 0;
+    this.sent_home = false;
     return Diver.__super__.constructor.apply(this, arguments);
   }
 
@@ -485,14 +489,16 @@ var Diver = (function(_super) {
       this.cur_part = 1;
       this.start_emersion = false;
       this.on_the_bottom = false;
+      this.sent_home = false;
 
       var speed = app.config.speed.diver,
-        interval = 1000 / speed;
+        interval = 1000 / speed,
+        diff = 0,
+        offset = 0;
 
       this.intr_id = setInterval(function() {
         if(this.y < app.config.objects.bottom) {
-          this.y ++;
-          //console.log(new Date().getMilliseconds());
+          this.y += this.getOffset(interval);
         } else {
           this.stop();
           if(this.tasks.length) {
@@ -509,6 +515,7 @@ var Diver = (function(_super) {
 
     emersion: function() {
       this.stop();
+      this.setImage('up');
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
         parts = app.config.objects.emersion_parts,
@@ -545,11 +552,14 @@ var Diver = (function(_super) {
               this.emersion();
             }.bind(this), parts[this.cur_part].time);
           } else {
-            this.y --;
+            this.y -= this.getOffset(interval);
             this.withStar();
           }
         } else {
           this.stop();
+          // because if diver will stay in queue,
+          // he will die without air
+          this.stopBreathe();
           app.boat.push(this);
           this.dump();
           app.showStarsOnBoardImage();
@@ -576,9 +586,9 @@ var Diver = (function(_super) {
         asws = app.config.speed.air_speed_with_star;
 
       this.breathe_intr_id = setInterval( function() {
-        //console.log(this.id + '  ' + this.air);
+        console.log('diver['+this.id + '] ' + 'air:' + this.air);
         if(this.air > 0) {
-          if(!this.isEnoughAir()) this.goHome();
+          if(!this.isEnoughAir() && !this.sent_home) this.goHome();
           if(this.stars.length === 2) {
             this.air -= speed +
               this.stars[0].rating * asws +
@@ -662,7 +672,7 @@ var Diver = (function(_super) {
         this.setImage('left');
         this.intr_id = setInterval(function() {
           if(this.x >= star.x) {
-            this.x --;
+            this.x -= this.getOffset(interval);
             this.withStar();
           } else {
             act.call(this);
@@ -672,7 +682,7 @@ var Diver = (function(_super) {
         this.setImage('right');
         this.intr_id = setInterval(function() {
           if(this.x < star.x) {
-            this.x ++;
+            this.x += this.getOffset(interval);
             this.withStar();
           } else {
             act.call(this);
@@ -729,7 +739,7 @@ var Diver = (function(_super) {
       this.intr_id = setInterval(function() {
         if(dir === 'left') {
           if(a < this.x) {
-            this.x --;
+            this.x -= this.getOffset(interval);
             this.withStar();
           } else {
             dir = 'right';
@@ -738,7 +748,7 @@ var Diver = (function(_super) {
           }
         } else if(dir === 'right') {
           if(this.x < b) {
-            this.x ++;
+            this.x += this.getOffset(interval);
             this.withStar();
           } else {
             dir = 'left';
@@ -783,6 +793,8 @@ var Diver = (function(_super) {
 
     goHome: function() {
       this.stop();
+      this.sent_home = true;
+      this.search = false;
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
         home = app.config.objects.rope;
@@ -790,7 +802,7 @@ var Diver = (function(_super) {
         this.setImage('right');
         this.intr_id = setInterval(function() {
           if(this.x <= home) { // FIXME must be <
-            this.x ++;
+            this.x += this.getOffset(interval);
             this.withStar();
           } else {
             this.stop();
@@ -801,7 +813,7 @@ var Diver = (function(_super) {
         this.setImage('left');
         this.intr_id = setInterval(function() {
           if(this.x >= home) {
-            this.x --;
+            this.x -= this.getOffset(interval);
             this.withStar();
           } else {
             this.stop();
@@ -830,6 +842,7 @@ var Diver = (function(_super) {
     stop: function() {
       clearInterval(this.intr_id);
       this.intr_id = null;
+      this.lm = 0;
     },
 
     pickUp: function(star) {

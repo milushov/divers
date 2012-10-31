@@ -70,7 +70,7 @@ function wwh() {
 
 
 function eql(a, b) {
-  return parseInt(a) == parseInt(b);
+  return (Math.abs(a - b) <= 1) ? true : false;
 }
 
 
@@ -105,8 +105,8 @@ if(!Array.prototype.last) {
 }
 
 
-if(!Array.prototype.fist) {
-  Array.prototype.fist = function() {
+if(!Array.prototype.first) {
+  Array.prototype.first = function() {
     return this[0];
   }
 }
@@ -193,6 +193,12 @@ var Thing = (function() {
     draw: function(ctx) {
       if(!ctx) { ctx = app.ctx }
       ctx.drawImage(this.image, this.x, this.y);
+    },
+    getOffset: function(interval) {
+      var diff = +new Date() - (this.lm || +new Date());
+      var offset = diff / interval;
+      this.lm = +new Date();
+      return offset;
     }
   });
 
