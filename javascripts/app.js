@@ -96,6 +96,8 @@ function App(config, debug) {
       this.addStar.bind(this)
     );
 
+    detectInactiveTab();
+
     this.divers = new Array();
     this.stars = new Array();
     this.boat = new Array();
@@ -124,6 +126,9 @@ function App(config, debug) {
   };
 
   this.addDiver = function() {
+    if(bg.angry_crab) {
+      return console.warn('divers are afraid to go down :-)');
+    }
     var x = app.config.objects.rope,
       y = app.config.objects.boat,
       new_diver = new Diver(x, y);
@@ -140,6 +145,18 @@ function App(config, debug) {
       last_diver.stopBreathe();
       ind = app.divers.indexOf(last_diver);
       app.divers.splice(ind, 1);
+    } else {
+      if(app.divers.length) {
+        var loser = app.divers.last();
+        if(loser.stars.length) {
+          loser.drop(loser.stars.last());
+          if(loser.stars.length) {
+            loser.drop(loser.stars.last());
+          }
+        }
+        loser.delete = true;
+        loser.goHome();
+      }
     }
   };
 
@@ -174,7 +191,7 @@ function App(config, debug) {
           x = app.config.objects.rope,
           y = app.config.objects.boat;
 
-        app.ctx.drawImage(s, x + 20, y - 60);
+        app.ctx.drawImage(s, x + 23, y - 62);
       }
     }
 
@@ -200,6 +217,15 @@ function App(config, debug) {
     setInterval(function() {
       if(this.boat.length !== 0) {
         diver = this.boat.first();
+
+        if(diver.delete) {
+          var loser = app.boat.pop();
+          loser.stopBreathe();
+          ind = app.divers.indexOf(loser);
+          app.divers.splice(ind, 1);
+          return;
+        }
+
         diver.stopBreathe();
         need_air = air_diver - diver.air; // 20 - 7
 
@@ -525,10 +551,11 @@ var Diver = (function(_super) {
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
         diff = 0,
-        offset = 0;
+        offset = 0,
+        ofb = 20; // offset for bottom
 
       this.intr_id = setInterval(function() {
-        if(this.y < app.config.objects.bottom) {
+        if(this.y < app.config.objects.bottom - ofb) {
           this.y += this.getOffset(interval);
         } else {
           this.stop();
@@ -699,10 +726,7 @@ var Diver = (function(_super) {
     goToStar: function(id) {
       this.stop();
       var star = app.stars.find(id);
-      if(!star) {
-        throw new Error('star not found');
-        return false;
-      }
+      if(!star) return this.defineWhatToDo();
       var speed = app.config.speed.diver,
         interval = 1000 / speed;
       if(this._star_left(star)) {
@@ -925,6 +949,7 @@ var Diver = (function(_super) {
       star_ind = this.stars.indexOf(star);
       this.stars.splice(star_ind, 1);
       app.stars.push(star);
+      star.wait = true;
       star.in_tasks = false;
       star.fall();
     },
