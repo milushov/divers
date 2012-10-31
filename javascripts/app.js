@@ -352,7 +352,8 @@ function Ai() {
           // if diver at the bottom
           if(app.divers[i].isOnTheBottom()) {
             if( app.divers[i].isSee(star) ) {
-              'diver ' + app.divers[i].id + ' sees star ' + star.id;
+              console.log('☺ diver[' + app.divers[i].id +
+                '] sees star:' + star.id);
               potential_hunters.push(app.divers[i]);
             }
           }
@@ -586,7 +587,7 @@ var Diver = (function(_super) {
         asws = app.config.speed.air_speed_with_star;
 
       this.breathe_intr_id = setInterval( function() {
-        console.log('diver['+this.id + '] ' + 'air:' + this.air);
+        console.log('✔ diver['+this.id + '] ' + 'air:' + this.air);
         if(this.air > 0) {
           if(!this.isEnoughAir() && !this.sent_home) this.goHome();
           if(this.stars.length === 2) {
