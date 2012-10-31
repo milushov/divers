@@ -70,7 +70,7 @@ function wwh() {
 
 
 function eql(a, b) {
-  return parseInt(a) == parseInt(b);
+  return (Math.abs(a - b) <= 5) ? true : false;
 }
 
 

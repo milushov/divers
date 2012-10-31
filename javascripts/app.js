@@ -4,13 +4,13 @@
 
 window.onload = function() {
   (function() {
-    var debug = !isDebug();
+    var debug = isDebug();
 
     var config = {
       speed: {
-        star: debug ? 900 : 80,
-        diver: debug ? 800 : 20,
-        air: debug ? .25 : .05,
+        star: debug ? 200 : 80,
+        diver: debug ? 100 : 20,
+        air: debug ? 1 : .05,
         air_speed_with_star: debug ? .01 : .001
       },
 
