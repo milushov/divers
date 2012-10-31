@@ -551,10 +551,11 @@ var Diver = (function(_super) {
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
         diff = 0,
-        offset = 0;
+        offset = 0,
+        ofb = 20; // offset for bottom
 
       this.intr_id = setInterval(function() {
-        if(this.y < app.config.objects.bottom) {
+        if(this.y < app.config.objects.bottom - ofb) {
           this.y += this.getOffset(interval);
         } else {
           this.stop();
