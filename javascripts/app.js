@@ -33,6 +33,8 @@ window.onload = function() {
       }
     };
 
+    if(!debug) console.log = function() {}
+
     app = new App(config, debug);
     app.load(function() {
       bg = new Background(config, debug);
