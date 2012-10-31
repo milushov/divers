@@ -586,7 +586,7 @@ var Diver = (function(_super) {
         asws = app.config.speed.air_speed_with_star;
 
       this.breathe_intr_id = setInterval( function() {
-        //console.log(this.id + '  ' + this.air);
+        console.log('diver['+this.id + '] ' + 'air:' + this.air);
         if(this.air > 0) {
           if(!this.isEnoughAir() && !this.sent_home) this.goHome();
           if(this.stars.length === 2) {
