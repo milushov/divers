@@ -487,12 +487,15 @@ var Diver = (function(_super) {
       this.on_the_bottom = false;
 
       var speed = app.config.speed.diver,
-        interval = 1000 / speed;
+        interval = 1000 / speed,
+        offset = 0,
+        ms = +new Date();
 
       this.intr_id = setInterval(function() {
         if(this.y < app.config.objects.bottom) {
-          this.y ++;
-          //console.log(new Date().getMilliseconds());
+          diff = +new Date() - ms;
+          offset = diff / interval;
+          this.y += offset;
         } else {
           this.stop();
           if(this.tasks.length) {
@@ -504,6 +507,8 @@ var Diver = (function(_super) {
             this.patrol();
           }
         }
+
+        ms = +new Date();
       }.bind(this), interval);
     },
 
