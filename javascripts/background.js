@@ -51,7 +51,7 @@ function Background(config, debug) {
     if(this.config.options.angry_crab) {
       var count = this.config.options.angry_crab_show_count;
 
-      if( parseInt(localStorage.acsc || 0 ) < count-1 || debug ) {
+      if( parseInt(localStorage.acsc || 0 ) < count-1 ) {
         var show_time = debug ? 3000 : rand(30, 45) * 1000;
         setTimeout(function() {
           var y = this.config.objects.bottom - 185;

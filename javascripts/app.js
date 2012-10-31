@@ -179,7 +179,7 @@ function App(config, debug) {
           x = app.config.objects.rope,
           y = app.config.objects.boat;
 
-        app.ctx.drawImage(s, x + 20, y - 60);
+        app.ctx.drawImage(s, x + 23, y - 62);
       }
     }
 
