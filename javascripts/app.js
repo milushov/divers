@@ -557,6 +557,9 @@ var Diver = (function(_super) {
           }
         } else {
           this.stop();
+          // because if diver will stay in queue,
+          // he will die without air
+          this.stopBreathe();
           app.boat.push(this);
           this.dump();
           app.showStarsOnBoardImage();
