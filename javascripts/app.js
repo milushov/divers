@@ -515,6 +515,7 @@ var Diver = (function(_super) {
 
     emersion: function() {
       this.stop();
+      this.setImage('up');
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
         parts = app.config.objects.emersion_parts,
