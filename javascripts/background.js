@@ -48,7 +48,7 @@ function Background(config, debug) {
     this.startSeagulls();
 
     if(this.config.options.angry_crab) {
-      var show_time = debug ? 3000 : rand(30, 45) * 1000;
+      var show_time = debug ? 1000 : rand(15, 20) * 1000;
       setTimeout(function() {
         var y = this.config.objects.bottom - 200;
         this.angry_crab = new AngryCrab(-400, y);
