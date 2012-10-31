@@ -699,10 +699,7 @@ var Diver = (function(_super) {
     goToStar: function(id) {
       this.stop();
       var star = app.stars.find(id);
-      if(!star) {
-        throw new Error('star not found');
-        return false;
-      }
+      if(!star) return this.defineWhatToDo();
       var speed = app.config.speed.diver,
         interval = 1000 / speed;
       if(this._star_left(star)) {
