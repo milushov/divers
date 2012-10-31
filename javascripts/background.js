@@ -51,7 +51,7 @@ function Background(config, debug) {
     if(this.config.options.angry_crab) {
       var count = this.config.options.angry_crab_show_count;
 
-      if( parseInt(localStorage.acsc || 0 ) < count-1 || debug ) {
+      if( parseInt(localStorage.acsc || 0 ) < count-1 ) {
         var show_time = debug ? 3000 : rand(30, 45) * 1000;
         setTimeout(function() {
           var y = this.config.objects.bottom - 185;
@@ -634,7 +634,7 @@ var AngryCrab = (function(_super) {
 
       var i = 0;
       this.intr_id = setInterval(function() {
-        if(this.x < bg.canvas.width + 500) {
+        if(this.x < bg.canvas.width) {
           startY += .2;
           this.y = position + Math.sin(startY) * amplitude;
           this.x += this.getOffset(interval);
@@ -645,7 +645,7 @@ var AngryCrab = (function(_super) {
           }
           i++;
 
-          if(this.x >= 100 && !this.show) {
+          if(this.x >= 150 && !this.show) {
             this.show = true;
             app.fearDivers();
           }

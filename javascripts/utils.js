@@ -70,7 +70,7 @@ function wwh() {
 
 
 function eql(a, b) {
-  return (Math.abs(a - b) <= 1) ? true : false;
+  return (Math.abs(a - b) <= 2) ? true : false;
 }
 
 
@@ -226,4 +226,36 @@ function getPointBetween(epoch, points){
   } else {
     return points[0];
   }
+}
+
+function detectInactiveTab() {
+  var hidden, state, visibilityChange; 
+  if (typeof document.hidden !== 'undefined') {
+    hidden = 'hidden';
+    visibilityChange = 'visibilitychange';
+    state = 'visibilityState';
+  } else if (typeof document.mozHidden !== 'undefined') {
+    hidden = 'mozHidden';
+    visibilityChange = 'mozvisibilitychange';
+    state = 'mozVisibilityState';
+  } else if (typeof document.msHidden !== 'undefined') {
+    hidden = 'msHidden';
+    visibilityChange = 'msvisibilitychange';
+    state = 'msVisibilityState';
+  } else if (typeof document.webkitHidden !== 'undefined') {
+    hidden = 'webkitHidden';
+    visibilityChange = 'webkitvisibilitychange';
+    state = 'webkitVisibilityState';
+  }
+
+  if(typeof localStorage.notice === 'undefined') localStorage.notice = 0;
+
+  document.addEventListener(visibilityChange, function() {
+    if(document[state] == 'hidden') {
+      if(parseInt(localStorage.notice) < 2)
+        alert('Приложение не рассчитано на работу в _неактивной_ вкладке. Приложение будет перезагружено.');
+      localStorage.notice = parseInt(localStorage.notice) + 1;
+      document.location.reload();
+    }
+  }, false);
 }
