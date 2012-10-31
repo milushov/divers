@@ -4,7 +4,7 @@
 
 window.onload = function() {
   (function() {
-    var debug = isDebug();
+    var debug = !isDebug();
 
     var config = {
       speed: {
@@ -554,7 +554,7 @@ var Diver = (function(_super) {
               this.emersion();
             }.bind(this), parts[this.cur_part].time);
           } else {
-            this.y --;
+            this.y -= this.getOffset(interval);
             this.withStar();
           }
         } else {
@@ -671,7 +671,7 @@ var Diver = (function(_super) {
         this.setImage('left');
         this.intr_id = setInterval(function() {
           if(this.x >= star.x) {
-            this.x --;
+            this.x -= this.getOffset(interval);
             this.withStar();
           } else {
             act.call(this);
@@ -681,7 +681,7 @@ var Diver = (function(_super) {
         this.setImage('right');
         this.intr_id = setInterval(function() {
           if(this.x < star.x) {
-            this.x ++;
+            this.x += this.getOffset(interval);
             this.withStar();
           } else {
             act.call(this);
@@ -738,7 +738,7 @@ var Diver = (function(_super) {
       this.intr_id = setInterval(function() {
         if(dir === 'left') {
           if(a < this.x) {
-            this.x --;
+            this.x -= this.getOffset(interval);
             this.withStar();
           } else {
             dir = 'right';
@@ -747,7 +747,7 @@ var Diver = (function(_super) {
           }
         } else if(dir === 'right') {
           if(this.x < b) {
-            this.x ++;
+            this.x += this.getOffset(interval);
             this.withStar();
           } else {
             dir = 'left';
@@ -799,7 +799,7 @@ var Diver = (function(_super) {
         this.setImage('right');
         this.intr_id = setInterval(function() {
           if(this.x <= home) { // FIXME must be <
-            this.x ++;
+            this.x += this.getOffset(interval);
             this.withStar();
           } else {
             this.stop();
@@ -810,7 +810,7 @@ var Diver = (function(_super) {
         this.setImage('left');
         this.intr_id = setInterval(function() {
           if(this.x >= home) {
-            this.x --;
+            this.x -= this.getOffset(interval);
             this.withStar();
           } else {
             this.stop();
