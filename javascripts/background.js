@@ -521,6 +521,10 @@ var BezierThing = (function(_super) {
       }
     }
 
+    if(dir === 'left') {
+      this.points.last().x -= 150;
+    }
+
     this.x = this.points[0].x;
     this.y = this.points[0].y;
 
