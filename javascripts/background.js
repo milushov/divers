@@ -654,25 +654,29 @@ var AngryCrab = (function(_super) {
     ];
     this.cur_frame = 1;
     this.image = this.frames[1];
+    this.lm = 0;
     return AngryCrab.__super__.constructor.apply(this, arguments);
   };
 
   Object.extend(AngryCrab.prototype, {
     start: function() {
-      var speed = 500,
+      var speed = 50,
         interval = 1000 / speed,
         startY = this.y,
         position = this.y,
         amplitude = Math.round(Math.random()*10+3);
 
+      var i = 0;
       this.intr_id = setInterval(function() {
         if(this.x < bg.canvas.width + 500) {
           startY += .2;
           this.y = position + Math.sin(startY) * amplitude;
-          this.x ++;
-          if(this.x % 15 === 0) {
+          this.x += this.getOffset(interval);
+          if(i == 10) {
             this.image = this.nextFrame();
+            i = 0;
           }
+          i++;
         } else {
           this.stop();
           delete bg.angry_crab;
