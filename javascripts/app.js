@@ -394,6 +394,7 @@ var Star = (function(_super) {
 
   function Star() {
     this.wait = true;
+    this.lm = 0;
     return Star.__super__.constructor.apply(this, arguments);
   };
 
@@ -422,7 +423,7 @@ var Star = (function(_super) {
         if(this.y <= rand_botton) {
           startX += .1;
           this.x = position + Math.sin(startX) * amplitude;
-          this.y ++;
+          this.y += this.getOffset(interval);
         } else {
           this.stop();
         }
@@ -432,6 +433,7 @@ var Star = (function(_super) {
     stop: function() {
       clearInterval(this.intr_id);
       this.intr_id = null;
+      this.lm = 0;
     },
 
     isOnTheBottom: function() {
@@ -507,13 +509,6 @@ var Diver = (function(_super) {
           }
         }
       }.bind(this), interval);
-    },
-
-    getOffset: function(interval) {
-      var diff = +new Date() - (this.lm || +new Date());
-      var offset = diff / interval;
-      this.lm = +new Date();
-      return offset;
     },
 
     emersion: function() {

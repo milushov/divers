@@ -193,6 +193,12 @@ var Thing = (function() {
     draw: function(ctx) {
       if(!ctx) { ctx = app.ctx }
       ctx.drawImage(this.image, this.x, this.y);
+    },
+    getOffset: function(interval) {
+      var diff = +new Date() - (this.lm || +new Date());
+      var offset = diff / interval;
+      this.lm = +new Date();
+      return offset;
     }
   });
 
