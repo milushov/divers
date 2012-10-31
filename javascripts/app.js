@@ -494,9 +494,7 @@ var Diver = (function(_super) {
 
       this.intr_id = setInterval(function() {
         if(this.y < app.config.objects.bottom) {
-          diff = +new Date() - (this.lm || +new Date());
-          offset = diff / interval;
-          this.y += offset;
+          this.y += this.getOffset(interval);
         } else {
           this.stop();
           if(this.tasks.length) {
@@ -508,9 +506,14 @@ var Diver = (function(_super) {
             this.patrol();
           }
         }
-
-        this.lm = +new Date();
       }.bind(this), interval);
+    },
+
+    getOffset: function(interval) {
+      var diff = +new Date() - (this.lm || +new Date());
+      var offset = diff / interval;
+      this.lm = +new Date();
+      return offset;
     },
 
     emersion: function() {
