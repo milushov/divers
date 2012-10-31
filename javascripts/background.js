@@ -22,7 +22,8 @@ function Background(config, debug) {
         sand_height: 80,
         crabs_count: 4,
         stars_count: 5,
-        angry_crab: true
+        angry_crab: true,
+        angry_crab_show_count: 2
       }
     });
 
@@ -48,12 +49,16 @@ function Background(config, debug) {
     this.startSeagulls();
 
     if(this.config.options.angry_crab) {
-      var show_time = debug ? 1000 : rand(30, 45) * 1000;
-      setTimeout(function() {
-        var y = this.config.objects.bottom - 185;
-        this.angry_crab = new AngryCrab(-200, y);
-        this.angry_crab.start();
-      }.bind(this), show_time);
+      var count = this.config.options.angry_crab_show_count;
+
+      if( parseInt(localStorage.acsc || 0 ) < count-1 ) {
+        var show_time = debug ? 1000 : rand(30, 45) * 1000;
+        setTimeout(function() {
+          var y = this.config.objects.bottom - 185;
+          this.angry_crab = new AngryCrab(-200, y);
+          this.angry_crab.start();
+        }.bind(this), show_time);
+      }
     }
   };
 
@@ -665,9 +670,14 @@ var AngryCrab = (function(_super) {
         } else {
           this.stop();
           delete bg.angry_crab;
+
           for (var i = 0; i < app.stars.length; ++i) {
             app.stars[i].in_tasks = false;
           }
+
+          localStorage.acsc  = (typeof localStorage.acsc !== 'undefined')
+            ? parseInt(localStorage.acsc) + 1
+            : 0;
         }
       }.bind(this), interval);
     },
