@@ -204,3 +204,26 @@ var Thing = (function() {
 
   return Thing;
 })();
+
+
+// recursively determines the epoch point
+function getPointBetween(epoch, points){
+  var foundPoints = [],
+    point = {x: 0, y: 0};
+
+  if (points.length > 1) {
+    for (var i = 0; i < points.length - 1; ++i) {
+      point = {};
+
+      //B(t) = P0 + t(P1 - P0)
+      point.x = points[i].x + epoch * (points[i + 1].x - points[i].x);
+      point.y = points[i].y + epoch * (points[i + 1].y - points[i].y);
+
+      foundPoints.push(point);
+    }
+
+    return getPointBetween.call(this, epoch, foundPoints);
+  } else {
+    return points[0];
+  }
+}
