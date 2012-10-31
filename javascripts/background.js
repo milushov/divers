@@ -48,10 +48,10 @@ function Background(config, debug) {
     this.startSeagulls();
 
     if(this.config.options.angry_crab) {
-      var show_time = debug ? 3000 : rand(30, 45) * 1000;
+      var show_time = debug ? 1000 : rand(15, 20) * 1000;
       setTimeout(function() {
-        var y = this.config.objects.bottom - 200;
-        this.angry_crab = new AngryCrab(-400, y);
+        var y = this.config.objects.bottom - 185;
+        this.angry_crab = new AngryCrab(-200, y);
         this.angry_crab.start();
       }.bind(this), show_time);
     }
@@ -559,29 +559,6 @@ var BezierThing = (function(_super) {
           }
         }
       }.bind(this), interval);
-
-      // recursively determines the epoch point
-      function getPointBetween(epoch, points){
-        var foundPoints = [],
-          point = {x: 0, y: 0}; // tempt point
-
-        if (points.length > 1) {
-          for (var i = 0; i < points.length - 1; ++i) {
-            point = {};
-
-            //B(t) = P0 + t(P1 - P0)
-            point.x = points[i].x + epoch * (points[i + 1].x - points[i].x);
-            point.y = points[i].y + epoch * (points[i + 1].y - points[i].y);
-
-            foundPoints.push(point);
-          }
-
-          //Recurse with new points
-          return getPointBetween.call(this, epoch, foundPoints);
-        } else {
-          return points[0];
-        }
-      }
     },
 
     routes: {
@@ -654,25 +631,37 @@ var AngryCrab = (function(_super) {
     ];
     this.cur_frame = 1;
     this.image = this.frames[1];
+    this.lm = 0;
+    this.show = false;
     return AngryCrab.__super__.constructor.apply(this, arguments);
   };
 
   Object.extend(AngryCrab.prototype, {
     start: function() {
-      var speed = 500,
+      var speed = Math.ceil(bg.canvas.width / 10),
         interval = 1000 / speed,
         startY = this.y,
         position = this.y,
-        amplitude = Math.round(Math.random()*10+3);
+        amplitude = 5;
 
+      var i = 0;
       this.intr_id = setInterval(function() {
         if(this.x < bg.canvas.width + 500) {
           startY += .2;
           this.y = position + Math.sin(startY) * amplitude;
-          this.x ++;
-          if(this.x % 15 === 0) {
+          this.x += this.getOffset(interval);
+
+          if(i == 5) {
             this.image = this.nextFrame();
+            i = 0;
           }
+          i++;
+
+          if(this.x >= 100 && !this.show) {
+            this.show = true;
+            app.fearDivers();
+          }
+
         } else {
           this.stop();
           delete bg.angry_crab;

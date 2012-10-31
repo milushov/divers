@@ -240,19 +240,8 @@ function App(config, debug) {
   this.load = function(callback, act) {
     if(act || __images.length === 0) callback.call();
 
-    var cover = document.createElement('div'),
-      counter = 0;
+    var counter = 0;
 
-    cover.id = 'cover';
-    cover.style.width = wwh()[0]+'px';
-    cover.style.height = wwh()[1]+'px';
-    cover.innerHTML = ' \
-      <div> \
-        <span>Загружено изображений:</span> \
-        <span id="load_percent">0%</span> \
-      </div>';
-    $('body').appendChild(cover);
-    $('#cover div').style.left = wwh()[0]/2 - 540/2 + 'px';
 
     var load_percent = $('#load_percent'),
       prct = '';
@@ -323,6 +312,12 @@ function App(config, debug) {
     info.style.minWidth = '175px';
     info.children[1].style.display = 'block';
     info.children[2].style.display = 'block';
+  };
+
+  this.fearDivers = function() {
+    for (var i = 0; i < this.divers.length; ++i) {
+      this.divers[i].swimAway();
+    }
   };
 };
 
@@ -952,6 +947,69 @@ var Diver = (function(_super) {
           this.stars[i].y = this.y;
         };
       }
+    },
+
+    swimAway: function() {
+      this.stop();
+
+      this.setImage('right');
+
+      var dots = getRoute(),
+        data = dots.split('x'),
+        point = null, width = null, height = null,
+        frame = 60 + 20,
+        sky = Math.round((bg.canvas.height - frame) / 6),
+        sand = bg.config.options.sand_height,
+        width = bg.canvas.width,
+        height = bg.canvas.height - frame - sky - sand,
+        points = new Array();
+
+      for (var i = 1; i < data.length; ++i){
+        var point = data[i].split('y');
+        points.push({
+          x: parseFloat((width/parseFloat(point[0])).toFixed(2)) + this.x,
+          y: parseFloat((height/parseFloat(point[1])).toFixed(2)) + 60 + sky
+        });
+      }
+
+      points.first().y  = this.y;
+
+      this.x = points[0].x;
+      this.y = points[0].y;
+
+      var speed = 150,
+        speed = rand(speed-30, speed+30),
+        interval = 1000 / speed,
+        steps = 250,
+        step = 0;
+
+      var intr = setInterval(function() {
+        var epoch = step/steps;
+        if(epoch < 1) {
+          var point = getPointBetween.call(this, epoch, points);
+
+          this.x = point.x;
+          this.y = point.y;
+
+          step ++;
+        } else {
+          clearInterval(intr);
+          app.divers.splice(app.divers.indexOf(this), 1);
+        }
+      }.bind(this), interval);
+
+      function getRoute() {
+        var routes = [
+          'x21.2y1.24x8.71y2.6x3.16y1.19x2.8y2.13x2.36y3.17x4.1y2.69x2.01y1.22x1.4y2.34x1.42y4.4x1.09y1.52x1.05y1.95',
+          'x17.89y2.53x6.64y1.09x2.79y1.06x5.92y1.45x3.43y1.73x28.38y4.02x2.88y6.19x2.84y2.24x2.42y1.2x2.04y2.52x2.02y1.09x1.56y1.45x1.22y2.33x1.59y3.25x1.68y1.85x1.3y1.21x1.16y1.6x1.06y1.19x1y1.48',
+          'x84.56y1.11x4.53y1.07x8.01y1.44x2.56y1.17x23.06y3x2.7y1.64x2.05y2.24x1.85y1.26x1.56y1.04x1.18y1.11x1.22y1.43x1.47y1.82x1.19y2.85x1.08y2.38x1.05y1.85x1.05y1.19x1.03y1.08x1y1.15',
+          'x36.06y7.29x7.38y1.19x3.16y1.19x3.19y1.63x2.56y2.54x1.62y4x1.98y1.53x1.44y1.2x1.18y1.2x1.02y1.1',
+          'x144.25y2.08x8.01y5.05x2.79y2.82x6.14y1.74x2.66y1.5x1.58y1.93x1.19y1.99x1.44y1.2x1.18y1.2x1.01y1.78'
+        ];
+
+        return routes[rand(0, routes.length-1)];
+      }
+
     }
   });
 
