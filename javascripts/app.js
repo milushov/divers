@@ -967,10 +967,12 @@ var Diver = (function(_super) {
       for (var i = 1; i < data.length; ++i){
         var point = data[i].split('y');
         points.push({
-          x: parseFloat((width/parseFloat(point[0])).toFixed(2)),
+          x: parseFloat((width/parseFloat(point[0])).toFixed(2)) + this.x,
           y: parseFloat((height/parseFloat(point[1])).toFixed(2)) + 60 + sky
         });
       }
+
+      points.first().y  = this.y;
 
       this.x = points[0].x;
       this.y = points[0].y;
