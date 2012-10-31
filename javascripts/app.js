@@ -10,7 +10,7 @@ window.onload = function() {
       speed: {
         star: debug ? 200 : 80,
         diver: debug ? 100 : 20,
-        air: debug ? 1 : .05,
+        air: debug ? 0.5 : .05,
         air_speed_with_star: debug ? .01 : .001
       },
 
@@ -32,6 +32,8 @@ window.onload = function() {
         ratio_sky_water: 1/6
       }
     };
+
+    if(!debug) console.log = function() {}
 
     app = new App(config, debug);
     app.load(function() {
@@ -328,9 +330,9 @@ function Ai() {
   // start loop function
   this.init = function() {
     setInterval(function() {
-      if(app.stars.length) {
+      if(app.stars.length && app.divers.length) {
         for (var i = app.stars.length - 1; i >= 0 ; --i) {
-          if(app.stars[i].wait) {
+          if(app.stars[i].wait && !app.stars[i].in_tasks) {
             this.findStar(app.stars[i]);
           }
         }
@@ -344,46 +346,76 @@ function Ai() {
   this.findStar = function(star) {
     var bottom = app.config.objects.bottom,
       potential_hunters = [],
+      diver = null,
       cur_hunter = null;
 
-    if(app.divers.length) {
-      for (var i = 0; i < app.divers.length; ++i) {
-        if(app.divers[i].search) {
-          // if diver at the bottom
-          if(app.divers[i].isOnTheBottom()) {
-            if( app.divers[i].isSee(star) ) {
-              'diver ' + app.divers[i].id + ' sees star ' + star.id;
-              potential_hunters.push(app.divers[i]);
-            }
-          }
+    for (var i = 0; i < app.divers.length; ++i) {
+      diver = app.divers[i];
+      if(diver.search && !diver.isBusy()) {
+        if( diver.isSee(star) ) {
+          console.log('☺ diver[' + diver.id + '] sees star:' + star.id);
+          potential_hunters.push(diver);
+        }
+      }
+    }
 
-          //TODO check divers on rope
-          
-          //TODO select diver with most vantage position
-          if(potential_hunters.length) {
-            cur_hunter =  potential_hunters[0];
-            // if that diver doesn't have
-            // passed star in task list
-            if(cur_hunter.tasks.indexOf(star.id) === -1 ) {
-              cur_hunter.tasks.push(star.id);
-              // TODO think about this aproach
-              // (send diver to star from here in code)
-              // if first star
-              if(cur_hunter.tasks.length === 1) {
-                cur_hunter.goToStar(star.id);
-              }
-            }
-          } else {
+    if(potential_hunters.length) {
+      cur_hunter = chooseDiver(potential_hunters, star);
 
+      if(cur_hunter.stars.length + cur_hunter.tasks.length < 2) {
+        // if diver has not have this star on this tast list
+        if(cur_hunter.tasks.indexOf(star.id) === -1 ) {
+          cur_hunter.tasks.push(star.id);
+          star.in_tasks = true;
+
+          if(cur_hunter.isOnTheBottom()) {
+            cur_hunter.goToStar(cur_hunter.tasks.first());
           }
         }
       }
-    } else {
-      // TODO
-      // we must not see this error, because 
-      // all divers think about his air amount
-      throw new Error('all dievers died :-(');
-      return false;
+    }
+
+    function chooseDiver(potential_hunters, star) {
+      var on_the_bottom = new Array(),
+        on_the_rope = new Array(),
+        bottom = app.config.objects.bottom;
+
+      // divide divers on two groups:
+      // who on the bottom and who on the rope
+      for (var i = 0; i < potential_hunters.length; ++i) {
+        if(potential_hunters[i].isOnTheBottom()) {
+          on_the_bottom.push(potential_hunters[i]);
+        } else {
+          on_the_rope.push(potential_hunters[i]);
+        }
+      }
+
+      // find closest diver on the bottom
+      var cb = on_the_bottom.first() || null; // closest diver on the bottom
+      for (var i = 0; i < on_the_bottom.length; ++i) {
+        if(Math.abs(star.x  - cb.x) > Math.abs(star.x - on_the_bottom[i].x ) ) {
+          cb = on_the_bottom[i];
+        }
+      }
+
+      // find closest diver on the rope
+      var cr = on_the_rope.first() || null; // closest diver on the bottom
+      for (var i = 0; i < on_the_rope.length; ++i) {
+        if(bottom - cr.y > bottom - on_the_rope[i].y) {
+          cr = on_the_rope[i];
+        }
+      }
+
+      // if we have divers on the bottom
+      // and on the rope in the same time
+      if(cb && cr) {
+        var cb_path = Math.abs(star.x - cb.x),
+          cr_path = (bottom - cr.y) + Math.abs(star.x - cr.x);
+        return (cb_path <= cr_path) ? cb : cr;
+      } else { // or just there or there
+        return cb ? cb : cr;
+      }
+
     }
   };
 }
@@ -393,8 +425,9 @@ var Star = (function(_super) {
   extend(Star, _super);
 
   function Star() {
-    this.wait = true;
-    this.lm = 0;
+    this.wait = true; // true if star was not picked up yet
+    this.in_tasks = false; // true if star being in diver's task list
+    this.lm = 0; // last move time (unixtime timestamp)
     return Star.__super__.constructor.apply(this, arguments);
   };
 
@@ -501,12 +534,12 @@ var Diver = (function(_super) {
           this.y += this.getOffset(interval);
         } else {
           this.stop();
+          this.on_the_bottom = true;
           if(this.tasks.length) {
             if(typeof this.tasks[0] === 'number') {
               this.goToStar(this.tasks[0]);
             }
           } else {
-            this.on_the_bottom = true;
             this.patrol();
           }
         }
@@ -571,6 +604,12 @@ var Diver = (function(_super) {
       return this.on_the_bottom;
     },
 
+    isBusy: function() {
+      return (this.stars.length + this.tasks.length === 2)
+        ? true
+        : false;
+    },
+
     toggleWaitBubble: function() {
       if(this.wait) {
         this.wait = null;
@@ -586,7 +625,7 @@ var Diver = (function(_super) {
         asws = app.config.speed.air_speed_with_star;
 
       this.breathe_intr_id = setInterval( function() {
-        console.log('diver['+this.id + '] ' + 'air:' + this.air);
+        //console.log('✔ diver['+this.id + '] ' + 'air:' + this.air);
         if(this.air > 0) {
           if(!this.isEnoughAir() && !this.sent_home) this.goHome();
           if(this.stars.length === 2) {
@@ -888,6 +927,7 @@ var Diver = (function(_super) {
       star_ind = this.stars.indexOf(star);
       this.stars.splice(star_ind, 1);
       app.stars.push(star);
+      star.in_tasks = false;
       star.fall();
     },
 
