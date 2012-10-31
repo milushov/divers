@@ -990,10 +990,13 @@ var Diver = (function(_super) {
 
           this.x = point.x;
           this.y = point.y;
+          this.withStar();
 
           step ++;
         } else {
           clearInterval(intr);
+          this.stars = [];
+          this.tasks = [];
           app.divers.splice(app.divers.indexOf(this), 1);
         }
       }.bind(this), interval);
