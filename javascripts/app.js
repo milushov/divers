@@ -124,6 +124,7 @@ function App(config, debug) {
   };
 
   this.addDiver = function() {
+    if(bg.angry_crab) return false;
     var x = app.config.objects.rope,
       y = app.config.objects.boat,
       new_diver = new Diver(x, y);

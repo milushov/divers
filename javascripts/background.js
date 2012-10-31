@@ -634,7 +634,7 @@ var AngryCrab = (function(_super) {
 
       var i = 0;
       this.intr_id = setInterval(function() {
-        if(this.x < bg.canvas.width + 500) {
+        if(this.x < bg.canvas.width - 200) {
           startY += .2;
           this.y = position + Math.sin(startY) * amplitude;
           this.x += this.getOffset(interval);
@@ -645,7 +645,7 @@ var AngryCrab = (function(_super) {
           }
           i++;
 
-          if(this.x >= 100 && !this.show) {
+          if(this.x >= 150 && !this.show) {
             this.show = true;
             app.fearDivers();
           }
