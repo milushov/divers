@@ -247,9 +247,12 @@ function App(config, debug) {
     cover.style.width = wwh()[0]+'px';
     cover.style.height = wwh()[1]+'px';
     cover.innerHTML = ' \
-      <span>Загружено изображений:</span> \
-      <span id="load_percent">0%</span>';
+      <div> \
+        <span>Загружено изображений:</span> \
+        <span id="load_percent">0%</span> \
+      </div>';
     $('body').appendChild(cover);
+    $('#cover div').style.left = wwh()[0]/2 - 540/2 + 'px';
 
     var load_percent = $('#load_percent'),
       prct = '';
