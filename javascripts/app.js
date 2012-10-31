@@ -145,6 +145,18 @@ function App(config, debug) {
       last_diver.stopBreathe();
       ind = app.divers.indexOf(last_diver);
       app.divers.splice(ind, 1);
+    } else {
+      if(app.divers.length) {
+        var loser = app.divers.last();
+        if(loser.stars.length) {
+          loser.drop(loser.stars.last());
+          if(loser.stars.length) {
+            loser.drop(loser.stars.last());
+          }
+        }
+        loser.delete = true;
+        loser.goHome();
+      }
     }
   };
 
@@ -205,6 +217,15 @@ function App(config, debug) {
     setInterval(function() {
       if(this.boat.length !== 0) {
         diver = this.boat.first();
+
+        if(diver.delete) {
+          var loser = app.boat.pop();
+          loser.stopBreathe();
+          ind = app.divers.indexOf(loser);
+          app.divers.splice(ind, 1);
+          return;
+        }
+
         diver.stopBreathe();
         need_air = air_diver - diver.air; // 20 - 7
 
@@ -927,6 +948,7 @@ var Diver = (function(_super) {
       star_ind = this.stars.indexOf(star);
       this.stars.splice(star_ind, 1);
       app.stars.push(star);
+      star.wait = true;
       star.in_tasks = false;
       star.fall();
     },
