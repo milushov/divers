@@ -458,6 +458,7 @@ var Diver = (function(_super) {
     this.tasks = [];
     this.on_the_bottom = false;
     this.lm = 0;
+    this.sent_home = false;
     return Diver.__super__.constructor.apply(this, arguments);
   }
 
@@ -488,6 +489,7 @@ var Diver = (function(_super) {
       this.cur_part = 1;
       this.start_emersion = false;
       this.on_the_bottom = false;
+      this.sent_home = false;
 
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
@@ -582,7 +584,7 @@ var Diver = (function(_super) {
       this.breathe_intr_id = setInterval( function() {
         //console.log(this.id + '  ' + this.air);
         if(this.air > 0) {
-          if(!this.isEnoughAir()) this.goHome();
+          if(!this.isEnoughAir() && !this.sent_home) this.goHome();
           if(this.stars.length === 2) {
             this.air -= speed +
               this.stars[0].rating * asws +
@@ -787,6 +789,8 @@ var Diver = (function(_super) {
 
     goHome: function() {
       this.stop();
+      this.sent_home = true;
+      this.search = false;
       var speed = app.config.speed.diver,
         interval = 1000 / speed,
         home = app.config.objects.rope;
