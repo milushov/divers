@@ -70,7 +70,7 @@ function wwh() {
 
 
 function eql(a, b) {
-  return (Math.abs(a - b) <= 1) ? true : false;
+  return (Math.abs(a - b) <= 2) ? true : false;
 }
 
 
