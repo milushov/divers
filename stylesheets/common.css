@@ -113,13 +113,12 @@ body {
   overflow: hidden;
 }
 
-#cover span{
+#cover div {
   position: relative;
   color: white;
-  width: 300px;
+  width: 540px;
   font-size: 40px;
-  top: 40%;
-  left: 40%;
+  top: 45%;
 }
 
 #cover #load_percent {
