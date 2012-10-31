@@ -559,29 +559,6 @@ var BezierThing = (function(_super) {
           }
         }
       }.bind(this), interval);
-
-      // recursively determines the epoch point
-      function getPointBetween(epoch, points){
-        var foundPoints = [],
-          point = {x: 0, y: 0}; // tempt point
-
-        if (points.length > 1) {
-          for (var i = 0; i < points.length - 1; ++i) {
-            point = {};
-
-            //B(t) = P0 + t(P1 - P0)
-            point.x = points[i].x + epoch * (points[i + 1].x - points[i].x);
-            point.y = points[i].y + epoch * (points[i + 1].y - points[i].y);
-
-            foundPoints.push(point);
-          }
-
-          //Recurse with new points
-          return getPointBetween.call(this, epoch, foundPoints);
-        } else {
-          return points[0];
-        }
-      }
     },
 
     routes: {
@@ -655,6 +632,7 @@ var AngryCrab = (function(_super) {
     this.cur_frame = 1;
     this.image = this.frames[1];
     this.lm = 0;
+    this.show = false;
     return AngryCrab.__super__.constructor.apply(this, arguments);
   };
 
@@ -672,11 +650,18 @@ var AngryCrab = (function(_super) {
           startY += .2;
           this.y = position + Math.sin(startY) * amplitude;
           this.x += this.getOffset(interval);
+
           if(i == 5) {
             this.image = this.nextFrame();
             i = 0;
           }
           i++;
+
+          if(this.x >= 100 && !this.show) {
+            this.show = true;
+            app.fearDivers();
+          }
+
         } else {
           this.stop();
           delete bg.angry_crab;
