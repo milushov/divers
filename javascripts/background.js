@@ -120,8 +120,6 @@ function Background(config, debug) {
       }
     }
 
-    this.static.drawRope.call(this);
-
     for (var i = 0; i < this.fishes.length; ++i) {
       if(!this.fishes[i].behind_the_rope) {
         this.fishes[i].draw(this.ctx);
@@ -130,6 +128,8 @@ function Background(config, debug) {
 
     this.static.drawCrabsAndStars.call(this);
     if(this.angry_crab) this.angry_crab.draw(this.ctx);
+
+    this.static.drawRope.call(this);
   };
 
   this._cache = { crabs: [], stars: [] };
