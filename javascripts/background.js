@@ -671,8 +671,8 @@ var AngryCrab = (function(_super) {
           this.stop();
           delete bg.angry_crab;
 
-          for (var i = 0; i < app.stars.length; ++i) {
-            app.stars[i].in_tasks = false;
+          for (var j = 0; j < app.stars.length; ++j) {
+            app.stars[j].in_tasks = false;
           }
 
           localStorage.acsc  = (typeof localStorage.acsc !== 'undefined')
