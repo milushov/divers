@@ -121,7 +121,7 @@ function getId() {
 function isDebug() {
   if(document.location.hostname === 'milushov.ru') {
     if(localStorage) {
-      if(localStorage.admin === 'roma') {
+      if(localStorage.admin !== 'roma') {
         return false;
       } else {
         return true;
