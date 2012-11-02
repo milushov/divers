@@ -257,8 +257,8 @@ function App(config, debug) {
   this.updateRating = function() {
     // if first update
     if(!this.stars_on_board.length) this.showResultsPanel();
-    this.info.rating.innerText = this.stars_rating;
-    this.info.count.innerText = this.stars_on_board;
+    this.info.rating.innerHTML = this.stars_rating;
+    this.info.count.innerHTML = this.stars_on_board;
   };
 
   // it's fuckin trash, i know it
