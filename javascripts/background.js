@@ -48,16 +48,18 @@ function Background(config, debug) {
     this.startFishes();
     this.startSeagulls();
 
-    if(this.config.options.angry_crab) {
-      var count = this.config.options.angry_crab_show_count;
+    if(localStorage) { // fuck you, MSIE!
+      if(this.config.options.angry_crab) {
+        var count = this.config.options.angry_crab_show_count;
 
-      if( parseInt(localStorage.acsc || 0 ) < count-1 ) {
-        var show_time = debug ? 3000 : rand(30, 45) * 1000;
-        setTimeout(function() {
-          var y = this.config.objects.bottom - 185;
-          this.angry_crab = new AngryCrab(-200, y);
-          this.angry_crab.start();
-        }.bind(this), show_time);
+        if( parseInt(localStorage.acsc || 0 ) < count-1 ) {
+          var show_time = debug ? 3000 : rand(30, 45) * 1000;
+          setTimeout(function() {
+            var y = this.config.objects.bottom - 185;
+            this.angry_crab = new AngryCrab(-200, y);
+            this.angry_crab.start();
+          }.bind(this), show_time);
+        }
       }
     }
   };
@@ -340,7 +342,11 @@ function Background(config, debug) {
 
   this.static.drawRope = function() {
     var image = images['rope.png'],
-      x = this.config.objects.rope,
+      // I REALLY HAVE NOT IDEA WHAT DA FUCK
+      // MSIE9 THROW NEXT ERROR EXCEPTION:
+      // "SCRIPT5022: DOM Exception: SYNTAX_ERR (12)"
+      // WITHOUT EXACTLY CONVERTING TO NUMBER TYPE o_O
+      x = parseInt(this.config.objects.rope),
       y = this.config.objects.water - 23;
     this.ctx.drawImage(image, x, y);
   };
@@ -658,9 +664,11 @@ var AngryCrab = (function(_super) {
             app.stars[j].in_tasks = false;
           }
 
-          localStorage.acsc  = (typeof localStorage.acsc !== 'undefined')
-            ? parseInt(localStorage.acsc) + 1
-            : 0;
+          if(localStorage) { // fuck you MSIE second time!
+            localStorage.acsc  = (typeof localStorage.acsc !== 'undefined')
+              ? parseInt(localStorage.acsc) + 1
+              : 0;
+          }
         }
       }.bind(this), interval);
     },

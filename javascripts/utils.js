@@ -120,7 +120,15 @@ function getId() {
 
 function isDebug() {
   if(document.location.hostname === 'milushov.ru') {
-    return false;
+    if(localStorage) {
+      if(localStorage.admin === 'roma') {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
   } else {
     return true;
   }
@@ -248,14 +256,21 @@ function detectInactiveTab() {
     state = 'webkitVisibilityState';
   }
 
-  if(typeof localStorage.notice === 'undefined') localStorage.notice = 0;
+  if(localStorage) {
+    if(typeof localStorage.notice === 'undefined') localStorage.notice = 0;
+  }
 
   document.addEventListener(visibilityChange, function() {
-    if(document[state] == 'hidden') {
-      if(parseInt(localStorage.notice) < 2)
+    if(localStorage) {
+      if(document[state] == 'hidden') {
+        if(parseInt(localStorage.notice) < 2)
+          alert('Приложение не рассчитано на работу в _неактивной_ вкладке. Приложение будет перезагружено.');
+        localStorage.notice = parseInt(localStorage.notice) + 1;
+        document.location.reload();
+      } else {
         alert('Приложение не рассчитано на работу в _неактивной_ вкладке. Приложение будет перезагружено.');
-      localStorage.notice = parseInt(localStorage.notice) + 1;
-      document.location.reload();
+        document.location.reload();
+      }
     }
   }, false);
 }

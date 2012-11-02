@@ -64,8 +64,7 @@ function App(config, debug) {
     this.ctx = this.canvas.getContext('2d');
     var objs = this.config.objects;
     objs.bottom = this.canvas.height - 100;
-    objs.rope = this.canvas.width -
-      Math.round((this.canvas.width - 40) / 5) + 20;
+    objs.rope = this.canvas.width - Math.round((this.canvas.width - 40) / 5) + 20;
 
     var ratio = this.config.options.ratio_sky_water;
     objs.boat = Math.round((this.canvas.height - (60 + 20)) * ratio) + 60;
